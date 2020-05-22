@@ -1,11 +1,9 @@
+package com.patrickborrelli.dndiscord.exceptions;
+
 /**
  * Custom exception used to indicate there is 
  * a missing environment variable on the host
  * computer preventing proper functionality.
- */
-package com.patrickborrelli.dndiscord.exceptions;
-
-/**
  * @author Patrick Borrelli
  */
 public class MissingEnvironmentVarException extends Exception {

@@ -49,16 +49,6 @@
 	  <type>pom</type>
     </dependency>
     <dependency>
-      <groupId>de.btobastian.sdcf4j</groupId>
-      <artifactId>sdcf4j-core</artifactId>
-      <version>1.0.10</version>
-    </dependency>
-    <dependency>
-      <groupId>de.btobastian.sdcf4j</groupId>
-      <artifactId>sdcf4j-javacord</artifactId>
-      <version>1.0.10</version>
-    </dependency>
-    <dependency>
     	<groupId>org.apache.maven.plugins</groupId>
     	<artifactId>maven-javadoc-plugin</artifactId>
     	<version>3.2.0</version>

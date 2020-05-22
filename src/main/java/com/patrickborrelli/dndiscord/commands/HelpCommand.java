@@ -1,8 +1,5 @@
 package com.patrickborrelli.dndiscord.commands;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
 
@@ -10,12 +7,12 @@ import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 
 /**
- * Command class to handle all types of ping commands
+ * Command class to handle all types of help commands
  * issued from Discord to the DnDiscord bot.
  * 
  * @author Patrick Borrelli
  */
-public class PingCommand implements CommandExecutor {
+public class HelpCommand implements CommandExecutor {
 
 	@Override
 	public void onCommand(Message msg) throws CommandProcessingException {
@@ -25,18 +22,9 @@ public class PingCommand implements CommandExecutor {
 		if(args.length > 2) {
 			MessageResponse.sendReply(channel, "Too many arguments provided");
 		} else if(args.length == 1) {
-			MessageResponse.sendReply(channel, "Pong bitches!");
+			//send generic help response
 		} else if(args.length == 2) {
-			if(args[1].equals("author")) {
-				MessageResponse.sendReply(channel, "- **Name:** Patrick Borrelli\n" +
-					   "- **Website:** https://github.com/patrickborrelli");
-			} else if(args[1].equals("time")) {
-				SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-                Date currentDate = new Date(System.currentTimeMillis());
-                MessageResponse.sendReply(channel, "Current time: " + format.format(currentDate));
-			} else {
-				MessageResponse.sendReply(channel, "What the hell are you talking about?");
-			}
+			//specific command help
 		} else {
 			MessageResponse.sendReply(channel, "Unknown argument provided.");
 		}
