@@ -7,6 +7,7 @@ import org.javacord.api.DiscordApiBuilder;
 
 import com.patrickborrelli.dndiscord.exceptions.MissingEnvironmentVarException;
 import com.patrickborrelli.dndiscord.listeners.DNDiscordMessageCreateListener;
+import com.patrickborrelli.dndiscord.utilities.AppUtil;
 import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
 
 public class DNDiscordMain {
@@ -17,11 +18,15 @@ public class DNDiscordMain {
 		
 		String token = null;
 		ConfigurationUtil instance;
+		AppUtil appUtilInstance;
+		
 		try {
 			LOGGER.debug("Attempting to have DNDiscord login and join.");
 			instance = ConfigurationUtil.getInstance();
+			appUtilInstance = AppUtil.getInstance();
 			token = instance.getBotToken();
-			DiscordApi api = new DiscordApiBuilder().setToken(token).login().join();	
+			DiscordApi api = new DiscordApiBuilder().setToken(token).login().join();
+			appUtilInstance.setApi(api);
 			
 	        api.addMessageCreateListener(new DNDiscordMessageCreateListener());
 		} catch(MissingEnvironmentVarException mevEx) {

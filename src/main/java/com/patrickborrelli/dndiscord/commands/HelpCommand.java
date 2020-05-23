@@ -1,13 +1,17 @@
 package com.patrickborrelli.dndiscord.commands;
 
 import java.awt.Color;
+import java.util.concurrent.CompletableFuture;
 
+import org.javacord.api.DiscordApi;
+import org.javacord.api.entity.ApplicationInfo;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
+import com.patrickborrelli.dndiscord.utilities.AppUtil;
 
 /**
  * Command class to handle all types of help commands
@@ -16,6 +20,12 @@ import com.patrickborrelli.dndiscord.messaging.MessageResponse;
  * @author Patrick Borrelli
  */
 public class HelpCommand implements CommandExecutor {
+	
+	private AppUtil instance;
+	
+	public HelpCommand() {
+		instance = AppUtil.getInstance();
+	}
 
 	@Override
 	public void onCommand(Message msg) throws CommandProcessingException {
@@ -26,7 +36,7 @@ public class HelpCommand implements CommandExecutor {
 			MessageResponse.sendReply(channel, "Too many arguments provided");
 		} else if(args.length == 1) {
 			//send generic help response
-			buildBasicHelpEmbed(channel);
+			buildBasicHelpEmbed(msg);
 		} else if(args.length == 2) {
 			//specific command help
 		} else {
@@ -34,14 +44,17 @@ public class HelpCommand implements CommandExecutor {
 		}
 	}
 	
-	private void buildBasicHelpEmbed(TextChannel channel) {
+	private void buildBasicHelpEmbed(Message msg) {
+		//get bot avatar:
+		DiscordApi apiConnection = instance.getApi();
+		CompletableFuture<ApplicationInfo> botUser = apiConnection.getApplicationInfo();
 		EmbedBuilder embed = new EmbedBuilder()
 			.setTitle("DnDiscord Help")
 			.setDescription("DnDiscord is a multifaceted D&D 5e utility bot designed to enable you and your party a seamless online D&D experience.")
-		    .setAuthor("Patrick Borrelli", "https://github.com/patrickborrelli", "https://cdn.discordapp.com/embed/avatars/0.png")
+		    .setAuthor("Patrick Borrelli", "http://github.com/patrickborrelli", "https://cdn.discordapp.com/embed/avatars/0.png")
 		    .addField("Basic Commands", "For help on specific commands, type <prefix>help <command>.")
 		    .setColor(Color.GREEN)
 		    .setFooter("Footer", "https://cdn.discordapp.com/embed/avatars/1.png");
-		MessageResponse.sendEmbedMessage(channel, embed);		
+		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);		
 	}
 }
