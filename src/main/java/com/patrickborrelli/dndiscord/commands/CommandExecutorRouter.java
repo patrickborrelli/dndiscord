@@ -2,6 +2,8 @@ package com.patrickborrelli.dndiscord.commands;
 
 import java.util.HashMap;
 
+import com.patrickborrelli.dndiscord.utilities.CommandUtil;
+
 /**
  * Command Factory singleton that handles all
  * message routing from listeners to command executors.
@@ -29,9 +31,10 @@ public class CommandExecutorRouter {
 	}
 	
 	private void initMap() {
-		map.put("ping", new PingCommand());
-		map.put("prefix", new PrefixCommand());
-		map.put("help", new HelpCommand());
+		map.put(CommandUtil.PING, new PingCommand());
+		map.put(CommandUtil.PREFIX, new PrefixCommand());
+		map.put(CommandUtil.HELP, new HelpCommand());
+		map.put(CommandUtil.ROLL, new RollCommand());
 	}
 	
 	/**

@@ -2,12 +2,7 @@ package com.patrickborrelli.dndiscord.commands;
 
 import java.awt.Color;
 import java.net.URL;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-
 import org.javacord.api.DiscordApi;
-import org.javacord.api.entity.ApplicationInfo;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
