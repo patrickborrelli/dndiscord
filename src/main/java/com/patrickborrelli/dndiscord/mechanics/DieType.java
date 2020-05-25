@@ -69,7 +69,9 @@ public enum DieType {
 	 */
 	public static DieType getEnum(String theValue) {
 		DieType type;
-		if(theValue.contains("4")) {
+		if(theValue.startsWith("0")) {
+			type = DieType.d0;
+	    } else if(theValue.contains("4")) {
 			type = DieType.d4;
 		} else if(theValue.contains("8")) {
 			type = DieType.d8;
@@ -82,7 +84,7 @@ public enum DieType {
 		} else if(theValue.contains("100")) {
 			type = DieType.d100;
 		} else {
-			type = DieType.d0;
+			type = null;
 		}
 		
 		return type;

@@ -27,14 +27,14 @@ public class Dice {
 		randomGenerator = new Random(Calendar.getInstance().getTimeInMillis());		
 	}
 	
+	private int rollDie(int sides) {
+		return randomGenerator.nextInt(sides) + 1;
+	}
+	
 	private int rollDie(DieType type) {
 		int castValue;
 		
 		switch(type) {
-		
-		case d0:
-			castValue = 0;
-			break;
 		
 		case d4:
 			castValue = randomGenerator.nextInt(D4)+1;
@@ -84,6 +84,25 @@ public class Dice {
 		int result = 0;
 		for(int i=0; i<num; i++) {
 			result += rollDie(type);
+		}
+		result += mod;		
+		return result;
+	}
+	
+	/**
+	 * Method to generate random dice throws for non-standard die types.
+	 * 
+	 * @param type an Enum of die type
+	 * @param dieValue an int representing the sides on the non-standard die
+	 * @param num an int representing the number of times to cast the type of die
+	 * @param mod an int representing a modification of the resulting value (ie., 2d4 +1)
+	 * @return an int representing the value cast
+	 */
+	public int rollDie(DieType type, int dieValue, int num, int mod) {
+		
+		int result = 0;
+		for(int i=0; i<num; i++) {
+			result += rollDie(dieValue);
 		}
 		result += mod;		
 		return result;

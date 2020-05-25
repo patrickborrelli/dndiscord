@@ -74,6 +74,7 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 						
 					default:
 						LOGGER.info("Received unparsable message: " + message.getContent());
+						//TODO: return some sort of response on unparsable message
 				}			
 				executor = null;
 				
