@@ -24,6 +24,7 @@ public class PrimaryEquation {
 	
 	private boolean positive = true;
 	private int count = 1;
+	private int constant = 0;
 	private DieType die;
 	private int nonStandardDieSides = 0;
 	private int modifier = 0;
@@ -79,61 +80,83 @@ public class PrimaryEquation {
 		Dice diceRoller = new Dice();
 		List<Token> rolls = new ArrayList<>();
 		int currentResult = 0;
-		StringBuilder result = new StringBuilder().append("(");
+		StringBuilder resultStr = new StringBuilder();
 		Token curr;
+		result = 0;
 		
-		for(int i = 0; i < count; i++) {
-			currentResult = diceRoller.rollDie(die, 1, 0);
-			if(reroll && currentResult == rerollValue) {
-				//add another roll:
-				count++;
-				curr = new Token(currentResult, i, STRIKE);				
+		//TODO: modify to handle both constants (+5) and non-standard dice:
+		if(die == DieType.d0) {
+			//handle constant calculation:
+			if(positive) {
+				resultStr.append("+");
+				result = constant; 
 			} else {
-				curr = new Token(currentResult, i, NORMAL);
-			}		
-			rolls.add(curr);
-		}
-		
-		//now we have a full list of tokens, so see if we need special handling:
-		if(keep) {
-			if(keepDirection == LOWEST) {
-				keepLowest(rolls, keepCount);
-			} else {
-				keepHighest(rolls, keepCount);
+				resultStr.append("-");
+				result = constant * (-1);
+			}			
+			resultStr.append(constant);
+			
+		} else {
+			resultStr.append("(");
+			for(int i = 0; i < count; i++) {
+				if(die == null) {
+					//non-standard die:
+					currentResult = diceRoller.rollDie(die, nonStandardDieSides, 1, 0);
+				} else {
+					currentResult = diceRoller.rollDie(die, 1, 0);				
+				}
+				if(reroll && currentResult == rerollValue) {
+					//add another roll:
+					count++;
+					curr = new Token(currentResult, i, STRIKE);				
+				} else {
+					curr = new Token(currentResult, i, NORMAL);
+				}		
+				rolls.add(curr);
 			}
-		} else if(drop) {
-			if(dropDirection == LOWEST) {
-				dropLowest(rolls, dropCount);
-			} else {
-				dropHighest(rolls, dropCount);
-			}
-		}
-		
-		int counter = rolls.size() - 1;
-		
-		for(Token tok : rolls) {
-			if(tok.format == STRIKE) {
-				result.append("~~"+ tok.value + "~~");
-			} else if(tok.format == ITALIC) {
-				result.append("*"+ tok.value + "*");
-			} else if(tok.format == BOLD) {
-				result.append("**"+ tok.value + "**");				
-			} else {
-				result.append(tok.value);
+			//now we have a full list of tokens, so see if we need special handling:
+			if(keep) {
+				if(keepDirection == LOWEST) {
+					keepLowest(rolls, keepCount);
+				} else {
+					keepHighest(rolls, keepCount);
+				}
+			} else if(drop) {
+				if(dropDirection == LOWEST) {
+					dropLowest(rolls, dropCount);
+				} else {
+					dropHighest(rolls, dropCount);
+				}
 			}
 			
-			if(counter > 0) result.append("+");
-			counter--;
+			int counter = rolls.size() - 1;
+			
+			for(Token tok : rolls) {
+				if(tok.format == STRIKE) {
+					resultStr.append("~~"+ tok.value + "~~");
+				} else if(tok.format == ITALIC) {
+					resultStr.append("*"+ tok.value + "*");
+					result += tok.value;
+				} else if(tok.format == BOLD) {
+					resultStr.append("**"+ tok.value + "**");
+					result += tok.value;
+				} else {
+					resultStr.append(tok.value);
+					result += tok.value;
+				}
+				
+				if(counter > 0) resultStr.append("+");
+				counter--;
+			}
+			
+			resultStr.append(")");
+			if(modifier > 0) {
+				resultStr.append("+" + modifier);
+			} else if(modifier < 0) {
+				resultStr.append(modifier);
+			}
 		}
-		
-		result.append(")");
-		if(modifier > 0) {
-			result.append("+" + modifier);
-		} else if(modifier < 0) {
-			result.append(modifier);
-		}	
-		
-		resultString = result.toString();
+		resultString = resultStr.toString();
 	}
 	
 	private void keepLowest(List<Token> rolls, int countLowest) {
@@ -240,6 +263,20 @@ public class PrimaryEquation {
 	 */
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	/**
+	 * @return the constant
+	 */
+	public int getConstant() {
+		return constant;
+	}
+
+	/**
+	 * @param constant the constant to set
+	 */
+	public void setConstant(int constant) {
+		this.constant = constant;
 	}
 
 	/**

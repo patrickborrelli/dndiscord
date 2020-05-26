@@ -43,7 +43,11 @@ public class RollCommand implements CommandExecutor {
 			LOGGER.warn("Too few arguments provided to Roll command: " + msg.getContent());
 			MessageResponse.sendReply(channel, "Not enough arguments provided");
 		} else {
-			MessageResponse.sendReply(channel, generateRollResponse(rollString.toString().toLowerCase()));
+			StringBuilder buf = new StringBuilder();
+			buf.append("<@" + msg.getAuthor().getId() + ">: " + rollString.toString() + " = ");
+			buf.append(generateRollResponse(rollString.toString().toLowerCase()));
+			LOGGER.debug("Sending back reply: " + buf.toString());
+			MessageResponse.sendReply(channel, buf.toString());
 		}
 	}
 	
@@ -87,6 +91,7 @@ public class RollCommand implements CommandExecutor {
 		
 	private static String buildDieResponse(String param) {
 		StringBuilder result = new StringBuilder();
+		int grandTotal = 0;
 		boolean critr = param.contains("critr") ? true : false;
 		boolean critd = param.contains("critd") ? true : false;
 		
@@ -121,9 +126,12 @@ public class RollCommand implements CommandExecutor {
 			if(critd) {
 				singleEquation.add("critd");
 			}
-			allEquations.add(parseSingleEquation(singleEquation));
+			PrimaryEquation solvedEquation = parseSingleEquation(singleEquation);
+			allEquations.add(solvedEquation);
+			result.append(solvedEquation.getResultString() + " ");
+			grandTotal += solvedEquation.getResult();
 		}
-		
+		result.append("= " + grandTotal);		
 		return result.toString();
 	}	
 
@@ -248,6 +256,14 @@ public class RollCommand implements CommandExecutor {
 				}
 			}
 		}
+		//handle constants:
+		if(haveCount && !haveDieIndicator) {
+			//change count to 1, die type to d0 and add constant:
+			equation.setConstant(equation.getCount());
+			equation.setCount(1);
+			equation.setDie(DieType.d0);
+		}
+		equation.solveEquation();
 		LOGGER.debug(equation.toString());
 		return equation;
 	}
