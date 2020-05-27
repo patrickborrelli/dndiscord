@@ -87,10 +87,13 @@
           <configuration>
 	        <archive>
 	          <manifest>
-	            <mainClass>com.patrickborrelli.dndiscord.DNDiscordMain</mainClass>
 	            <addClasspath>true</addClasspath>
+	            <mainClass>com.patrickborrelli.dndiscord.DNDiscordMain</mainClass>
 	          </manifest>
 	        </archive>
+	        <descriptorRefs>
+	          <descriptorRef>jar-with-dependencies</descriptorRef>
+	        </descriptorRefs>
 	      </configuration>
         </plugin>
         <plugin>
