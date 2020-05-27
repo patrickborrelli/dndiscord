@@ -8,14 +8,19 @@
 *.ctxt
 
 #directories
-target/
+target/site
+target/classes
+target/javadoc-bundle-options
+target/maven-status
+target/surefire-reports
+target/*.txt
 log/
+
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear
