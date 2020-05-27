@@ -84,6 +84,13 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
+          <configuration>
+	        <archive>
+	          <manifest>
+	            <mainClass>com.patrickborrelli.dndiscord.DNDiscordMain</mainClass>
+	          </manifest>
+	        </archive>
+	      </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
@@ -110,7 +117,6 @@
         <plugin>
 	      <artifactId>maven-assembly-plugin</artifactId>
 	      <configuration>
-	        <finalName>dndiscord</finalName>
 	        <archive>
 	          <manifest>
 	            <mainClass>com.patrickborrelli.dndiscord.DNDiscordMain</mainClass>
@@ -119,7 +125,6 @@
 	        <descriptorRefs>
 	          <descriptorRef>jar-with-dependencies</descriptorRef>
 	        </descriptorRefs>
-	        <appendAssemblyId>false</appendAssemblyId>
 	      </configuration>
 	    </plugin>
       </plugins>
