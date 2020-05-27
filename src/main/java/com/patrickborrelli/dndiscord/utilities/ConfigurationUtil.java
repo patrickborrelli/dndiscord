@@ -12,7 +12,7 @@ public class ConfigurationUtil {
 	private static volatile ConfigurationUtil instance;
 	private static final String DNDISCORD_TOKEN = "DNDISCORD_TOKEN";
 	private static String token = null;
-	private static String prefix = "!";
+	private static String prefix = "-";
 	
 	/**
 	 * Returns an instance of the ConfigurationUtil to the 

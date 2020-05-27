@@ -41,6 +41,7 @@ public class PrimaryEquation {
 	private int result = 0;
 	private String resultString;
 	
+	//default constructor
 	public PrimaryEquation() {
 		
 	}
@@ -76,6 +77,12 @@ public class PrimaryEquation {
 		this.rerollValue = rerollValue;
 	}
 	
+	/**
+	 * Method will solve the primary equation based on the
+	 * current value of its private member variables and store
+	 * both the total sum, and a string representation of the 
+	 * completed calculation in appropriate member variables.
+	 */
 	public void solveEquation() {
 		Dice diceRoller = new Dice();
 		List<Token> rolls = new ArrayList<>();
@@ -84,7 +91,6 @@ public class PrimaryEquation {
 		Token curr;
 		result = 0;
 		
-		//TODO: modify to handle both constants (+5) and non-standard dice:
 		if(die == DieType.d0) {
 			//handle constant calculation:
 			if(positive) {
@@ -98,6 +104,7 @@ public class PrimaryEquation {
 			
 		} else {
 			resultStr.append("(");
+			if(critd) count = count *2;
 			for(int i = 0; i < count; i++) {
 				if(die == null) {
 					//non-standard die:
@@ -114,6 +121,7 @@ public class PrimaryEquation {
 				}		
 				rolls.add(curr);
 			}
+									
 			//now we have a full list of tokens, so see if we need special handling:
 			if(keep) {
 				if(keepDirection == LOWEST) {
@@ -127,6 +135,11 @@ public class PrimaryEquation {
 				} else {
 					dropHighest(rolls, dropCount);
 				}
+			}
+			
+			//if crit with double the rolled result, walk through and add duplicates in bold for all rolled values:
+			if(critr) {
+				rolls = processCritResult(rolls);
 			}
 			
 			int counter = rolls.size() - 1;
@@ -157,6 +170,34 @@ public class PrimaryEquation {
 			}
 		}
 		resultString = resultStr.toString();
+	}
+	
+	private List<Token> processCritResult(List<Token> rolls) {
+		List<Token> newList = new ArrayList<Token>();
+		int insertCount = 0;
+		Collections.sort(rolls, new TokenIndexAscCompare());
+		Token critToken;
+		Token copyToken;
+		
+		for(Token token : rolls) {
+			//copy existing data to new list:
+			copyToken = new Token();
+			copyToken.format = token.format;
+			copyToken.value = token.value;
+			copyToken.index = token.index + insertCount;
+			newList.add(copyToken);
+			
+			//if the current token is a normal roll result, duplicate
+			if(token.format == NORMAL) {
+				critToken = new Token();
+				critToken.format = BOLD;
+				critToken.index = token.index + 1;
+				critToken.value = token.value;
+				insertCount += 1;
+				newList.add(critToken);
+			}
+		}
+		return newList;
 	}
 	
 	private void keepLowest(List<Token> rolls, int countLowest) {
@@ -238,14 +279,17 @@ public class PrimaryEquation {
 	}
 
 	/**
-	 * @return the positive
+	 * @return a boolean determination of whether the term 
+	 * represented by this equation is positive or negative.
 	 */
 	public boolean isPositive() {
 		return positive;
 	}
 
 	/**
-	 * @param positive the positive to set
+	 * 
+	 * @param positive a boolean indication of
+	 * whether or not this term is positive.
 	 */
 	public void setPositive(boolean positive) {
 		this.positive = positive;
@@ -489,6 +533,10 @@ public class PrimaryEquation {
 		this.nonStandardDieSides = nonStandardDieSides;
 	}
 
+	/**
+	 * Overridden method to ensure a meaningful string representation of
+	 * this primary equation.
+	 */
 	@Override
 	public String toString() {
 		return "PrimaryEquation [positive=" + positive + ", count=" + count + ", die=" + die + ", nonStandardDieSides="
@@ -503,6 +551,10 @@ public class PrimaryEquation {
 		int value;
 		int index;
 		int format;
+		
+		public Token() {
+			
+		}
 		
 		public Token(int theValue, int theIndex, int theFormat) {
 			value = theValue;

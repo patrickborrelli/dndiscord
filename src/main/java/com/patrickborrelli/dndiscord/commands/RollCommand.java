@@ -44,7 +44,7 @@ public class RollCommand implements CommandExecutor {
 			MessageResponse.sendReply(channel, "Not enough arguments provided");
 		} else {
 			StringBuilder buf = new StringBuilder();
-			buf.append("<@" + msg.getAuthor().getId() + ">: " + rollString.toString() + " = ");
+			buf.append("<@" + msg.getAuthor().getId() + ">: " + rollString.toString() + " --> ");
 			buf.append(generateRollResponse(rollString.toString().toLowerCase()));
 			LOGGER.debug("Sending back reply: " + buf.toString());
 			MessageResponse.sendReply(channel, buf.toString());
@@ -84,8 +84,7 @@ public class RollCommand implements CommandExecutor {
 					//unknown request error message
 					break;
 			}
-		}				
-		
+		}						
 		return result.toString();
 	}
 		
@@ -131,7 +130,11 @@ public class RollCommand implements CommandExecutor {
 			result.append(solvedEquation.getResultString() + " ");
 			grandTotal += solvedEquation.getResult();
 		}
-		result.append("= " + grandTotal);		
+		result.append("= " + grandTotal);
+		
+		if(critd || critr) {
+			result.append("  CRIT!");
+		}
 		return result.toString();
 	}	
 

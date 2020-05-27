@@ -53,6 +53,11 @@
     	<artifactId>maven-javadoc-plugin</artifactId>
     	<version>3.2.0</version>
     </dependency>
+    <dependency>
+    	<groupId>org.apache.maven.plugins</groupId>
+    	<artifactId>maven-assembly-plugin</artifactId>
+    	<version>3.3.0</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -102,6 +107,19 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>3.2.0</version>
         </plugin>
+        <plugin>
+	      <artifactId>maven-assembly-plugin</artifactId>
+	      <configuration>
+	        <archive>
+	          <manifest>
+	            <mainClass>com.patrickborrelli.dndiscord.DNDiscordMain</mainClass>
+	          </manifest>
+	        </archive>
+	        <descriptorRefs>
+	          <descriptorRef>deployable</descriptorRef>
+	        </descriptorRefs>
+	      </configuration>
+	    </plugin>
       </plugins>
     </pluginManagement>
   </build>
