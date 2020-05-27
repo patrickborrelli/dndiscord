@@ -1,1 +1,1 @@
-web: java -jar target/dndiscord.jar
+web: java -jar target/dndiscord-0.0.1.jar
