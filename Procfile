@@ -1,1 +1,1 @@
-worker: java $JAVA_OPTS -cp target/classes:target/dependency/* -jar target/dndiscord-0.0.1.jar
+worker: java -jar target/dndiscord-1.0-jar-with-dependencies.jar

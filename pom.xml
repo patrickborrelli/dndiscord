@@ -6,7 +6,7 @@
 
   <groupId>com.patrickborrelli</groupId>
   <artifactId>dndiscord</artifactId>
-  <version>0.0.1</version>
+  <version>1.0</version>
 
   <name>dndiscord</name>
   <!-- FIXME change it to the project's website -->
@@ -101,6 +101,19 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>3.2.0</version>
         </plugin>
+        <plugin>
+	      <artifactId>maven-assembly-plugin</artifactId>
+	      <configuration>
+	        <archive>
+	          <manifest>
+	            <mainClass>com.patrickborrelli.dndiscord.DNDiscordMain</mainClass>
+	          </manifest>
+	        </archive>
+	        <descriptorRefs>
+	          <descriptorRef>jar-with-dependencies</descriptorRef>
+	        </descriptorRefs>
+	      </configuration>
+	    </plugin>
       </plugins>
     </pluginManagement>
   </build>
