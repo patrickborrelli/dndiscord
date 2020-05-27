@@ -1,1 +1,1 @@
-worker: java -jar target/dndiscord-1.0-jar-with-dependencies.jar
+web: java -jar target/dndiscord-1.0-jar-with-dependencies.jar
