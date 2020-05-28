@@ -81,18 +81,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
             <version>3.1.2</version>
-            <executions>
-                <execution>
-                    <id>copy-dependencies</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>copy-dependencies</goal>
-                    </goals>
-                    <configuration>
-                        <outputDirectory>${project.build.directory}\libs</outputDirectory>
-                    </configuration>
-                </execution>
-            </executions>
         </plugin>
         <plugin>
             <artifactId>maven-jar-plugin</artifactId>
@@ -129,7 +117,17 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         </plugin>
         <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                </execution>
+            </executions>
             <configuration>
+            <finalName>dndiscord-fat</finalName>
                 <archive>
                     <manifest>
                         <mainClass>com.patrickborrelli.dndiscord.DNDiscordMain</mainClass>
@@ -138,6 +136,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                 <descriptorRefs>
                     <descriptorRef>jar-with-dependencies</descriptorRef>
                 </descriptorRefs>
+                <appendAssemblyId>false</appendAssemblyId>
             </configuration>
         </plugin>
     </plugins>
