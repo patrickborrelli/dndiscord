@@ -1,1 +1,1 @@
-web: java -jar target/dndiscord-1.0.jar
+web: java -cp target/libs -jar target/dndiscord-1.0.jar
