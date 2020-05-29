@@ -78,7 +78,7 @@ public class AdminCommand implements CommandExecutor {
 		//TODO: move embed color to configuration and reference from there.
 		EmbedBuilder embed = new EmbedBuilder()
 			.setTitle("Admin Command Request")
-		    .addField("Message Processed Successfull", "Prefix reset to " + configUtil.getBotPrefix() + "\n")
+		    .addField("Message Processed Successfully", "Prefix reset to " + configUtil.getBotPrefix() + "\n")
 		    .setColor(Color.GREEN)
 		    .setThumbnail(avatarUrl.toString());
 		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);		
