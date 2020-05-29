@@ -14,6 +14,7 @@ public class ConfigurationUtil {
 	private static final String DNDISCORD_BETA_TOKEN = "DNDISCORD_BETA_TOKEN";
 	private static final String BETA = "BETA";
 	private static final String PROD = "PROD";
+	public static final String DEFAULT_PREFIX = "-";
 	private static String token = null;
 	private static String prefix = "-";
 	private static String scope;
