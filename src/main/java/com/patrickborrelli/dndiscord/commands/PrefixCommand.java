@@ -71,7 +71,7 @@ public class PrefixCommand implements CommandExecutor {
 		
 		EmbedBuilder embed = new EmbedBuilder()
 			.setTitle("Prefix Command Help")
-		    .addField("Command Format", "prefix <<new prefix characters>> || prefix list\n")
+		    .addField("Command Format", "prefix <<new prefix characters>>\n")
 		    .setColor(Color.GREEN)
 		    .setThumbnail(avatarUrl.toString());
 		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);		

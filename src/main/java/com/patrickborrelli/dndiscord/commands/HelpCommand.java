@@ -50,6 +50,19 @@ public class HelpCommand implements CommandExecutor {
 			"**roll|r XdY+/-Z[critd|critr]** - optional roll modifiers.\n" + 
 			"***critd*** - critical hit, double the dice rolled.\n" +
 			"***critr*** - critical hit, double the rolled result.\n";
+	
+	private static final String ROLL_EXAMPLE_TEXT = 
+			"**roll 1d8+5** - rolls a d8 and adds a modifier of 5\n" +
+			"**roll 4d6r1** - rerolls all 1s\n" +
+			"**roll 4d6kh3** - keeps the highest 3 results\n" +
+			"**roll 4d6r1k3** - rerolls all 1s and keeps the highest remaining 3 results\n" + 
+			"**roll 2d8dl1** - drops the lowest result\n" +
+			"**roll 1d8+6 critd** - rolls critical hit, doubles the dice rolled\n" +
+			"**roll 1d8+6 critr** - rolls critical hit, doubles the dice result rolled\n";
+	
+	private static final String PREFIX_TEXT = 
+			"**prefix** <<new prefix characters>>\n" +
+			"__**roll, r**__ - tests the bot's connection.\n";
 			
 	
 	public HelpCommand() {
@@ -71,12 +84,27 @@ public class HelpCommand implements CommandExecutor {
 			String argument = args[1];
 			if(argument.equalsIgnoreCase(CommandUtil.ROLL) || 
 					argument.equalsIgnoreCase(CommandUtil.R)) {
-				LOGGER.debug("Attempting to build dialog for ROLL help.");
+				LOGGER.debug("Building dialog for ROLL help.");
 				buildRollHelpEmbed(msg);
+			} else if(argument.equalsIgnoreCase(CommandUtil.PREFIX)) {
+				LOGGER.debug("Building dialog for PREFIX help.");
+				buildPrefixHelpEmbed(msg);
 			}
 		} else {
 			MessageResponse.sendReply(channel, "Unknown argument provided.");
 		}
+	}
+	
+	private void buildPrefixHelpEmbed(Message msg) {
+		EmbedBuilder embed = new EmbedBuilder()
+				.setTitle("DnDiscord Help - prefix")
+				.setDescription("Changes the server prefix for DnDiscord.")
+			    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", getBotAvatarUrl().toString())
+			    .addField("Format", PREFIX_TEXT)
+			    .setColor(Color.GREEN)
+			    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
+			    .setThumbnail(getBotAvatarUrl().toString());
+			MessageResponse.sendEmbedMessage(msg.getChannel(), embed);	
 	}
 	
 	private void buildBasicHelpEmbed(Message msg) {
@@ -98,7 +126,7 @@ public class HelpCommand implements CommandExecutor {
 			.setDescription("Rolls dice in an XdY format.")
 		    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", getBotAvatarUrl().toString())
 		    .addField("Formatting", ROLL_HELP_TEXT)
-		    .addField("Examples", "Here is where the examples will go.")
+		    .addField("Examples", ROLL_EXAMPLE_TEXT)
 		    .setColor(Color.GREEN)
 		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
 		    .setThumbnail(getBotAvatarUrl().toString());
