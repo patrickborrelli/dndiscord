@@ -182,7 +182,7 @@ public class RollCommand implements CommandExecutor {
 					} else if(haveCount && haveDieIndicator && !haveDieValue) {
 						//if standard add it otherwise add non-standard:
 						LOGGER.debug("Attempting to get die type for " + value);
-						DieType type = DieType.getEnum("" + value);
+						DieType type = DieType.getEnum(value);
 						if(type == null) {
 							equation.setNonStandardDieSides(value);
 						} else {
