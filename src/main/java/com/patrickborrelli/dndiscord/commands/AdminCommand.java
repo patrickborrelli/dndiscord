@@ -6,12 +6,10 @@ import java.net.URL;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
-import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.user.User;
 
-import com.patrickborrelli.dndiscord.DNDiscordMain;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.exceptions.MissingEnvironmentVarException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
@@ -45,9 +43,7 @@ public class AdminCommand implements CommandExecutor {
 
 	@Override
 	public void onCommand(Message msg) throws CommandProcessingException {
-		TextChannel channel = msg.getChannel();
 		String[] args = msg.getContent().split(" ");
-		String currentPrefix = configUtil.getBotPrefix();
 		String primaryToken = args.length > 0 ? args[1].toUpperCase() : null;
 		String secondaryToken = args.length > 1 ? args[2].toUpperCase() : null;
 		
