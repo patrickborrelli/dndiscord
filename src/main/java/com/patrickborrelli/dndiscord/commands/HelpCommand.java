@@ -48,21 +48,24 @@ public class HelpCommand implements CommandExecutor {
 			"***dlN*** - drop lowest N rolls.\n" + 
 			"*NOTE:*  the modifiers above apply to ONE expression, and should immediately follow that expression.\n\n" + 
 			"**roll XdY+/-Z[critd|critr]** - optional roll modifiers.\n" + 
-			"***critd*** - critical hit, double the dice rolled.\n" +
-			"***critr*** - critical hit, double the rolled result.\n";
+			"***__critd__*** - critical hit, double the dice rolled.\n" +
+			"***__critr__*** - critical hit, double the rolled result.\n" +
+			"***roll repeat(<A>, <B>*** - repeatedly calculate expression A, B times.\n";
 	
 	private static final String ROLL_EXAMPLE_TEXT = 
-			"**roll 1d8+5** - rolls a d8 and adds a modifier of 5\n" +
-			"**roll 4d6r1** - rerolls all 1s\n" +
-			"**roll 4d6kh3** - keeps the highest 3 results\n" +
-			"**roll 4d6r1k3** - rerolls all 1s and keeps the highest remaining 3 results\n" + 
-			"**roll 2d8dl1** - drops the lowest result\n" +
-			"**roll 1d8+6 critd** - rolls critical hit, doubles the dice rolled\n" +
-			"**roll 1d8+6 critr** - rolls critical hit, doubles the dice result rolled\n" +
-			"**roll 1d8+6 + 2d6** - combined roll expressions\n\n";
+			"**1d8+5** - rolls a d8 and adds a modifier of 5\n" +
+			"**4d6r1** - rerolls all 1s\n" +
+			"**4d6kh3** - keeps the highest 3 results\n" +
+			"**4d6r1k3** - rerolls all 1s and keeps the highest remaining 3 results\n" + 
+			"**2d8dl1** - drops the lowest result\n" +
+			"**1d8+6 critd** - rolls critical hit, doubles the dice rolled\n" +
+			"**1d8+6 critr** - rolls critical hit, doubles the dice result rolled\n" +
+			"**1d8+6 + 2d6** - combined roll expressions\n" +
+			"**repeat(4d6k3, 6)** - generate 6 results, perhaps for character creation.\n";
 	
 	private static final String PREFIX_TEXT = 
-			"**prefix** <<new prefix characters>>\n\n";
+			"**prefix** <<new prefix characters>>\n" +
+		    "*example:* **prefix !!** \n";
 			
 	
 	public HelpCommand() {
@@ -122,11 +125,12 @@ public class HelpCommand implements CommandExecutor {
 	
 	private void buildRollHelpEmbed(Message msg) {
 		EmbedBuilder embed = new EmbedBuilder()
-			.setTitle("DnDiscord Help - roll|r")
+			.setTitle("DnDiscord Help - roll, r")
 			.setDescription("Rolls dice in an XdY format.")
 		    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", getBotAvatarUrl().toString())
 		    .addField("Formatting", ROLL_HELP_TEXT)
 		    .addField("Examples", ROLL_EXAMPLE_TEXT)
+		    .addField("Additional Help", MORE_HELP)
 		    .setColor(Color.GREEN)
 		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
 		    .setThumbnail(getBotAvatarUrl().toString());
