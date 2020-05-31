@@ -1,8 +1,5 @@
 package com.patrickborrelli.dndiscord.mechanics;
 
-import java.util.Calendar;
-import java.util.Random;
-
 /**
  * A dice mechanics class for handling roll requests.
  * 
@@ -10,7 +7,7 @@ import java.util.Random;
  */
 public class Dice {
 	
-	Random randomGenerator;
+	RandomGenerator random;
 	static final int D4 = 4;
 	static final int D6 = 6;
 	static final int D8 = 8;
@@ -18,17 +15,18 @@ public class Dice {
 	static final int D12 = 12;
 	static final int D20 = 20;
 	static final int D100 = 100;
+	
 		
 	/**
 	 * Default constructor, seeds random generator
 	 */
 	public Dice() {
-		//seeding random number generator:
-		randomGenerator = new Random(Calendar.getInstance().getTimeInMillis());		
+		//retrieve an instance of the singleton random generator:
+		random = RandomGenerator.getInstance();
 	}
 	
 	private int rollDie(int sides) {
-		return randomGenerator.nextInt(sides) + 1;
+		return random.nextInt(sides) + 1;
 	}
 	
 	private int rollDie(DieType type) {
@@ -37,31 +35,31 @@ public class Dice {
 		switch(type) {
 		
 		case d4:
-			castValue = randomGenerator.nextInt(D4)+1;
+			castValue = random.nextInt(D4)+1;
 			break;
 		
 		case d6:
-			castValue = randomGenerator.nextInt(D6)+1;
+			castValue = random.nextInt(D6)+1;
 			break;
 			
 		case d8:
-			castValue = randomGenerator.nextInt(D8)+1;
+			castValue = random.nextInt(D8)+1;
 			break;
 		
 		case d10:
-			castValue = randomGenerator.nextInt(D10)+1;
+			castValue = random.nextInt(D10)+1;
 			break;
 			
 		case d12:
-			castValue = randomGenerator.nextInt(D12)+1;
+			castValue = random.nextInt(D12)+1;
 			break;
 		
 		case d20:
-			castValue = randomGenerator.nextInt(D20)+1;
+			castValue = random.nextInt(D20)+1;
 			break;
 
 		case d100:
-			castValue = randomGenerator.nextInt(D100)+1;
+			castValue = random.nextInt(D100)+1;
 			break;
 			
 		default: 

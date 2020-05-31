@@ -16,14 +16,22 @@ public class DNDiscordMain {
 	
 	public static void main(String args[]) {
 		
+		if(args.length != 1) {
+			System.out.println("Error in provided arguments.");
+			return;
+		}
+		
 		String token = null;
 		ConfigurationUtil instance;
 		AppUtil appUtilInstance;
 		
 		try {
+			String scope = args[0];
+			appUtilInstance = AppUtil.getInstance();
+			appUtilInstance.setScope(scope.toUpperCase());
 			LOGGER.debug("Attempting to have DNDiscord login and join.");
 			instance = ConfigurationUtil.getInstance();
-			appUtilInstance = AppUtil.getInstance();
+			
 			token = instance.getBotToken();
 			DiscordApi api = new DiscordApiBuilder().setToken(token).login().join();
 			appUtilInstance.setApi(api);

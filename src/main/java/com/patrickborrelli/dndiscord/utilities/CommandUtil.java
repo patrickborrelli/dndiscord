@@ -12,4 +12,10 @@ public class CommandUtil {
 	public static final String PREFIX = "PREFIX";
 	public static final String ROLL = "ROLL";
 	public static final String R = "R";
+	public static final String ADMIN = "ADMIN";
+	
+	/**
+	 * subcommands
+	 */
+	public static final String RESET = "RESET";
 }

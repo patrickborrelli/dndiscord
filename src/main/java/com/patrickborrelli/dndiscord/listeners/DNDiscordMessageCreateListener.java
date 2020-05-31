@@ -10,6 +10,7 @@ import com.patrickborrelli.dndiscord.commands.CommandExecutor;
 import com.patrickborrelli.dndiscord.commands.CommandExecutorRouter;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.exceptions.MissingEnvironmentVarException;
+import com.patrickborrelli.dndiscord.utilities.AppUtil;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
 
@@ -44,7 +45,7 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 		boolean isRealUser = !message.getAuthor().isBotUser();
 		String command = stripPrefix(messageArgs[0]);
 		
-		if(isRealUser) {		
+		if(isRealUser && isMyMessage(message)) {		
 			try {	
 				switch(command) {
 					case CommandUtil.PING:
@@ -72,9 +73,15 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 						if(null != executor) executor.onCommand(message);
 						break;
 						
-					default:
-						LOGGER.info("Received unparsable message: " + message.getContent());
-						//TODO: return some sort of response on unparsable message
+					default:						
+						if(message.getMentionedUsers().contains(AppUtil.getInstance().getApi().getYourself())) {
+							LOGGER.info("DNDiscord bot is mentioned in the message.");
+							executor = router.getCommandExecutor(CommandUtil.ADMIN);
+							if(null != executor) executor.onCommand(message);
+						} else {
+							//TODO: more rigorous error handling here:
+							LOGGER.info("Received unparsable message: " + message.getContent());
+						}
 				}			
 				executor = null;
 				
@@ -87,13 +94,23 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 	
 	private String stripPrefix(String prefixed) {
 		String result = "";
-		String prefix = instance == null ? "!" : instance.getBotPrefix();
+		String prefix = instance == null ? "-" : instance.getBotPrefix();
 		
 		String[] finalargs = prefixed.split(prefix);
 		if(finalargs.length > 1) {
 			result = finalargs[1].toUpperCase();
 		}
 		return result;		
+	}
+	
+	private boolean isMyMessage(Message message) {
+		boolean isForProcessing = false;
+		String prefix = instance == null ? "-" : instance.getBotPrefix();
+		if(message.getContent().startsWith(prefix) ||
+			message.getMentionedUsers().contains(AppUtil.getInstance().getApi().getYourself())) {
+			isForProcessing = true;
+		}		
+		return isForProcessing;
 	}
 
 }

@@ -12,6 +12,7 @@ public class AppUtil {
 	private static volatile AppUtil instance;
 	
 	private static DiscordApi api;
+	private static String scope;
 	
 	/**
 	 * Returns an instance of the AppUtil to the 
@@ -36,5 +37,13 @@ public class AppUtil {
 	
 	public DiscordApi getApi() {
 		return api;
+	}
+	
+	public void setScope(String appScope) {
+		scope = appScope;
+	}
+	
+	public String getScope() {
+		return scope;
 	}
 }

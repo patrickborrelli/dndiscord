@@ -78,6 +78,7 @@ public class RollCommand implements CommandExecutor {
 					
 				case REPEAT:
 					//process repeat calculation
+					result.append(buildRepeatResponse(param));
 					break;
 					
 				default:
@@ -88,7 +89,7 @@ public class RollCommand implements CommandExecutor {
 		return result.toString();
 	}
 		
-	private static String buildDieResponse(String param) {
+	private String buildDieResponse(String param) {
 		StringBuilder result = new StringBuilder();
 		int grandTotal = 0;
 		boolean critr = param.contains("critr") ? true : false;
@@ -137,20 +138,42 @@ public class RollCommand implements CommandExecutor {
 		}
 		return result.toString();
 	}	
+	
+	private String buildRepeatResponse(String param) {
+		StringBuilder buf = new StringBuilder();
+		
+		/**
+		 * parse the command and repeatedly feed the equation 
+		 * to the processor the required number of times.
+		 * format expected is: repeat(equation, N) where N is 
+		 * the number of times to be repeated.
+		 */
+		param = param.replaceAll(" ", "");
+		String equation = param.substring(param.indexOf('(') + 1, param.indexOf(','));
+		int repeats = Integer.parseInt(param.substring(param.indexOf(',')+1, param.indexOf(')')));
+		LOGGER.debug("Will process equation: " + equation + " " + repeats + " times");
+		buf.append("\n");
+		for(int i = 0; i < repeats; i++) {
+			buf.append(buildDieResponse(equation));
+			buf.append("\n");
+		}
+		return buf.toString();
+	}
 
-	private static boolean isDigit(String character) {
+	
+	private boolean isDigit(String character) {
 		return Pattern.matches("\\d", character);
 	}
 	
-	private static boolean isOperator(String ch) {
+	private boolean isOperator(String ch) {
 		return (ch.equalsIgnoreCase("+") ||ch.equalsIgnoreCase("-"));
 	}
 	
-	private static boolean isCharacter(String character) {
+	private boolean isCharacter(String character) {
 		return Pattern.matches("[a-z]{1}", character);
 	}
 	
-	private static PrimaryEquation parseSingleEquation(LinkedList<String> inputs) {
+	private PrimaryEquation parseSingleEquation(LinkedList<String> inputs) {
 		PrimaryEquation equation = new PrimaryEquation();
 		StringBuilder buf = new StringBuilder();
 		boolean haveCount = false;
@@ -182,7 +205,7 @@ public class RollCommand implements CommandExecutor {
 					} else if(haveCount && haveDieIndicator && !haveDieValue) {
 						//if standard add it otherwise add non-standard:
 						LOGGER.debug("Attempting to get die type for " + value);
-						DieType type = DieType.getEnum("" + value);
+						DieType type = DieType.getEnum(value);
 						if(type == null) {
 							equation.setNonStandardDieSides(value);
 						} else {
