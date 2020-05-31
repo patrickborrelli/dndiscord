@@ -1,1 +1,1 @@
-worker: java -jar target/dndiscord-fat.jar
+worker: java -jar target/dndiscord-fat.jar PROD
