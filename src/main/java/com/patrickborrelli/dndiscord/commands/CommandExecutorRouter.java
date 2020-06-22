@@ -36,6 +36,7 @@ public class CommandExecutorRouter {
 		map.put(CommandUtil.HELP, new HelpCommand());
 		map.put(CommandUtil.ROLL, new RollCommand());
 		map.put(CommandUtil.ADMIN,  new AdminCommand());
+		map.put(CommandUtil.SHEET, new SheetCommand());
 	}
 	
 	/**
