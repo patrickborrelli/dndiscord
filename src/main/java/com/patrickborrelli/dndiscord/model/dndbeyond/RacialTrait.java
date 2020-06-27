@@ -16,16 +16,16 @@ public class RacialTrait {
 	public RacialTrait() {
 		
 	}
-	
+
 	/**
-	 * @return Definition the definition
+	 * @return the definition
 	 */
 	public Definition getDefinition() {
 		return definition;
 	}
 
 	/**
-	 * @param Definition the definition to set
+	 * @param definition the definition to set
 	 */
 	public void setDefinition(Definition definition) {
 		this.definition = definition;
@@ -35,5 +35,5 @@ public class RacialTrait {
 	public String toString() {
 		return "RacialTrait [definition=" + definition + "]";
 	}
-}
 
+}

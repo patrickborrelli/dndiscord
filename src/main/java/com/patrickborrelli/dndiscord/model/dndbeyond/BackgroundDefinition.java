@@ -42,336 +42,336 @@ public class BackgroundDefinition {
 	}
 
 	/**
-	 * @return long the id
+	 * @return the id
 	 */
 	public long getId() {
 		return id;
 	}
 
 	/**
-	 * @param long the id to set
+	 * @param id the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return long the entityType
+	 * @return the entityType
 	 */
 	public long getEntityType() {
 		return entityType;
 	}
 
 	/**
-	 * @param long the entityType to set
+	 * @param entityType the entityType to set
 	 */
 	public void setEntityType(long entityType) {
 		this.entityType = entityType;
 	}
 
 	/**
-	 * @return String the name
+	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param String the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * @return String the description
+	 * @return the description
 	 */
 	public String getDescription() {
 		return description;
 	}
 
 	/**
-	 * @param String the description to set
+	 * @param description the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * @return String the snippet
+	 * @return the snippet
 	 */
 	public String getSnippet() {
 		return snippet;
 	}
 
 	/**
-	 * @param String the snippet to set
+	 * @param snippet the snippet to set
 	 */
 	public void setSnippet(String snippet) {
 		this.snippet = snippet;
 	}
 
 	/**
-	 * @return String the shortDescription
+	 * @return the shortDescription
 	 */
 	public String getShortDescription() {
 		return shortDescription;
 	}
 
 	/**
-	 * @param String the shortDescription to set
+	 * @param shortDescription the shortDescription to set
 	 */
 	public void setShortDescription(String shortDescription) {
 		this.shortDescription = shortDescription;
 	}
 
 	/**
-	 * @return String the skillProficiencyDescription
+	 * @return the skillProficiencyDescription
 	 */
 	public String getSkillProficiencyDescription() {
 		return skillProficiencyDescription;
 	}
 
 	/**
-	 * @param String the skillProficiencyDescription to set
+	 * @param skillProficiencyDescription the skillProficiencyDescription to set
 	 */
 	public void setSkillProficiencyDescription(String skillProficiencyDescription) {
 		this.skillProficiencyDescription = skillProficiencyDescription;
 	}
 
 	/**
-	 * @return String the toolProficiencyDescription
+	 * @return the toolProficiencyDescription
 	 */
 	public String getToolProficiencyDescription() {
 		return toolProficiencyDescription;
 	}
 
 	/**
-	 * @param String the toolProficiencyDescription to set
+	 * @param toolProficiencyDescription the toolProficiencyDescription to set
 	 */
 	public void setToolProficiencyDescription(String toolProficiencyDescription) {
 		this.toolProficiencyDescription = toolProficiencyDescription;
 	}
 
 	/**
-	 * @return String the languagesDescription
+	 * @return the languagesDescription
 	 */
 	public String getLanguagesDescription() {
 		return languagesDescription;
 	}
 
 	/**
-	 * @param String the languagesDescription to set
+	 * @param languagesDescription the languagesDescription to set
 	 */
 	public void setLanguagesDescription(String languagesDescription) {
 		this.languagesDescription = languagesDescription;
 	}
 
 	/**
-	 * @return String the equipmentDescription
+	 * @return the equipmentDescription
 	 */
 	public String getEquipmentDescription() {
 		return equipmentDescription;
 	}
 
 	/**
-	 * @param String the equipmentDescription to set
+	 * @param equipmentDescription the equipmentDescription to set
 	 */
 	public void setEquipmentDescription(String equipmentDescription) {
 		this.equipmentDescription = equipmentDescription;
 	}
 
 	/**
-	 * @return String the featureName
+	 * @return the featureName
 	 */
 	public String getFeatureName() {
 		return featureName;
 	}
 
 	/**
-	 * @param String the featureName to set
+	 * @param featureName the featureName to set
 	 */
 	public void setFeatureName(String featureName) {
 		this.featureName = featureName;
 	}
 
 	/**
-	 * @return String the featureDescription
+	 * @return the featureDescription
 	 */
 	public String getFeatureDescription() {
 		return featureDescription;
 	}
 
 	/**
-	 * @param String the featureDescription to set
+	 * @param featureDescription the featureDescription to set
 	 */
 	public void setFeatureDescription(String featureDescription) {
 		this.featureDescription = featureDescription;
 	}
 
 	/**
-	 * @return String the avatarUrl
+	 * @return the avatarUrl
 	 */
 	public String getAvatarUrl() {
 		return avatarUrl;
 	}
 
 	/**
-	 * @param String the avatarUrl to set
+	 * @param avatarUrl the avatarUrl to set
 	 */
 	public void setAvatarUrl(String avatarUrl) {
 		this.avatarUrl = avatarUrl;
 	}
 
 	/**
-	 * @return String the largeAvatarUrl
+	 * @return the largeAvatarUrl
 	 */
 	public String getLargeAvatarUrl() {
 		return largeAvatarUrl;
 	}
 
 	/**
-	 * @param String the largeAvatarUrl to set
+	 * @param largeAvatarUrl the largeAvatarUrl to set
 	 */
 	public void setLargeAvatarUrl(String largeAvatarUrl) {
 		this.largeAvatarUrl = largeAvatarUrl;
 	}
 
 	/**
-	 * @return String[] the suggestedProficiencies
+	 * @return the suggestedProficiencies
 	 */
 	public String[] getSuggestedProficiencies() {
 		return suggestedProficiencies;
 	}
 
 	/**
-	 * @param String[] the suggestedProficiencies to set
+	 * @param suggestedProficiencies the suggestedProficiencies to set
 	 */
 	public void setSuggestedProficiencies(String[] suggestedProficiencies) {
 		this.suggestedProficiencies = suggestedProficiencies;
 	}
 
 	/**
-	 * @return String[] the suggestedLanguages
+	 * @return the suggestedLanguages
 	 */
 	public String[] getSuggestedLanguages() {
 		return suggestedLanguages;
 	}
 
 	/**
-	 * @param String[] the suggestedLanguages to set
+	 * @param suggestedLanguages the suggestedLanguages to set
 	 */
 	public void setSuggestedLanguages(String[] suggestedLanguages) {
 		this.suggestedLanguages = suggestedLanguages;
 	}
 
 	/**
-	 * @return String the organization
+	 * @return the organization
 	 */
 	public String getOrganization() {
 		return organization;
 	}
 
 	/**
-	 * @param String the organization to set
+	 * @param organization the organization to set
 	 */
 	public void setOrganization(String organization) {
 		this.organization = organization;
 	}
 
 	/**
-	 * @return String the contractsDescription
+	 * @return the contractsDescription
 	 */
 	public String getContractsDescription() {
 		return contractsDescription;
 	}
 
 	/**
-	 * @param String the contractsDescription to set
+	 * @param contractsDescription the contractsDescription to set
 	 */
 	public void setContractsDescription(String contractsDescription) {
 		this.contractsDescription = contractsDescription;
 	}
 
 	/**
-	 * @return String the spellsPreDescription
+	 * @return the spellsPreDescription
 	 */
 	public String getSpellsPreDescription() {
 		return spellsPreDescription;
 	}
 
 	/**
-	 * @param String the spellsPreDescription to set
+	 * @param spellsPreDescription the spellsPreDescription to set
 	 */
 	public void setSpellsPreDescription(String spellsPreDescription) {
 		this.spellsPreDescription = spellsPreDescription;
 	}
 
 	/**
-	 * @return String the spellsPostDescription
+	 * @return the spellsPostDescription
 	 */
 	public String getSpellsPostDescription() {
 		return spellsPostDescription;
 	}
 
 	/**
-	 * @param String the spellsPostDescription to set
+	 * @param spellsPostDescription the spellsPostDescription to set
 	 */
 	public void setSpellsPostDescription(String spellsPostDescription) {
 		this.spellsPostDescription = spellsPostDescription;
 	}
 
 	/**
-	 * @return PersonalityTrait[] the personalityTraits
+	 * @return the personalityTraits
 	 */
 	public PersonalityTrait[] getPersonalityTraits() {
 		return personalityTraits;
 	}
 
 	/**
-	 * @param PersonalityTrait[] the personalityTraits to set
+	 * @param personalityTraits the personalityTraits to set
 	 */
 	public void setPersonalityTraits(PersonalityTrait[] personalityTraits) {
 		this.personalityTraits = personalityTraits;
 	}
 
 	/**
-	 * @return Ideal[] the ideals
+	 * @return the ideals
 	 */
 	public Ideal[] getIdeals() {
 		return ideals;
 	}
 
 	/**
-	 * @param Ideal[] the ideals to set
+	 * @param ideals the ideals to set
 	 */
 	public void setIdeals(Ideal[] ideals) {
 		this.ideals = ideals;
 	}
 
 	/**
-	 * @return Bond[] the bonds
+	 * @return the bonds
 	 */
 	public Bond[] getBonds() {
 		return bonds;
 	}
 
 	/**
-	 * @param Bond[] the bonds to set
+	 * @param bonds the bonds to set
 	 */
 	public void setBonds(Bond[] bonds) {
 		this.bonds = bonds;
 	}
 
 	/**
-	 * @return Flaw[] the flaws
+	 * @return the flaws
 	 */
 	public Flaw[] getFlaws() {
 		return flaws;
 	}
 
 	/**
-	 * @param Flaw[] the flaws to set
+	 * @param flaws the flaws to set
 	 */
 	public void setFlaws(Flaw[] flaws) {
 		this.flaws = flaws;
@@ -392,5 +392,4 @@ public class BackgroundDefinition {
 				+ Arrays.toString(personalityTraits) + ", ideals=" + Arrays.toString(ideals) + ", bonds="
 				+ Arrays.toString(bonds) + ", flaws=" + Arrays.toString(flaws) + "]";
 	}
-
 }

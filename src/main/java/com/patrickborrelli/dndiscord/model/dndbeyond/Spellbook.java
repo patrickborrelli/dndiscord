@@ -24,56 +24,56 @@ public class Spellbook {
 	}
 
 	/**
-	 * @return Spell[] the race
+	 * @return the race
 	 */
 	public Spell[] getRace() {
 		return race;
 	}
 
 	/**
-	 * @param Spell[] the race to set
+	 * @param race the race to set
 	 */
 	public void setRace(Spell[] race) {
 		this.race = race;
 	}
 
 	/**
-	 * @return Spell[] the classbased
+	 * @return the classbased
 	 */
 	public Spell[] getClassbased() {
 		return classbased;
 	}
 
 	/**
-	 * @param Spell[] the classbased to set
+	 * @param classbased the classbased to set
 	 */
 	public void setClassbased(Spell[] classbased) {
 		this.classbased = classbased;
 	}
 
 	/**
-	 * @return Spell[] the item
+	 * @return the item
 	 */
 	public Spell[] getItem() {
 		return item;
 	}
 
 	/**
-	 * @param Spell[] the item to set
+	 * @param item the item to set
 	 */
 	public void setItem(Spell[] item) {
 		this.item = item;
 	}
 
 	/**
-	 * @return Spell[] the feat
+	 * @return the feat
 	 */
 	public Spell[] getFeat() {
 		return feat;
 	}
 
 	/**
-	 * @param Spell[] the feat to set
+	 * @param feat the feat to set
 	 */
 	public void setFeat(Spell[] feat) {
 		this.feat = feat;
@@ -84,5 +84,5 @@ public class Spellbook {
 		return "Spellbook [race=" + Arrays.toString(race) + ", classbased=" + Arrays.toString(classbased) + ", item="
 				+ Arrays.toString(item) + ", feat=" + Arrays.toString(feat) + "]";
 	}
-	
+
 }

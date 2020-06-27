@@ -19,42 +19,42 @@ public class DeathSaveRecord {
 	}
 
 	/**
-	 * @return int the failCount
+	 * @return the failCount
 	 */
 	public int getFailCount() {
 		return failCount;
 	}
 
 	/**
-	 * @param int the failCount to set
+	 * @param failCount the failCount to set
 	 */
 	public void setFailCount(int failCount) {
 		this.failCount = failCount;
 	}
 
 	/**
-	 * @return int the successCount
+	 * @return the successCount
 	 */
 	public int getSuccessCount() {
 		return successCount;
 	}
 
 	/**
-	 * @param int the successCount to set
+	 * @param successCount the successCount to set
 	 */
 	public void setSuccessCount(int successCount) {
 		this.successCount = successCount;
 	}
 
 	/**
-	 * @return boolean the isStabilized
+	 * @return the isStabilized
 	 */
 	public boolean isStabilized() {
 		return isStabilized;
 	}
 
 	/**
-	 * @param boolean the isStabilized to set
+	 * @param isStabilized the isStabilized to set
 	 */
 	public void setStabilized(boolean isStabilized) {
 		this.isStabilized = isStabilized;
@@ -65,5 +65,5 @@ public class DeathSaveRecord {
 		return "DeathSaveRecord [failCount=" + failCount + ", successCount=" + successCount + ", isStabilized="
 				+ isStabilized + "]";
 	}
-	
+
 }

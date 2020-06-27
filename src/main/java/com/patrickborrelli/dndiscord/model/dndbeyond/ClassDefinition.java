@@ -41,322 +41,322 @@ public class ClassDefinition {
 	}
 
 	/**
-	 * @return long the id
+	 * @return the id
 	 */
 	public long getId() {
 		return id;
 	}
 
 	/**
-	 * @param long the id to set
+	 * @param id the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return String the name
+	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param String the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * @return String the description
+	 * @return the description
 	 */
 	public String getDescription() {
 		return description;
 	}
 
 	/**
-	 * @param String the description to set
+	 * @param description the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * @return String the equipmentDescription
+	 * @return the equipmentDescription
 	 */
 	public String getEquipmentDescription() {
 		return equipmentDescription;
 	}
 
 	/**
-	 * @param String the equipmentDescription to set
+	 * @param equipmentDescription the equipmentDescription to set
 	 */
 	public void setEquipmentDescription(String equipmentDescription) {
 		this.equipmentDescription = equipmentDescription;
 	}
 
 	/**
-	 * @return long the parentClassId
+	 * @return the parentClassId
 	 */
 	public long getParentClassId() {
 		return parentClassId;
 	}
 
 	/**
-	 * @param long the parentClassId to set
+	 * @param parentClassId the parentClassId to set
 	 */
 	public void setParentClassId(long parentClassId) {
 		this.parentClassId = parentClassId;
 	}
 
 	/**
-	 * @return String the avatarUrl
+	 * @return the avatarUrl
 	 */
 	public String getAvatarUrl() {
 		return avatarUrl;
 	}
 
 	/**
-	 * @param String the avatarUrl to set
+	 * @param avatarUrl the avatarUrl to set
 	 */
 	public void setAvatarUrl(String avatarUrl) {
 		this.avatarUrl = avatarUrl;
 	}
 
 	/**
-	 * @return String the largeAvatarUrl
+	 * @return the largeAvatarUrl
 	 */
 	public String getLargeAvatarUrl() {
 		return largeAvatarUrl;
 	}
 
 	/**
-	 * @param String the largeAvatarUrl to set
+	 * @param largeAvatarUrl the largeAvatarUrl to set
 	 */
 	public void setLargeAvatarUrl(String largeAvatarUrl) {
 		this.largeAvatarUrl = largeAvatarUrl;
 	}
 
 	/**
-	 * @return String the portraitAvatarUrl
+	 * @return the portraitAvatarUrl
 	 */
 	public String getPortraitAvatarUrl() {
 		return portraitAvatarUrl;
 	}
 
 	/**
-	 * @param String the portraitAvatarUrl to set
+	 * @param portraitAvatarUrl the portraitAvatarUrl to set
 	 */
 	public void setPortraitAvatarUrl(String portraitAvatarUrl) {
 		this.portraitAvatarUrl = portraitAvatarUrl;
 	}
 
 	/**
-	 * @return String the moreDetailsUrl
+	 * @return the moreDetailsUrl
 	 */
 	public String getMoreDetailsUrl() {
 		return moreDetailsUrl;
 	}
 
 	/**
-	 * @param String the moreDetailsUrl to set
+	 * @param moreDetailsUrl the moreDetailsUrl to set
 	 */
 	public void setMoreDetailsUrl(String moreDetailsUrl) {
 		this.moreDetailsUrl = moreDetailsUrl;
 	}
 
 	/**
-	 * @return int the spellCastingAbilityId
+	 * @return the spellCastingAbilityId
 	 */
 	public int getSpellCastingAbilityId() {
 		return spellCastingAbilityId;
 	}
 
 	/**
-	 * @param int the spellCastingAbilityId to set
+	 * @param spellCastingAbilityId the spellCastingAbilityId to set
 	 */
 	public void setSpellCastingAbilityId(int spellCastingAbilityId) {
 		this.spellCastingAbilityId = spellCastingAbilityId;
 	}
 
 	/**
-	 * @return int[] the sourceIds
+	 * @return the sourceIds
 	 */
 	public int[] getSourceIds() {
 		return sourceIds;
 	}
 
 	/**
-	 * @param int[] the sourceIds to set
+	 * @param sourceIds the sourceIds to set
 	 */
 	public void setSourceIds(int[] sourceIds) {
 		this.sourceIds = sourceIds;
 	}
 
 	/**
-	 * @return int the hitDice
+	 * @return the hitDice
 	 */
 	public int getHitDice() {
 		return hitDice;
 	}
 
 	/**
-	 * @param int the hitDice to set
+	 * @param hitDice the hitDice to set
 	 */
 	public void setHitDice(int hitDice) {
 		this.hitDice = hitDice;
 	}
 
 	/**
-	 * @return ClassFeature[] the classFeatures
+	 * @return the classFeatures
 	 */
 	public ClassFeature[] getClassFeatures() {
 		return classFeatures;
 	}
 
 	/**
-	 * @param ClassFeature[] the classFeatures to set
+	 * @param classFeatures the classFeatures to set
 	 */
 	public void setClassFeatures(ClassFeature[] classFeatures) {
 		this.classFeatures = classFeatures;
 	}
 
 	/**
-	 * @return WealthDie the wealthDice
+	 * @return the wealthDice
 	 */
 	public WealthDie getWealthDice() {
 		return wealthDice;
 	}
 
 	/**
-	 * @param WealthDie the wealthDice to set
+	 * @param wealthDice the wealthDice to set
 	 */
 	public void setWealthDice(WealthDie wealthDice) {
 		this.wealthDice = wealthDice;
 	}
 
 	/**
-	 * @return boolean the canCastSpells
+	 * @return the canCastSpells
 	 */
 	public boolean isCanCastSpells() {
 		return canCastSpells;
 	}
 
 	/**
-	 * @param boolean the canCastSpells to set
+	 * @param canCastSpells the canCastSpells to set
 	 */
 	public void setCanCastSpells(boolean canCastSpells) {
 		this.canCastSpells = canCastSpells;
 	}
 
 	/**
-	 * @return boolean the knowsAllSpells
+	 * @return the knowsAllSpells
 	 */
 	public boolean isKnowsAllSpells() {
 		return knowsAllSpells;
 	}
 
 	/**
-	 * @param boolean the knowsAllSpells to set
+	 * @param knowsAllSpells the knowsAllSpells to set
 	 */
 	public void setKnowsAllSpells(boolean knowsAllSpells) {
 		this.knowsAllSpells = knowsAllSpells;
 	}
 
 	/**
-	 * @return int the spellPrepareType
+	 * @return the spellPrepareType
 	 */
 	public int getSpellPrepareType() {
 		return spellPrepareType;
 	}
 
 	/**
-	 * @param int the spellPrepareType to set
+	 * @param spellPrepareType the spellPrepareType to set
 	 */
 	public void setSpellPrepareType(int spellPrepareType) {
 		this.spellPrepareType = spellPrepareType;
 	}
 
 	/**
-	 * @return String the spellContainerName
+	 * @return the spellContainerName
 	 */
 	public String getSpellContainerName() {
 		return spellContainerName;
 	}
 
 	/**
-	 * @param String the spellContainerName to set
+	 * @param spellContainerName the spellContainerName to set
 	 */
 	public void setSpellContainerName(String spellContainerName) {
 		this.spellContainerName = spellContainerName;
 	}
 
 	/**
-	 * @return int the sourceId
+	 * @return the sourceId
 	 */
 	public int getSourceId() {
 		return sourceId;
 	}
 
 	/**
-	 * @param int the sourceId to set
+	 * @param sourceId the sourceId to set
 	 */
 	public void setSourceId(int sourceId) {
 		this.sourceId = sourceId;
 	}
 
 	/**
-	 * @return int the sourcePageNumber
+	 * @return the sourcePageNumber
 	 */
 	public int getSourcePageNumber() {
 		return sourcePageNumber;
 	}
 
 	/**
-	 * @param int the sourcePageNumber to set
+	 * @param sourcePageNumber the sourcePageNumber to set
 	 */
 	public void setSourcePageNumber(int sourcePageNumber) {
 		this.sourcePageNumber = sourcePageNumber;
 	}
 
 	/**
-	 * @return int[] the primaryAbilities
+	 * @return the primaryAbilities
 	 */
 	public int[] getPrimaryAbilities() {
 		return primaryAbilities;
 	}
 
 	/**
-	 * @param int[] the primaryAbilities to set
+	 * @param primaryAbilities the primaryAbilities to set
 	 */
 	public void setPrimaryAbilities(int[] primaryAbilities) {
 		this.primaryAbilities = primaryAbilities;
 	}
 
 	/**
-	 * @return SpellRule the spellRules
+	 * @return the spellRules
 	 */
 	public SpellRule getSpellRules() {
 		return spellRules;
 	}
 
 	/**
-	 * @param SpellRule the spellRules to set
+	 * @param spellRules the spellRules to set
 	 */
 	public void setSpellRules(SpellRule spellRules) {
 		this.spellRules = spellRules;
 	}
 
 	/**
-	 * @return Prerequisite[] the prerequisites
+	 * @return the prerequisites
 	 */
 	public Prerequisite[] getPrerequisites() {
 		return prerequisites;
 	}
 
 	/**
-	 * @param Prerequisite[] the prerequisites to set
+	 * @param prerequisites the prerequisites to set
 	 */
 	public void setPrerequisites(Prerequisite[] prerequisites) {
 		this.prerequisites = prerequisites;
@@ -369,9 +369,11 @@ public class ClassDefinition {
 				+ avatarUrl + ", largeAvatarUrl=" + largeAvatarUrl + ", portraitAvatarUrl=" + portraitAvatarUrl
 				+ ", moreDetailsUrl=" + moreDetailsUrl + ", spellCastingAbilityId=" + spellCastingAbilityId
 				+ ", sourceIds=" + Arrays.toString(sourceIds) + ", hitDice=" + hitDice + ", classFeatures="
-				+ Arrays.toString(classFeatures) + ", canCastSpells=" + canCastSpells + ", knowsAllSpells="
-				+ knowsAllSpells + ", spellPrepareType=" + spellPrepareType + ", spellContainerName="
-				+ spellContainerName + ", sourceId=" + sourceId + ", sourcePageNumber=" + sourcePageNumber
-				+ ", primaryAbilities=" + Arrays.toString(primaryAbilities) + "]";
+				+ Arrays.toString(classFeatures) + ", wealthDice=" + wealthDice + ", canCastSpells=" + canCastSpells
+				+ ", knowsAllSpells=" + knowsAllSpells + ", spellPrepareType=" + spellPrepareType
+				+ ", spellContainerName=" + spellContainerName + ", sourceId=" + sourceId + ", sourcePageNumber="
+				+ sourcePageNumber + ", primaryAbilities=" + Arrays.toString(primaryAbilities) + ", spellRules="
+				+ spellRules + ", prerequisites=" + Arrays.toString(prerequisites) + "]";
 	}
+	
 }

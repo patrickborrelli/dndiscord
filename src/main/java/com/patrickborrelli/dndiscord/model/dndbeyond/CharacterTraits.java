@@ -24,70 +24,70 @@ public class CharacterTraits {
 	}
 
 	/**
-	 * @return String[] the personalityTraits
+	 * @return the personalityTraits
 	 */
 	public String[] getPersonalityTraits() {
 		return personalityTraits;
 	}
 
 	/**
-	 * @param String[] the personalityTraits to set
+	 * @param personalityTraits the personalityTraits to set
 	 */
 	public void setPersonalityTraits(String[] personalityTraits) {
 		this.personalityTraits = personalityTraits;
 	}
 
 	/**
-	 * @return String[] the ideals
+	 * @return the ideals
 	 */
 	public String[] getIdeals() {
 		return ideals;
 	}
 
 	/**
-	 * @param String[] the ideals to set
+	 * @param ideals the ideals to set
 	 */
 	public void setIdeals(String[] ideals) {
 		this.ideals = ideals;
 	}
 
 	/**
-	 * @return String[] the bonds
+	 * @return the bonds
 	 */
 	public String[] getBonds() {
 		return bonds;
 	}
 
 	/**
-	 * @param String[] the bonds to set
+	 * @param bonds the bonds to set
 	 */
 	public void setBonds(String[] bonds) {
 		this.bonds = bonds;
 	}
 
 	/**
-	 * @return String[] the flaws
+	 * @return the flaws
 	 */
 	public String[] getFlaws() {
 		return flaws;
 	}
 
 	/**
-	 * @param String[] the flaws to set
+	 * @param flaws the flaws to set
 	 */
 	public void setFlaws(String[] flaws) {
 		this.flaws = flaws;
 	}
 
 	/**
-	 * @return String the appearance
+	 * @return the appearance
 	 */
 	public String getAppearance() {
 		return appearance;
 	}
 
 	/**
-	 * @param String the appearance to set
+	 * @param appearance the appearance to set
 	 */
 	public void setAppearance(String appearance) {
 		this.appearance = appearance;
@@ -99,5 +99,5 @@ public class CharacterTraits {
 				+ Arrays.toString(ideals) + ", bonds=" + Arrays.toString(bonds) + ", flaws=" + Arrays.toString(flaws)
 				+ ", appearance=" + appearance + "]";
 	}
-	
+
 }

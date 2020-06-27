@@ -20,28 +20,28 @@ public class Prerequisite {
 	}
 
 	/**
-	 * @return String the description
+	 * @return the description
 	 */
 	public String getDescription() {
 		return description;
 	}
 
 	/**
-	 * @param String the description to set
+	 * @param description the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * @return PrerequisiteMapping[] the prerequisiteMappings
+	 * @return the prerequisiteMappings
 	 */
 	public PrerequisiteMapping[] getPrerequisiteMappings() {
 		return prerequisiteMappings;
 	}
 
 	/**
-	 * @param PrerequisiteMapping[] the prerequisiteMappings to set
+	 * @param prerequisiteMappings the prerequisiteMappings to set
 	 */
 	public void setPrerequisiteMappings(PrerequisiteMapping[] prerequisiteMappings) {
 		this.prerequisiteMappings = prerequisiteMappings;
@@ -52,7 +52,7 @@ public class Prerequisite {
 		return "Prerequisite [description=" + description + ", prerequisiteMappings="
 				+ Arrays.toString(prerequisiteMappings) + "]";
 	}
-	
+
 }
 
 class PrerequisiteMapping {
@@ -70,112 +70,112 @@ class PrerequisiteMapping {
 	}
 
 	/**
-	 * @return long the id
+	 * @return the id
 	 */
 	public long getId() {
 		return id;
 	}
 
 	/**
-	 * @param long the id to set
+	 * @param id the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return long the entityId
+	 * @return the entityId
 	 */
 	public long getEntityId() {
 		return entityId;
 	}
 
 	/**
-	 * @param long the entityId to set
+	 * @param entityId the entityId to set
 	 */
 	public void setEntityId(long entityId) {
 		this.entityId = entityId;
 	}
 
 	/**
-	 * @return long the entityTypeId
+	 * @return the entityTypeId
 	 */
 	public long getEntityTypeId() {
 		return entityTypeId;
 	}
 
 	/**
-	 * @param long the entityTypeId to set
+	 * @param entityTypeId the entityTypeId to set
 	 */
 	public void setEntityTypeId(long entityTypeId) {
 		this.entityTypeId = entityTypeId;
 	}
 
 	/**
-	 * @return String the type
+	 * @return the type
 	 */
 	public String getType() {
 		return type;
 	}
 
 	/**
-	 * @param String the type to set
+	 * @param type the type to set
 	 */
 	public void setType(String type) {
 		this.type = type;
 	}
 
 	/**
-	 * @return String the subType
+	 * @return the subType
 	 */
 	public String getSubType() {
 		return subType;
 	}
 
 	/**
-	 * @param String the subType to set
+	 * @param subType the subType to set
 	 */
 	public void setSubType(String subType) {
 		this.subType = subType;
 	}
 
 	/**
-	 * @return int the value
+	 * @return the value
 	 */
 	public int getValue() {
 		return value;
 	}
 
 	/**
-	 * @param int the value to set
+	 * @param value the value to set
 	 */
 	public void setValue(int value) {
 		this.value = value;
 	}
 
 	/**
-	 * @return String the friendlyTypeName
+	 * @return the friendlyTypeName
 	 */
 	public String getFriendlyTypeName() {
 		return friendlyTypeName;
 	}
 
 	/**
-	 * @param String the friendlyTypeName to set
+	 * @param friendlyTypeName the friendlyTypeName to set
 	 */
 	public void setFriendlyTypeName(String friendlyTypeName) {
 		this.friendlyTypeName = friendlyTypeName;
 	}
 
 	/**
-	 * @return String the friendlySubTypeName
+	 * @return the friendlySubTypeName
 	 */
 	public String getFriendlySubTypeName() {
 		return friendlySubTypeName;
 	}
 
 	/**
-	 * @param String the friendlySubTypeName to set
+	 * @param friendlySubTypeName the friendlySubTypeName to set
 	 */
 	public void setFriendlySubTypeName(String friendlySubTypeName) {
 		this.friendlySubTypeName = friendlySubTypeName;
@@ -187,4 +187,5 @@ class PrerequisiteMapping {
 				+ type + ", subType=" + subType + ", value=" + value + ", friendlyTypeName=" + friendlyTypeName
 				+ ", friendlySubTypeName=" + friendlySubTypeName + "]";
 	}
+
 }

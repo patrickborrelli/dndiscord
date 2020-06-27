@@ -23,98 +23,98 @@ public class CustomBackground {
 	}
 
 	/**
-	 * @return long the id
+	 * @return the id
 	 */
 	public long getId() {
 		return id;
 	}
 
 	/**
-	 * @param long the id to set
+	 * @param id the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return long the entityTypeId
+	 * @return the entityTypeId
 	 */
 	public long getEntityTypeId() {
 		return entityTypeId;
 	}
 
 	/**
-	 * @param long the entityTypeId to set
+	 * @param entityTypeId the entityTypeId to set
 	 */
 	public void setEntityTypeId(long entityTypeId) {
 		this.entityTypeId = entityTypeId;
 	}
 
 	/**
-	 * @return String the name
+	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param String the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * @return String the description
+	 * @return the description
 	 */
 	public String getDescription() {
 		return description;
 	}
 
 	/**
-	 * @param String the description to set
+	 * @param description the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * @return String the featuresBackground
+	 * @return the featuresBackground
 	 */
 	public String getFeaturesBackground() {
 		return featuresBackground;
 	}
 
 	/**
-	 * @param String the featuresBackground to set
+	 * @param featuresBackground the featuresBackground to set
 	 */
 	public void setFeaturesBackground(String featuresBackground) {
 		this.featuresBackground = featuresBackground;
 	}
 
 	/**
-	 * @return String the characteristicsBackground
+	 * @return the characteristicsBackground
 	 */
 	public String getCharacteristicsBackground() {
 		return characteristicsBackground;
 	}
 
 	/**
-	 * @param String the characteristicsBackground to set
+	 * @param characteristicsBackground the characteristicsBackground to set
 	 */
 	public void setCharacteristicsBackground(String characteristicsBackground) {
 		this.characteristicsBackground = characteristicsBackground;
 	}
 
 	/**
-	 * @return String the backgroundType
+	 * @return the backgroundType
 	 */
 	public String getBackgroundType() {
 		return backgroundType;
 	}
 
 	/**
-	 * @param String the backgroundType to set
+	 * @param backgroundType the backgroundType to set
 	 */
 	public void setBackgroundType(String backgroundType) {
 		this.backgroundType = backgroundType;
@@ -126,5 +126,5 @@ public class CustomBackground {
 				+ description + ", featuresBackground=" + featuresBackground + ", characteristicsBackground="
 				+ characteristicsBackground + ", backgroundType=" + backgroundType + "]";
 	}
-	
+
 }

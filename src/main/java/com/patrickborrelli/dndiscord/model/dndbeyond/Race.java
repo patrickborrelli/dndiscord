@@ -40,294 +40,294 @@ public class Race {
 	}
 
 	/**
-	 * @return int the entityRaceId
+	 * @return the entityRaceId
 	 */
 	public int getEntityRaceId() {
 		return entityRaceId;
 	}
 
 	/**
-	 * @param int the entityRaceId to set
+	 * @param entityRaceId the entityRaceId to set
 	 */
 	public void setEntityRaceId(int entityRaceId) {
 		this.entityRaceId = entityRaceId;
 	}
 
 	/**
-	 * @return long the entityRaceTypeId
+	 * @return the entityRaceTypeId
 	 */
 	public long getEntityRaceTypeId() {
 		return entityRaceTypeId;
 	}
 
 	/**
-	 * @param long the entityRaceTypeId to set
+	 * @param entityRaceTypeId the entityRaceTypeId to set
 	 */
 	public void setEntityRaceTypeId(long entityRaceTypeId) {
 		this.entityRaceTypeId = entityRaceTypeId;
 	}
 
 	/**
-	 * @return String the fullName
+	 * @return the fullName
 	 */
 	public String getFullName() {
 		return fullName;
 	}
 
 	/**
-	 * @param String the fullName to set
+	 * @param fullName the fullName to set
 	 */
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
 
 	/**
-	 * @return int the baseRaceId
+	 * @return the baseRaceId
 	 */
 	public int getBaseRaceId() {
 		return baseRaceId;
 	}
 
 	/**
-	 * @param int the baseRaceId to set
+	 * @param baseRaceId the baseRaceId to set
 	 */
 	public void setBaseRaceId(int baseRaceId) {
 		this.baseRaceId = baseRaceId;
 	}
 
 	/**
-	 * @return long the baseRaceTypeId
+	 * @return the baseRaceTypeId
 	 */
 	public long getBaseRaceTypeId() {
 		return baseRaceTypeId;
 	}
 
 	/**
-	 * @param long the baseRaceTypeId to set
+	 * @param baseRaceTypeId the baseRaceTypeId to set
 	 */
 	public void setBaseRaceTypeId(long baseRaceTypeId) {
 		this.baseRaceTypeId = baseRaceTypeId;
 	}
 
 	/**
-	 * @return String the description
+	 * @return the description
 	 */
 	public String getDescription() {
 		return description;
 	}
 
 	/**
-	 * @param String the description to set
+	 * @param description the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * @return String the avatarUrl
+	 * @return the avatarUrl
 	 */
 	public String getAvatarUrl() {
 		return avatarUrl;
 	}
 
 	/**
-	 * @param String the avatarUrl to set
+	 * @param avatarUrl the avatarUrl to set
 	 */
 	public void setAvatarUrl(String avatarUrl) {
 		this.avatarUrl = avatarUrl;
 	}
 
 	/**
-	 * @return String the largeAvatarUrl
+	 * @return the largeAvatarUrl
 	 */
 	public String getLargeAvatarUrl() {
 		return largeAvatarUrl;
 	}
 
 	/**
-	 * @param String the largeAvatarUrl to set
+	 * @param largeAvatarUrl the largeAvatarUrl to set
 	 */
 	public void setLargeAvatarUrl(String largeAvatarUrl) {
 		this.largeAvatarUrl = largeAvatarUrl;
 	}
 
 	/**
-	 * @return String the portraitAvatarUrl
+	 * @return the portraitAvatarUrl
 	 */
 	public String getPortraitAvatarUrl() {
 		return portraitAvatarUrl;
 	}
 
 	/**
-	 * @param String the portraitAvatarUrl to set
+	 * @param portraitAvatarUrl the portraitAvatarUrl to set
 	 */
 	public void setPortraitAvatarUrl(String portraitAvatarUrl) {
 		this.portraitAvatarUrl = portraitAvatarUrl;
 	}
 
 	/**
-	 * @return String the moreDetailsUrl
+	 * @return the moreDetailsUrl
 	 */
 	public String getMoreDetailsUrl() {
 		return moreDetailsUrl;
 	}
 
 	/**
-	 * @param String the moreDetailsUrl to set
+	 * @param moreDetailsUrl the moreDetailsUrl to set
 	 */
 	public void setMoreDetailsUrl(String moreDetailsUrl) {
 		this.moreDetailsUrl = moreDetailsUrl;
 	}
 
 	/**
-	 * @return boolean the isHomebrew
+	 * @return the isHomebrew
 	 */
 	public boolean isHomebrew() {
 		return isHomebrew;
 	}
 
 	/**
-	 * @param boolean the isHomebrew to set
+	 * @param isHomebrew the isHomebrew to set
 	 */
 	public void setHomebrew(boolean isHomebrew) {
 		this.isHomebrew = isHomebrew;
 	}
 
 	/**
-	 * @return int[] the sourceIds
+	 * @return the sourceIds
 	 */
 	public int[] getSourceIds() {
 		return sourceIds;
 	}
 
 	/**
-	 * @param int[] the sourceIds to set
+	 * @param sourceIds the sourceIds to set
 	 */
 	public void setSourceIds(int[] sourceIds) {
 		this.sourceIds = sourceIds;
 	}
 
 	/**
-	 * @return int[] the groupIds
+	 * @return the groupIds
 	 */
 	public int[] getGroupIds() {
 		return groupIds;
 	}
 
 	/**
-	 * @param int[] the groupIds to set
+	 * @param groupIds the groupIds to set
 	 */
 	public void setGroupIds(int[] groupIds) {
 		this.groupIds = groupIds;
 	}
 
 	/**
-	 * @return int the type
+	 * @return the type
 	 */
 	public int getType() {
 		return type;
 	}
 
 	/**
-	 * @param int the type to set
+	 * @param type the type to set
 	 */
 	public void setType(int type) {
 		this.type = type;
 	}
 
 	/**
-	 * @return String the subRaceShortName
+	 * @return the subRaceShortName
 	 */
 	public String getSubRaceShortName() {
 		return subRaceShortName;
 	}
 
 	/**
-	 * @param String the subRaceShortName to set
+	 * @param subRaceShortName the subRaceShortName to set
 	 */
 	public void setSubRaceShortName(String subRaceShortName) {
 		this.subRaceShortName = subRaceShortName;
 	}
 
 	/**
-	 * @return String the baseName
+	 * @return the baseName
 	 */
 	public String getBaseName() {
 		return baseName;
 	}
 
 	/**
-	 * @param String the baseName to set
+	 * @param baseName the baseName to set
 	 */
 	public void setBaseName(String baseName) {
 		this.baseName = baseName;
 	}
 
 	/**
-	 * @return RacialTrait[] the racialTraits
+	 * @return the racialTraits
 	 */
 	public RacialTrait[] getRacialTraits() {
 		return racialTraits;
 	}
 
 	/**
-	 * @param RacialTrait[] the racialTraits to set
+	 * @param racialTraits the racialTraits to set
 	 */
 	public void setRacialTraits(RacialTrait[] racialTraits) {
 		this.racialTraits = racialTraits;
 	}
 
 	/**
-	 * @return WeightSpeed the weightSpeeds
+	 * @return the weightSpeeds
 	 */
 	public WeightSpeed getWeightSpeeds() {
 		return weightSpeeds;
 	}
 
 	/**
-	 * @param WeightSpeed the weightSpeeds to set
+	 * @param weightSpeeds the weightSpeeds to set
 	 */
 	public void setWeightSpeeds(WeightSpeed weightSpeeds) {
 		this.weightSpeeds = weightSpeeds;
 	}
 
 	/**
-	 * @return long[] the featIds
+	 * @return the featIds
 	 */
 	public long[] getFeatIds() {
 		return featIds;
 	}
 
 	/**
-	 * @param long[] the featIds to set
+	 * @param featIds the featIds to set
 	 */
 	public void setFeatIds(long[] featIds) {
 		this.featIds = featIds;
 	}
 
 	/**
-	 * @return String the size
+	 * @return the size
 	 */
 	public String getSize() {
 		return size;
 	}
 
 	/**
-	 * @param String the size to set
+	 * @param size the size to set
 	 */
 	public void setSize(String size) {
 		this.size = size;
 	}
 
 	/**
-	 * @return int the sizeId
+	 * @return the sizeId
 	 */
 	public int getSizeId() {
 		return sizeId;
 	}
 
 	/**
-	 * @param int the sizeId to set
+	 * @param sizeId the sizeId to set
 	 */
 	public void setSizeId(int sizeId) {
 		this.sizeId = sizeId;
@@ -344,5 +344,5 @@ public class Race {
 				+ ", racialTraits=" + Arrays.toString(racialTraits) + ", weightSpeeds=" + weightSpeeds + ", featIds="
 				+ Arrays.toString(featIds) + ", size=" + size + ", sizeId=" + sizeId + "]";
 	}
-	
+
 }

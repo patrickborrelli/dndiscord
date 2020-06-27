@@ -19,42 +19,42 @@ public class Background {
 	}
 
 	/**
-	 * @return boolean the hasCustomBackground
+	 * @return the hasCustomBackground
 	 */
 	public boolean isHasCustomBackground() {
 		return hasCustomBackground;
 	}
 
 	/**
-	 * @param boolean the hasCustomBackground to set
+	 * @param hasCustomBackground the hasCustomBackground to set
 	 */
 	public void setHasCustomBackground(boolean hasCustomBackground) {
 		this.hasCustomBackground = hasCustomBackground;
 	}
 
 	/**
-	 * @return BackgroundDefinition the definition
+	 * @return the definition
 	 */
 	public BackgroundDefinition getDefinition() {
 		return definition;
 	}
 
 	/**
-	 * @param BackgroundDefinition the definition to set
+	 * @param definition the definition to set
 	 */
 	public void setDefinition(BackgroundDefinition definition) {
 		this.definition = definition;
 	}
 
 	/**
-	 * @return CustomBackground the customBackground
+	 * @return the customBackground
 	 */
 	public CustomBackground getCustomBackground() {
 		return customBackground;
 	}
 
 	/**
-	 * @param CustomBackground the customBackground to set
+	 * @param customBackground the customBackground to set
 	 */
 	public void setCustomBackground(CustomBackground customBackground) {
 		this.customBackground = customBackground;
@@ -65,4 +65,5 @@ public class Background {
 		return "Background [hasCustomBackground=" + hasCustomBackground + ", definition=" + definition
 				+ ", customBackground=" + customBackground + "]";
 	}
+	
 }

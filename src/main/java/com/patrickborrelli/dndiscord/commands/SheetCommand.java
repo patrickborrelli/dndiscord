@@ -28,7 +28,6 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
  */
 public class SheetCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(SheetCommand.class);
-	private static final String CRITR = "critr";
 	private List<MessageAttachment> attachments;
 
 	@Override

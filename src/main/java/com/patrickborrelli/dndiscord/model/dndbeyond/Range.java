@@ -24,112 +24,112 @@ public class Range {
     }
 
 	/**
-	 * @return String the origin
+	 * @return the origin
 	 */
 	public String getOrigin() {
 		return origin;
 	}
 
 	/**
-	 * @param String the origin to set
+	 * @param origin the origin to set
 	 */
 	public void setOrigin(String origin) {
 		this.origin = origin;
 	}
 
 	/**
-	 * @return int the rangeValue
+	 * @return the rangeValue
 	 */
 	public int getRangeValue() {
 		return rangeValue;
 	}
 
 	/**
-	 * @param int the rangeValue to set
+	 * @param rangeValue the rangeValue to set
 	 */
 	public void setRangeValue(int rangeValue) {
 		this.rangeValue = rangeValue;
 	}
 
 	/**
-	 * @return String the aoeSize
+	 * @return the aoeSize
 	 */
 	public String getAoeSize() {
 		return aoeSize;
 	}
 
 	/**
-	 * @param String the aoeSize to set
+	 * @param aoeSize the aoeSize to set
 	 */
 	public void setAoeSize(String aoeSize) {
 		this.aoeSize = aoeSize;
 	}
 
 	/**
-	 * @return String the aoeType
+	 * @return the aoeType
 	 */
 	public String getAoeType() {
 		return aoeType;
 	}
 
 	/**
-	 * @param String the aoeType to set
+	 * @param aoeType the aoeType to set
 	 */
 	public void setAoeType(String aoeType) {
 		this.aoeType = aoeType;
 	}
 
 	/**
-	 * @return int the aoeValue
+	 * @return the aoeValue
 	 */
 	public int getAoeValue() {
 		return aoeValue;
 	}
 
 	/**
-	 * @param int the aoeValue to set
+	 * @param aoeValue the aoeValue to set
 	 */
 	public void setAoeValue(int aoeValue) {
 		this.aoeValue = aoeValue;
 	}
 
 	/**
-	 * @return boolean the hasAoeSpecialDescription
+	 * @return the hasAoeSpecialDescription
 	 */
 	public boolean isHasAoeSpecialDescription() {
 		return hasAoeSpecialDescription;
 	}
 
 	/**
-	 * @param boolean the hasAoeSpecialDescription to set
+	 * @param hasAoeSpecialDescription the hasAoeSpecialDescription to set
 	 */
 	public void setHasAoeSpecialDescription(boolean hasAoeSpecialDescription) {
 		this.hasAoeSpecialDescription = hasAoeSpecialDescription;
 	}
 
 	/**
-	 * @return int the range
+	 * @return the range
 	 */
 	public int getRange() {
 		return range;
 	}
 
 	/**
-	 * @param int the range to set
+	 * @param range the range to set
 	 */
 	public void setRange(int range) {
 		this.range = range;
 	}
 
 	/**
-	 * @return int the longRange
+	 * @return the longRange
 	 */
 	public int getLongRange() {
 		return longRange;
 	}
 
 	/**
-	 * @param int the longRange to set
+	 * @param longRange the longRange to set
 	 */
 	public void setLongRange(int longRange) {
 		this.longRange = longRange;
@@ -140,5 +140,5 @@ public class Range {
 		return "Range [origin=" + origin + ", rangeValue=" + rangeValue + ", aoeSize=" + aoeSize + ", aoeType="
 				+ aoeType + ", aoeValue=" + aoeValue + ", hasAoeSpecialDescription=" + hasAoeSpecialDescription
 				+ ", range=" + range + ", longRange=" + longRange + "]";
-	}    
+	}
 }

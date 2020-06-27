@@ -23,109 +23,108 @@ public class CharacterNotes {
 		
 	}
 
-	/**
-	 * @return String the allies
-	 */
-	public String getAllies() {
-		return allies;
-	}
-
-	/**
-	 * @param String the allies to set
-	 */
-	public void setAllies(String allies) {
-		this.allies = allies;
-	}
-
-	/**
-	 * @return String the personalPossessions
-	 */
-	public String getPersonalPossessions() {
-		return personalPossessions;
-	}
-
-	/**
-	 * @param String the personalPossessions to set
-	 */
-	public void setPersonalPossessions(String personalPossessions) {
-		this.personalPossessions = personalPossessions;
-	}
-
-	/**
-	 * @return String the otherHoldings
-	 */
-	public String getOtherHoldings() {
-		return otherHoldings;
-	}
-
-	/**
-	 * @param String the otherHoldings to set
-	 */
-	public void setOtherHoldings(String otherHoldings) {
-		this.otherHoldings = otherHoldings;
-	}
-
-	/**
-	 * @return String the organizations
-	 */
-	public String getOrganizations() {
-		return organizations;
-	}
-
-	/**
-	 * @param String the organizations to set
-	 */
-	public void setOrganizations(String organizations) {
-		this.organizations = organizations;
-	}
-
-	/**
-	 * @return String the enemies
-	 */
-	public String getEnemies() {
-		return enemies;
-	}
-
-	/**
-	 * @param String the enemies to set
-	 */
-	public void setEnemies(String enemies) {
-		this.enemies = enemies;
-	}
-
-	/**
-	 * @return String the backstory
-	 */
-	public String getBackstory() {
-		return backstory;
-	}
-
-	/**
-	 * @param String the backstory to set
-	 */
-	public void setBackstory(String backstory) {
-		this.backstory = backstory;
-	}
-
-	/**
-	 * @return String the otherNotes
-	 */
-	public String getOtherNotes() {
-		return otherNotes;
-	}
-
-	/**
-	 * @param String the otherNotes to set
-	 */
-	public void setOtherNotes(String otherNotes) {
-		this.otherNotes = otherNotes;
-	}
-
 	@Override
 	public String toString() {
 		return "CharacterNotes [allies=" + allies + ", personalPossessions=" + personalPossessions + ", otherHoldings="
 				+ otherHoldings + ", organizations=" + organizations + ", enemies=" + enemies + ", backstory="
 				+ backstory + ", otherNotes=" + otherNotes + "]";
 	}
-	
+
+	/**
+	 * @return the allies
+	 */
+	public String getAllies() {
+		return allies;
+	}
+
+	/**
+	 * @param allies the allies to set
+	 */
+	public void setAllies(String allies) {
+		this.allies = allies;
+	}
+
+	/**
+	 * @return the personalPossessions
+	 */
+	public String getPersonalPossessions() {
+		return personalPossessions;
+	}
+
+	/**
+	 * @param personalPossessions the personalPossessions to set
+	 */
+	public void setPersonalPossessions(String personalPossessions) {
+		this.personalPossessions = personalPossessions;
+	}
+
+	/**
+	 * @return the otherHoldings
+	 */
+	public String getOtherHoldings() {
+		return otherHoldings;
+	}
+
+	/**
+	 * @param otherHoldings the otherHoldings to set
+	 */
+	public void setOtherHoldings(String otherHoldings) {
+		this.otherHoldings = otherHoldings;
+	}
+
+	/**
+	 * @return the organizations
+	 */
+	public String getOrganizations() {
+		return organizations;
+	}
+
+	/**
+	 * @param organizations the organizations to set
+	 */
+	public void setOrganizations(String organizations) {
+		this.organizations = organizations;
+	}
+
+	/**
+	 * @return the enemies
+	 */
+	public String getEnemies() {
+		return enemies;
+	}
+
+	/**
+	 * @param enemies the enemies to set
+	 */
+	public void setEnemies(String enemies) {
+		this.enemies = enemies;
+	}
+
+	/**
+	 * @return the backstory
+	 */
+	public String getBackstory() {
+		return backstory;
+	}
+
+	/**
+	 * @param backstory the backstory to set
+	 */
+	public void setBackstory(String backstory) {
+		this.backstory = backstory;
+	}
+
+	/**
+	 * @return the otherNotes
+	 */
+	public String getOtherNotes() {
+		return otherNotes;
+	}
+
+	/**
+	 * @param otherNotes the otherNotes to set
+	 */
+	public void setOtherNotes(String otherNotes) {
+		this.otherNotes = otherNotes;
+	}
 }

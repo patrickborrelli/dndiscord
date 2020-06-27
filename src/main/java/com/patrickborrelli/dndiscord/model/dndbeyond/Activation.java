@@ -25,7 +25,7 @@ public class Activation {
 	}
 
 	/**
-	 * @param String the activationTime to set
+	 * @param activationTime - String the activationTime to set
 	 */
 	public void setActivationTime(String activationTime) {
 		this.activationTime = activationTime;
@@ -39,7 +39,7 @@ public class Activation {
 	}
 
 	/**
-	 * @param String the activationType to set
+	 * @param activationType - String the activationType to set
 	 */
 	public void setActivationType(String activationType) {
 		this.activationType = activationType;

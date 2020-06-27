@@ -44,49 +44,51 @@ public class Stat {
 	public Stat() {
 		
 	}
+
 	/**
-	 * @return int the id
+	 * @return the id
 	 */
 	public int getId() {
 		return id;
 	}
+
 	/**
-	 * @param int the id to set
+	 * @param id the id to set
 	 */
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	/**
-	 * @return String the name
+	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
+
 	/**
-	 * @param String the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
-		if(null == name) {
-			name = statMap.get(id);
-		}
 		this.name = name;
 	}
+
 	/**
-	 * @return int the value
+	 * @return the value
 	 */
 	public int getValue() {
 		return value;
 	}
+
 	/**
-	 * @param int the value to set
+	 * @param value the value to set
 	 */
 	public void setValue(int value) {
 		this.value = value;
 	}
+
 	@Override
 	public String toString() {
 		return "Stat [id=" + id + ", name=" + name + ", value=" + value + "]";
 	}
-	
-	
 }

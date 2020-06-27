@@ -21,70 +21,70 @@ public class WealthDie {
 	}
 
 	/**
-	 * @return int the diceCount
+	 * @return the diceCount
 	 */
 	public int getDiceCount() {
 		return diceCount;
 	}
 
 	/**
-	 * @param int the diceCount to set
+	 * @param diceCount the diceCount to set
 	 */
 	public void setDiceCount(int diceCount) {
 		this.diceCount = diceCount;
 	}
 
 	/**
-	 * @return int the diceValue
+	 * @return the diceValue
 	 */
 	public int getDiceValue() {
 		return diceValue;
 	}
 
 	/**
-	 * @param int the diceValue to set
+	 * @param diceValue the diceValue to set
 	 */
 	public void setDiceValue(int diceValue) {
 		this.diceValue = diceValue;
 	}
 
 	/**
-	 * @return int the diceMultiplier
+	 * @return the diceMultiplier
 	 */
 	public int getDiceMultiplier() {
 		return diceMultiplier;
 	}
 
 	/**
-	 * @param int the diceMultiplier to set
+	 * @param diceMultiplier the diceMultiplier to set
 	 */
 	public void setDiceMultiplier(int diceMultiplier) {
 		this.diceMultiplier = diceMultiplier;
 	}
 
 	/**
-	 * @return int the fixedValue
+	 * @return the fixedValue
 	 */
 	public int getFixedValue() {
 		return fixedValue;
 	}
 
 	/**
-	 * @param int the fixedValue to set
+	 * @param fixedValue the fixedValue to set
 	 */
 	public void setFixedValue(int fixedValue) {
 		this.fixedValue = fixedValue;
 	}
 
 	/**
-	 * @return String the diceString
+	 * @return the diceString
 	 */
 	public String getDiceString() {
 		return diceString;
 	}
 
 	/**
-	 * @param String the diceString to set
+	 * @param diceString the diceString to set
 	 */
 	public void setDiceString(String diceString) {
 		this.diceString = diceString;

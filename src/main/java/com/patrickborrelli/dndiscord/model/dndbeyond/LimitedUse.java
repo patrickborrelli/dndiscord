@@ -26,126 +26,126 @@ public class LimitedUse {
     }
 
 	/**
-	 * @return String the name
+	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param String the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * @return int the statModifierUsesId
+	 * @return the statModifierUsesId
 	 */
 	public int getStatModifierUsesId() {
 		return statModifierUsesId;
 	}
 
 	/**
-	 * @param int the statModifierUsesId to set
+	 * @param statModifierUsesId the statModifierUsesId to set
 	 */
 	public void setStatModifierUsesId(int statModifierUsesId) {
 		this.statModifierUsesId = statModifierUsesId;
 	}
 
 	/**
-	 * @return String the resetType
+	 * @return the resetType
 	 */
 	public String getResetType() {
 		return resetType;
 	}
 
 	/**
-	 * @param String the resetType to set
+	 * @param resetType the resetType to set
 	 */
 	public void setResetType(String resetType) {
 		this.resetType = resetType;
 	}
 
 	/**
-	 * @return String the resetTypeDescription
+	 * @return the resetTypeDescription
 	 */
 	public String getResetTypeDescription() {
 		return resetTypeDescription;
 	}
 
 	/**
-	 * @param String the resetTypeDescription to set
+	 * @param resetTypeDescription the resetTypeDescription to set
 	 */
 	public void setResetTypeDescription(String resetTypeDescription) {
 		this.resetTypeDescription = resetTypeDescription;
 	}
 
 	/**
-	 * @return int the numberUsed
+	 * @return the numberUsed
 	 */
 	public int getNumberUsed() {
 		return numberUsed;
 	}
 
 	/**
-	 * @param int the numberUsed to set
+	 * @param numberUsed the numberUsed to set
 	 */
 	public void setNumberUsed(int numberUsed) {
 		this.numberUsed = numberUsed;
 	}
 
 	/**
-	 * @return int the minNumberConsumed
+	 * @return the minNumberConsumed
 	 */
 	public int getMinNumberConsumed() {
 		return minNumberConsumed;
 	}
 
 	/**
-	 * @param int the minNumberConsumed to set
+	 * @param minNumberConsumed the minNumberConsumed to set
 	 */
 	public void setMinNumberConsumed(int minNumberConsumed) {
 		this.minNumberConsumed = minNumberConsumed;
 	}
 
 	/**
-	 * @return int the maxNumberConsumed
+	 * @return the maxNumberConsumed
 	 */
 	public int getMaxNumberConsumed() {
 		return maxNumberConsumed;
 	}
 
 	/**
-	 * @param int the maxNumberConsumed to set
+	 * @param maxNumberConsumed the maxNumberConsumed to set
 	 */
 	public void setMaxNumberConsumed(int maxNumberConsumed) {
 		this.maxNumberConsumed = maxNumberConsumed;
 	}
 
 	/**
-	 * @return int the maxUses
+	 * @return the maxUses
 	 */
 	public int getMaxUses() {
 		return maxUses;
 	}
 
 	/**
-	 * @param int the maxUses to set
+	 * @param maxUses the maxUses to set
 	 */
 	public void setMaxUses(int maxUses) {
 		this.maxUses = maxUses;
 	}
 
 	/**
-	 * @return int the operator
+	 * @return the operator
 	 */
 	public int getOperator() {
 		return operator;
 	}
 
 	/**
-	 * @param int the operator to set
+	 * @param operator the operator to set
 	 */
 	public void setOperator(int operator) {
 		this.operator = operator;
@@ -158,4 +158,5 @@ public class LimitedUse {
 				+ ", minNumberConsumed=" + minNumberConsumed + ", maxNumberConsumed=" + maxNumberConsumed + ", maxUses="
 				+ maxUses + ", operator=" + operator + "]";
 	}
+
 }

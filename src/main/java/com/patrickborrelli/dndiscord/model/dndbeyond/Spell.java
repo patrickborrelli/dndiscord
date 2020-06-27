@@ -38,308 +38,308 @@ public class Spell {
 	}
 
 	/**
-	 * @return int the overrideSaveDc
+	 * @return the overrideSaveDc
 	 */
 	public int getOverrideSaveDc() {
 		return overrideSaveDc;
 	}
 
 	/**
-	 * @param int the overrideSaveDc to set
+	 * @param overrideSaveDc the overrideSaveDc to set
 	 */
 	public void setOverrideSaveDc(int overrideSaveDc) {
 		this.overrideSaveDc = overrideSaveDc;
 	}
 
 	/**
-	 * @return LimitedUse the limitedUse
+	 * @return the limitedUse
 	 */
 	public LimitedUse getLimitedUse() {
 		return limitedUse;
 	}
 
 	/**
-	 * @param LimitedUse the limitedUse to set
+	 * @param limitedUse the limitedUse to set
 	 */
 	public void setLimitedUse(LimitedUse limitedUse) {
 		this.limitedUse = limitedUse;
 	}
 
 	/**
-	 * @return int the id
+	 * @return the id
 	 */
 	public int getId() {
 		return id;
 	}
 
 	/**
-	 * @param int the id to set
+	 * @param id the id to set
 	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return long the entityTypeId
+	 * @return the entityTypeId
 	 */
 	public long getEntityTypeId() {
 		return entityTypeId;
 	}
 
 	/**
-	 * @param long the entityTypeId to set
+	 * @param entityTypeId the entityTypeId to set
 	 */
 	public void setEntityTypeId(long entityTypeId) {
 		this.entityTypeId = entityTypeId;
 	}
 
 	/**
-	 * @return Definition the definition
+	 * @return the definition
 	 */
 	public Definition getDefinition() {
 		return definition;
 	}
 
 	/**
-	 * @param Definition the definition to set
+	 * @param definition the definition to set
 	 */
 	public void setDefinition(Definition definition) {
 		this.definition = definition;
 	}
 
 	/**
-	 * @return boolean the prepared
+	 * @return the prepared
 	 */
 	public boolean isPrepared() {
 		return prepared;
 	}
 
 	/**
-	 * @param boolean the prepared to set
+	 * @param prepared the prepared to set
 	 */
 	public void setPrepared(boolean prepared) {
 		this.prepared = prepared;
 	}
 
 	/**
-	 * @return boolean the countsAsKnownSpell
+	 * @return the countsAsKnownSpell
 	 */
 	public boolean isCountsAsKnownSpell() {
 		return countsAsKnownSpell;
 	}
 
 	/**
-	 * @param boolean the countsAsKnownSpell to set
+	 * @param countsAsKnownSpell the countsAsKnownSpell to set
 	 */
 	public void setCountsAsKnownSpell(boolean countsAsKnownSpell) {
 		this.countsAsKnownSpell = countsAsKnownSpell;
 	}
 
 	/**
-	 * @return boolean the usesSpellSlot
+	 * @return the usesSpellSlot
 	 */
 	public boolean isUsesSpellSlot() {
 		return usesSpellSlot;
 	}
 
 	/**
-	 * @param boolean the usesSpellSlot to set
+	 * @param usesSpellSlot the usesSpellSlot to set
 	 */
 	public void setUsesSpellSlot(boolean usesSpellSlot) {
 		this.usesSpellSlot = usesSpellSlot;
 	}
 
 	/**
-	 * @return String the castAtLevel
+	 * @return the castAtLevel
 	 */
 	public String getCastAtLevel() {
 		return castAtLevel;
 	}
 
 	/**
-	 * @param String the castAtLevel to set
+	 * @param castAtLevel the castAtLevel to set
 	 */
 	public void setCastAtLevel(String castAtLevel) {
 		this.castAtLevel = castAtLevel;
 	}
 
 	/**
-	 * @return boolean the alwaysPrepared
+	 * @return the alwaysPrepared
 	 */
 	public boolean isAlwaysPrepared() {
 		return alwaysPrepared;
 	}
 
 	/**
-	 * @param boolean the alwaysPrepared to set
+	 * @param alwaysPrepared the alwaysPrepared to set
 	 */
 	public void setAlwaysPrepared(boolean alwaysPrepared) {
 		this.alwaysPrepared = alwaysPrepared;
 	}
 
 	/**
-	 * @return String the restriction
+	 * @return the restriction
 	 */
 	public String getRestriction() {
 		return restriction;
 	}
 
 	/**
-	 * @param String the restriction to set
+	 * @param restriction the restriction to set
 	 */
 	public void setRestriction(String restriction) {
 		this.restriction = restriction;
 	}
 
 	/**
-	 * @return int the spellCastingAbilityId
+	 * @return the spellCastingAbilityId
 	 */
 	public int getSpellCastingAbilityId() {
 		return spellCastingAbilityId;
 	}
 
 	/**
-	 * @param int the spellCastingAbilityId to set
+	 * @param spellCastingAbilityId the spellCastingAbilityId to set
 	 */
 	public void setSpellCastingAbilityId(int spellCastingAbilityId) {
 		this.spellCastingAbilityId = spellCastingAbilityId;
 	}
 
 	/**
-	 * @return boolean the displayAsAttack
+	 * @return the displayAsAttack
 	 */
 	public boolean isDisplayAsAttack() {
 		return displayAsAttack;
 	}
 
 	/**
-	 * @param boolean the displayAsAttack to set
+	 * @param displayAsAttack the displayAsAttack to set
 	 */
 	public void setDisplayAsAttack(boolean displayAsAttack) {
 		this.displayAsAttack = displayAsAttack;
 	}
 
 	/**
-	 * @return String the additionalDescription
+	 * @return the additionalDescription
 	 */
 	public String getAdditionalDescription() {
 		return additionalDescription;
 	}
 
 	/**
-	 * @param String the additionalDescription to set
+	 * @param additionalDescription the additionalDescription to set
 	 */
 	public void setAdditionalDescription(String additionalDescription) {
 		this.additionalDescription = additionalDescription;
 	}
 
 	/**
-	 * @return boolean the castOnlyAsRitual
+	 * @return the castOnlyAsRitual
 	 */
 	public boolean isCastOnlyAsRitual() {
 		return castOnlyAsRitual;
 	}
 
 	/**
-	 * @param boolean the castOnlyAsRitual to set
+	 * @param castOnlyAsRitual the castOnlyAsRitual to set
 	 */
 	public void setCastOnlyAsRitual(boolean castOnlyAsRitual) {
 		this.castOnlyAsRitual = castOnlyAsRitual;
 	}
 
 	/**
-	 * @return String the ritualCastingType
+	 * @return the ritualCastingType
 	 */
 	public String getRitualCastingType() {
 		return ritualCastingType;
 	}
 
 	/**
-	 * @param String the ritualCastingType to set
+	 * @param ritualCastingType the ritualCastingType to set
 	 */
 	public void setRitualCastingType(String ritualCastingType) {
 		this.ritualCastingType = ritualCastingType;
 	}
 
 	/**
-	 * @return Range the range
+	 * @return the range
 	 */
 	public Range getRange() {
 		return range;
 	}
 
 	/**
-	 * @param Range the range to set
+	 * @param range the range to set
 	 */
 	public void setRange(Range range) {
 		this.range = range;
 	}
 
 	/**
-	 * @return Activation the activation
+	 * @return the activation
 	 */
 	public Activation getActivation() {
 		return activation;
 	}
 
 	/**
-	 * @param Activation the activation to set
+	 * @param activation the activation to set
 	 */
 	public void setActivation(Activation activation) {
 		this.activation = activation;
 	}
 
 	/**
-	 * @return boolean the baseLevelAtWill
+	 * @return the baseLevelAtWill
 	 */
 	public boolean isBaseLevelAtWill() {
 		return baseLevelAtWill;
 	}
 
 	/**
-	 * @param boolean the baseLevelAtWill to set
+	 * @param baseLevelAtWill the baseLevelAtWill to set
 	 */
 	public void setBaseLevelAtWill(boolean baseLevelAtWill) {
 		this.baseLevelAtWill = baseLevelAtWill;
 	}
 
 	/**
-	 * @return int the atWillLimitedUseLevel
+	 * @return the atWillLimitedUseLevel
 	 */
 	public int getAtWillLimitedUseLevel() {
 		return atWillLimitedUseLevel;
 	}
 
 	/**
-	 * @param int the atWillLimitedUseLevel to set
+	 * @param atWillLimitedUseLevel the atWillLimitedUseLevel to set
 	 */
 	public void setAtWillLimitedUseLevel(int atWillLimitedUseLevel) {
 		this.atWillLimitedUseLevel = atWillLimitedUseLevel;
 	}
 
 	/**
-	 * @return int the componentId
+	 * @return the componentId
 	 */
 	public int getComponentId() {
 		return componentId;
 	}
 
 	/**
-	 * @param int the componentId to set
+	 * @param componentId the componentId to set
 	 */
 	public void setComponentId(int componentId) {
 		this.componentId = componentId;
 	}
 
 	/**
-	 * @return long the componentTypeId
+	 * @return the componentTypeId
 	 */
 	public long getComponentTypeId() {
 		return componentTypeId;
 	}
 
 	/**
-	 * @param long the componentTypeId to set
+	 * @param componentTypeId the componentTypeId to set
 	 */
 	public void setComponentTypeId(long componentTypeId) {
 		this.componentTypeId = componentTypeId;
@@ -357,4 +357,5 @@ public class Spell {
 				+ ", baseLevelAtWill=" + baseLevelAtWill + ", atWillLimitedUseLevel=" + atWillLimitedUseLevel
 				+ ", componentId=" + componentId + ", componentTypeId=" + componentTypeId + "]";
 	}
+
 }

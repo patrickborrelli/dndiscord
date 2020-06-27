@@ -19,42 +19,42 @@ public class TableLookup {
 	}
 
 	/**
-	 * @return long the id
+	 * @return the id
 	 */
 	public long getId() {
 		return id;
 	}
 
 	/**
-	 * @param long the id to set
+	 * @param id the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return String the description
+	 * @return the description
 	 */
 	public String getDescription() {
 		return description;
 	}
 
 	/**
-	 * @param String the description to set
+	 * @param description the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * @return int the diceRoll
+	 * @return the diceRoll
 	 */
 	public int getDiceRoll() {
 		return diceRoll;
 	}
 
 	/**
-	 * @param int the diceRoll to set
+	 * @param diceRoll the diceRoll to set
 	 */
 	public void setDiceRoll(int diceRoll) {
 		this.diceRoll = diceRoll;
@@ -64,5 +64,5 @@ public class TableLookup {
 	public String toString() {
 		return "TableLookup [id=" + id + ", description=" + description + ", diceRoll=" + diceRoll + "]";
 	}
-	
+
 }

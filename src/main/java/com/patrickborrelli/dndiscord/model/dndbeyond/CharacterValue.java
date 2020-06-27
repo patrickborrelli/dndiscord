@@ -23,98 +23,98 @@ public class CharacterValue {
 	}
 
 	/**
-	 * @return int the typeId
+	 * @return the typeId
 	 */
 	public int getTypeId() {
 		return typeId;
 	}
 
 	/**
-	 * @param int the typeId to set
+	 * @param typeId the typeId to set
 	 */
 	public void setTypeId(int typeId) {
 		this.typeId = typeId;
 	}
 
 	/**
-	 * @return String the value
+	 * @return the value
 	 */
 	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * @param String the value to set
+	 * @param value the value to set
 	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
 
 	/**
-	 * @return String the notes
+	 * @return the notes
 	 */
 	public String getNotes() {
 		return notes;
 	}
 
 	/**
-	 * @param String the notes to set
+	 * @param notes the notes to set
 	 */
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
 
 	/**
-	 * @return long the valueId
+	 * @return the valueId
 	 */
 	public long getValueId() {
 		return valueId;
 	}
 
 	/**
-	 * @param long the valueId to set
+	 * @param valueId the valueId to set
 	 */
 	public void setValueId(long valueId) {
 		this.valueId = valueId;
 	}
 
 	/**
-	 * @return long the valueTypeId
+	 * @return the valueTypeId
 	 */
 	public long getValueTypeId() {
 		return valueTypeId;
 	}
 
 	/**
-	 * @param long the valueTypeId to set
+	 * @param valueTypeId the valueTypeId to set
 	 */
 	public void setValueTypeId(long valueTypeId) {
 		this.valueTypeId = valueTypeId;
 	}
 
 	/**
-	 * @return long the contextId
+	 * @return the contextId
 	 */
 	public long getContextId() {
 		return contextId;
 	}
 
 	/**
-	 * @param long the contextId to set
+	 * @param contextId the contextId to set
 	 */
 	public void setContextId(long contextId) {
 		this.contextId = contextId;
 	}
 
 	/**
-	 * @return long the contextTypeId
+	 * @return the contextTypeId
 	 */
 	public long getContextTypeId() {
 		return contextTypeId;
 	}
 
 	/**
-	 * @param long the contextTypeId to set
+	 * @param contextTypeId the contextTypeId to set
 	 */
 	public void setContextTypeId(long contextTypeId) {
 		this.contextTypeId = contextTypeId;
@@ -126,5 +126,5 @@ public class CharacterValue {
 				+ ", valueTypeId=" + valueTypeId + ", contextId=" + contextId + ", contextTypeId=" + contextTypeId
 				+ "]";
 	}
-	
+
 }

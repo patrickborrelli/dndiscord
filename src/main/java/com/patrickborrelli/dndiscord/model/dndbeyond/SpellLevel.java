@@ -19,42 +19,42 @@ public class SpellLevel {
 	}
 
 	/**
-	 * @return int the level
+	 * @return the level
 	 */
 	public int getLevel() {
 		return level;
 	}
 
 	/**
-	 * @param int the level to set
+	 * @param level the level to set
 	 */
 	public void setLevel(int level) {
 		this.level = level;
 	}
 
 	/**
-	 * @return int the used
+	 * @return the used
 	 */
 	public int getUsed() {
 		return used;
 	}
 
 	/**
-	 * @param int the used to set
+	 * @param used the used to set
 	 */
 	public void setUsed(int used) {
 		this.used = used;
 	}
 
 	/**
-	 * @return int the available
+	 * @return the available
 	 */
 	public int getAvailable() {
 		return available;
 	}
 
 	/**
-	 * @param int the available to set
+	 * @param available the available to set
 	 */
 	public void setAvailable(int available) {
 		this.available = available;
@@ -64,4 +64,5 @@ public class SpellLevel {
 	public String toString() {
 		return "SpellLevel [level=" + level + ", used=" + used + ", available=" + available + "]";
 	}
+
 }

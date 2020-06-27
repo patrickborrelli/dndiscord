@@ -31,210 +31,210 @@ public class DndBeyondPreferences {
 	}
 
 	/**
-	 * @return boolean the useHomebrewContent
+	 * @return the useHomebrewContent
 	 */
 	public boolean isUseHomebrewContent() {
 		return useHomebrewContent;
 	}
 
 	/**
-	 * @param boolean the useHomebrewContent to set
+	 * @param useHomebrewContent the useHomebrewContent to set
 	 */
 	public void setUseHomebrewContent(boolean useHomebrewContent) {
 		this.useHomebrewContent = useHomebrewContent;
 	}
 
 	/**
-	 * @return int the progressionType
+	 * @return the progressionType
 	 */
 	public int getProgressionType() {
 		return progressionType;
 	}
 
 	/**
-	 * @param int the progressionType to set
+	 * @param progressionType the progressionType to set
 	 */
 	public void setProgressionType(int progressionType) {
 		this.progressionType = progressionType;
 	}
 
 	/**
-	 * @return int the encumbranceType
+	 * @return the encumbranceType
 	 */
 	public int getEncumbranceType() {
 		return encumbranceType;
 	}
 
 	/**
-	 * @param int the encumbranceType to set
+	 * @param encumbranceType the encumbranceType to set
 	 */
 	public void setEncumbranceType(int encumbranceType) {
 		this.encumbranceType = encumbranceType;
 	}
 
 	/**
-	 * @return boolean the ignoreCoinWeight
+	 * @return the ignoreCoinWeight
 	 */
 	public boolean isIgnoreCoinWeight() {
 		return ignoreCoinWeight;
 	}
 
 	/**
-	 * @param boolean the ignoreCoinWeight to set
+	 * @param ignoreCoinWeight the ignoreCoinWeight to set
 	 */
 	public void setIgnoreCoinWeight(boolean ignoreCoinWeight) {
 		this.ignoreCoinWeight = ignoreCoinWeight;
 	}
 
 	/**
-	 * @return int the hitPointType
+	 * @return the hitPointType
 	 */
 	public int getHitPointType() {
 		return hitPointType;
 	}
 
 	/**
-	 * @param int the hitPointType to set
+	 * @param hitPointType the hitPointType to set
 	 */
 	public void setHitPointType(int hitPointType) {
 		this.hitPointType = hitPointType;
 	}
 
 	/**
-	 * @return boolean the showUnarmedStrike
+	 * @return the showUnarmedStrike
 	 */
 	public boolean isShowUnarmedStrike() {
 		return showUnarmedStrike;
 	}
 
 	/**
-	 * @param boolean the showUnarmedStrike to set
+	 * @param showUnarmedStrike the showUnarmedStrike to set
 	 */
 	public void setShowUnarmedStrike(boolean showUnarmedStrike) {
 		this.showUnarmedStrike = showUnarmedStrike;
 	}
 
 	/**
-	 * @return boolean the showCompanions
+	 * @return the showCompanions
 	 */
 	public boolean isShowCompanions() {
 		return showCompanions;
 	}
 
 	/**
-	 * @param boolean the showCompanions to set
+	 * @param showCompanions the showCompanions to set
 	 */
 	public void setShowCompanions(boolean showCompanions) {
 		this.showCompanions = showCompanions;
 	}
 
 	/**
-	 * @return boolean the showWildShape
+	 * @return the showWildShape
 	 */
 	public boolean isShowWildShape() {
 		return showWildShape;
 	}
 
 	/**
-	 * @param boolean the showWildShape to set
+	 * @param showWildShape the showWildShape to set
 	 */
 	public void setShowWildShape(boolean showWildShape) {
 		this.showWildShape = showWildShape;
 	}
 
 	/**
-	 * @return int the primarySense
+	 * @return the primarySense
 	 */
 	public int getPrimarySense() {
 		return primarySense;
 	}
 
 	/**
-	 * @param int the primarySense to set
+	 * @param primarySense the primarySense to set
 	 */
 	public void setPrimarySense(int primarySense) {
 		this.primarySense = primarySense;
 	}
 
 	/**
-	 * @return int the primaryMovement
+	 * @return the primaryMovement
 	 */
 	public int getPrimaryMovement() {
 		return primaryMovement;
 	}
 
 	/**
-	 * @param int the primaryMovement to set
+	 * @param primaryMovement the primaryMovement to set
 	 */
 	public void setPrimaryMovement(int primaryMovement) {
 		this.primaryMovement = primaryMovement;
 	}
 
 	/**
-	 * @return int the privacyType
+	 * @return the privacyType
 	 */
 	public int getPrivacyType() {
 		return privacyType;
 	}
 
 	/**
-	 * @param int the privacyType to set
+	 * @param privacyType the privacyType to set
 	 */
 	public void setPrivacyType(int privacyType) {
 		this.privacyType = privacyType;
 	}
 
 	/**
-	 * @return int the sharingType
+	 * @return the sharingType
 	 */
 	public int getSharingType() {
 		return sharingType;
 	}
 
 	/**
-	 * @param int the sharingType to set
+	 * @param sharingType the sharingType to set
 	 */
 	public void setSharingType(int sharingType) {
 		this.sharingType = sharingType;
 	}
 
 	/**
-	 * @return int the abilityScoreDisplayType
+	 * @return the abilityScoreDisplayType
 	 */
 	public int getAbilityScoreDisplayType() {
 		return abilityScoreDisplayType;
 	}
 
 	/**
-	 * @param int the abilityScoreDisplayType to set
+	 * @param abilityScoreDisplayType the abilityScoreDisplayType to set
 	 */
 	public void setAbilityScoreDisplayType(int abilityScoreDisplayType) {
 		this.abilityScoreDisplayType = abilityScoreDisplayType;
 	}
 
 	/**
-	 * @return boolean the enforceFeatRules
+	 * @return the enforceFeatRules
 	 */
 	public boolean isEnforceFeatRules() {
 		return enforceFeatRules;
 	}
 
 	/**
-	 * @param boolean the enforceFeatRules to set
+	 * @param enforceFeatRules the enforceFeatRules to set
 	 */
 	public void setEnforceFeatRules(boolean enforceFeatRules) {
 		this.enforceFeatRules = enforceFeatRules;
 	}
 
 	/**
-	 * @return boolean the enforceMulticlassRules
+	 * @return the enforceMulticlassRules
 	 */
 	public boolean isEnforceMulticlassRules() {
 		return enforceMulticlassRules;
 	}
 
 	/**
-	 * @param boolean the enforceMulticlassRules to set
+	 * @param enforceMulticlassRules the enforceMulticlassRules to set
 	 */
 	public void setEnforceMulticlassRules(boolean enforceMulticlassRules) {
 		this.enforceMulticlassRules = enforceMulticlassRules;
@@ -250,5 +250,6 @@ public class DndBeyondPreferences {
 				+ ", abilityScoreDisplayType=" + abilityScoreDisplayType + ", enforceFeatRules=" + enforceFeatRules
 				+ ", enforceMulticlassRules=" + enforceMulticlassRules + "]";
 	}
+	
 	
 }

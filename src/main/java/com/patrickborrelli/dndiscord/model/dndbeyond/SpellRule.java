@@ -24,84 +24,84 @@ public class SpellRule {
 	}
 
 	/**
-	 * @return int the multiClassSpellSlotDivisor
+	 * @return the multiClassSpellSlotDivisor
 	 */
 	public int getMultiClassSpellSlotDivisor() {
 		return multiClassSpellSlotDivisor;
 	}
 
 	/**
-	 * @param int the multiClassSpellSlotDivisor to set
+	 * @param multiClassSpellSlotDivisor the multiClassSpellSlotDivisor to set
 	 */
 	public void setMultiClassSpellSlotDivisor(int multiClassSpellSlotDivisor) {
 		this.multiClassSpellSlotDivisor = multiClassSpellSlotDivisor;
 	}
 
 	/**
-	 * @return int the multiClassSpellSlotRounding
+	 * @return the multiClassSpellSlotRounding
 	 */
 	public int getMultiClassSpellSlotRounding() {
 		return multiClassSpellSlotRounding;
 	}
 
 	/**
-	 * @param int the multiClassSpellSlotRounding to set
+	 * @param multiClassSpellSlotRounding the multiClassSpellSlotRounding to set
 	 */
 	public void setMultiClassSpellSlotRounding(int multiClassSpellSlotRounding) {
 		this.multiClassSpellSlotRounding = multiClassSpellSlotRounding;
 	}
 
 	/**
-	 * @return boolean the isRitualSpellCaster
+	 * @return the isRitualSpellCaster
 	 */
 	public boolean isRitualSpellCaster() {
 		return isRitualSpellCaster;
 	}
 
 	/**
-	 * @param boolean the isRitualSpellCaster to set
+	 * @param isRitualSpellCaster the isRitualSpellCaster to set
 	 */
 	public void setRitualSpellCaster(boolean isRitualSpellCaster) {
 		this.isRitualSpellCaster = isRitualSpellCaster;
 	}
 
 	/**
-	 * @return int[] the levelCantripsKnownMaxes
+	 * @return the levelCantripsKnownMaxes
 	 */
 	public int[] getLevelCantripsKnownMaxes() {
 		return levelCantripsKnownMaxes;
 	}
 
 	/**
-	 * @param int[] the levelCantripsKnownMaxes to set
+	 * @param levelCantripsKnownMaxes the levelCantripsKnownMaxes to set
 	 */
 	public void setLevelCantripsKnownMaxes(int[] levelCantripsKnownMaxes) {
 		this.levelCantripsKnownMaxes = levelCantripsKnownMaxes;
 	}
 
 	/**
-	 * @return int[] the levelSpellKnownMaxes
+	 * @return the levelSpellKnownMaxes
 	 */
 	public int[] getLevelSpellKnownMaxes() {
 		return levelSpellKnownMaxes;
 	}
 
 	/**
-	 * @param int[] the levelSpellKnownMaxes to set
+	 * @param levelSpellKnownMaxes the levelSpellKnownMaxes to set
 	 */
 	public void setLevelSpellKnownMaxes(int[] levelSpellKnownMaxes) {
 		this.levelSpellKnownMaxes = levelSpellKnownMaxes;
 	}
 
 	/**
-	 * @return int[][] the levelSpellSlots
+	 * @return the levelSpellSlots
 	 */
 	public int[][] getLevelSpellSlots() {
 		return levelSpellSlots;
 	}
 
 	/**
-	 * @param int[][] the levelSpellSlots to set
+	 * @param levelSpellSlots the levelSpellSlots to set
 	 */
 	public void setLevelSpellSlots(int[][] levelSpellSlots) {
 		this.levelSpellSlots = levelSpellSlots;
@@ -114,4 +114,5 @@ public class SpellRule {
 				+ ", levelCantripsKnownMaxes=" + Arrays.toString(levelCantripsKnownMaxes) + ", levelSpellKnownMaxes="
 				+ Arrays.toString(levelSpellKnownMaxes) + ", levelSpellSlots=" + Arrays.toString(levelSpellSlots) + "]";
 	}
+
 }

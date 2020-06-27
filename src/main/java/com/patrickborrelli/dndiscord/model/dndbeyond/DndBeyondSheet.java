@@ -17,14 +17,14 @@ public class DndBeyondSheet {
 	}
 
 	/**
-	 * @return CharacterRecord the character
+	 * @return the character
 	 */
 	public CharacterRecord getCharacter() {
 		return character;
 	}
 
 	/**
-	 * @param CharacterRecord the character to set
+	 * @param character the character to set
 	 */
 	public void setCharacter(CharacterRecord character) {
 		this.character = character;
