@@ -1,12 +1,9 @@
 package com.patrickborrelli.dndiscord;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.patrickborrelli.dndiscord.mechanics.DieType;
-import com.patrickborrelli.dndiscord.mechanics.PrimaryEquation;
 
 /**
  * Unit test for simple App.

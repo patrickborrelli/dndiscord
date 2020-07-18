@@ -1,0 +1,1 @@
+package com.patrickborrelli.dndiscord.model;

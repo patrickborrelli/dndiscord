@@ -18,6 +18,8 @@ import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 /**
  * Command class to handle all types of dice rolling
  * commands issued to the DnDiscord bot.
+ * 
+ * @author Patrick Borrelli
  */
 public class RollCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(RollCommand.class);

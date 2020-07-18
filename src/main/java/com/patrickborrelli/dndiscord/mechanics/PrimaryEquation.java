@@ -45,38 +45,54 @@ public class PrimaryEquation {
 	public PrimaryEquation() {
 		
 	}
-
+	
 	/**
-	 * Full constructor
+	 * Full constructor.
 	 * 
-	 * @param count
-	 * @param die
-	 * @param modifier
-	 * @param keep
-	 * @param drop
-	 * @param reroll
-	 * @param keepDirection
-	 * @param dropDirection
-	 * @param keepCount
-	 * @param dropCount
-	 * @param rerollValue
+	 * @param positive a boolean indication of
+	 * 	whether or not this term is positive.
+	 * @param count the count to set
+	 * @param constant the constant to set
+	 * @param die the die to set
+	 * @param nonStandardDieSides the nonStandardDieSides to set
+	 * @param modifier the modifier to set
+	 * @param keep an indication of whether to keep
+	 * @param drop an indication of whether to drop
+	 * @param reroll an indication of whether to reroll
+	 * @param critd an indication of whether to critd
+	 * @param critr an indiction of whether to critr
+	 * @param keepDirection the direction indicator for keep 
+	 * @param dropDirection the direction indicator for drop
+	 * @param keepCount the count to keep
+	 * @param dropCount the count to drop
+	 * @param rerollValue the value of a reroll
+	 * @param result the total result value
+	 * @param resultString a string representation of the total
 	 */
-	public PrimaryEquation(boolean positive, int count, DieType die, int modifier, boolean keep, boolean drop, boolean reroll,
-			int keepDirection, int dropDirection, int keepCount, int dropCount, int rerollValue) {
+	public PrimaryEquation(boolean positive, int count, int constant, DieType die, int nonStandardDieSides,
+			int modifier, boolean keep, boolean drop, boolean reroll, boolean critd, boolean critr, int keepDirection,
+			int dropDirection, int keepCount, int dropCount, int rerollValue, int result, String resultString) {
+		super();
 		this.positive = positive;
 		this.count = count;
+		this.constant = constant;
 		this.die = die;
+		this.nonStandardDieSides = nonStandardDieSides;
 		this.modifier = modifier;
 		this.keep = keep;
 		this.drop = drop;
 		this.reroll = reroll;
+		this.critd = critd;
+		this.critr = critr;
 		this.keepDirection = keepDirection;
 		this.dropDirection = dropDirection;
 		this.keepCount = keepCount;
 		this.dropCount = dropCount;
 		this.rerollValue = rerollValue;
+		this.result = result;
+		this.resultString = resultString;
 	}
-	
+
 	/**
 	 * Method will solve the primary equation based on the
 	 * current value of its private member variables and store

@@ -1,8 +1,11 @@
 package com.patrickborrelli.dndiscord.listeners;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.entity.message.Message;
+import org.javacord.api.entity.message.MessageAttachment;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.javacord.api.listener.message.MessageCreateListener;
 
@@ -41,6 +44,12 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 	public void onMessageCreate(MessageCreateEvent event) {
 		Message message = event.getMessage();
 		LOGGER.debug("Received message: " + message.toString());
+		List<MessageAttachment> attachments = message.getAttachments();
+		if(attachments != null && attachments.size() > 0) {
+			for(MessageAttachment file : attachments) {
+				LOGGER.debug("Recieved file attachment: " + file.getFileName());
+			}
+		}
 		String[] messageArgs = message.getContent().split(" ");
 		boolean isRealUser = !message.getAuthor().isBotUser();
 		String command = stripPrefix(messageArgs[0]);
@@ -70,6 +79,13 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 					case CommandUtil.R:
 						LOGGER.debug("Handling Roll message.");
 						executor = router.getCommandExecutor(CommandUtil.ROLL);
+						if(null != executor) executor.onCommand(message);
+						break;
+						
+					case CommandUtil.DNDBEYOND:
+					case CommandUtil.SHEET:
+						LOGGER.debug("Handling sheet command message.");
+						executor = router.getCommandExecutor(CommandUtil.SHEET);
 						if(null != executor) executor.onCommand(message);
 						break;
 						

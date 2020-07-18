@@ -13,6 +13,8 @@ public class CommandUtil {
 	public static final String ROLL = "ROLL";
 	public static final String R = "R";
 	public static final String ADMIN = "ADMIN";
+	public static final String DNDBEYOND = "DNDBEYOND";
+	public static final String SHEET = "SHEET";
 	
 	/**
 	 * subcommands
