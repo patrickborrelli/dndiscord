@@ -38,7 +38,7 @@ public class SheetCommand implements CommandExecutor {
 		DndBeyondSheet sheet = null;
 		//TODO: need to store currently loaded characters in a CharacterModel, along with indication of currently active character:
 		List<DndBeyondSheet> characters = new ArrayList<>();
-		
+		attachments = msg.getAttachments();
 		ObjectMapper mapper = new ObjectMapper();
 		LOGGER.debug("Received Sheet Command message: " + msg.getContent() + " with " + attachments.size() + " attachments");
 		
