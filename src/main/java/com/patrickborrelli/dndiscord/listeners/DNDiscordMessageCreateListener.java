@@ -1,11 +1,14 @@
 package com.patrickborrelli.dndiscord.listeners;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageAttachment;
+import org.javacord.api.entity.message.MessageAuthor;
+import org.javacord.api.entity.user.User;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.javacord.api.listener.message.MessageCreateListener;
 
@@ -53,6 +56,16 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 		String[] messageArgs = message.getContent().split(" ");
 		boolean isRealUser = !message.getAuthor().isBotUser();
 		String command = stripPrefix(messageArgs[0]);
+		
+		//check to get user who authored message:
+		MessageAuthor author = message.getAuthor();
+		Optional<User> optUser = author.asUser();
+		User currentUser = null;
+		if(optUser.isPresent()) currentUser = optUser.get();
+		
+		if(currentUser != null) {
+			LOGGER.debug("Message sent by user: " + currentUser.toString());
+		}
 		
 		if(isRealUser && isMyMessage(message)) {		
 			try {	
