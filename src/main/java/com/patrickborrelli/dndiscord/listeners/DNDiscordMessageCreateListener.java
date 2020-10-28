@@ -95,10 +95,15 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 						if(null != executor) executor.onCommand(message);
 						break;
 						
-					case CommandUtil.DNDBEYOND:
 					case CommandUtil.SHEET:
 						LOGGER.debug("Handling sheet command message.");
 						executor = router.getCommandExecutor(CommandUtil.SHEET);
+						if(null != executor) executor.onCommand(message);
+						break;
+						
+					case CommandUtil.IMPORT:
+						LOGGER.debug("Handling import command message.");
+						executor = router.getCommandExecutor(CommandUtil.IMPORT);
 						if(null != executor) executor.onCommand(message);
 						break;
 						

@@ -41,8 +41,6 @@ public class DNDiscordMain {
 			System.err.println("Failed to initiate DNDiscord. " + mevEx.getLocalizedMessage());
 			mevEx.printStackTrace();
 			LOGGER.error("Failed to initiate DNDiscord. " + mevEx.getLocalizedMessage());
-		}
-
-        
+		}        
     }
 }
