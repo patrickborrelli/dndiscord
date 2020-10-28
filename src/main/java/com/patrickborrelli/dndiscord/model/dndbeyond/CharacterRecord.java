@@ -56,7 +56,7 @@ public class CharacterRecord {
 	private CharacterTraits traits;
 	private DndBeyondPreferences preferences;
 	private String lifestyle;
-	//private Item[] inventory;
+	private Item[] inventory;
 	private Coinpurse currencies;
 	private CharacterClass[] classes;
 	//private Feat[] feats;
@@ -65,7 +65,7 @@ public class CharacterRecord {
 	private String[] customSpeeds;
 	private String[] customProficiencies;
 	private String spellDefenses;
-	private String[] customActions;
+	private CustomAction[] customActions;
 	private CharacterValue[] characterValues;
 	private String[] conditions;
 	private DeathSaveRecord deathSaves;
@@ -782,14 +782,14 @@ public class CharacterRecord {
 	/**
 	 * @return the customActions
 	 */
-	public String[] getCustomActions() {
+	public CustomAction[] getCustomActions() {
 		return customActions;
 	}
 
 	/**
 	 * @param customActions the customActions to set
 	 */
-	public void setCustomActions(String[] customActions) {
+	public void setCustomActions(CustomAction[] customActions) {
 		this.customActions = customActions;
 	}
 
@@ -892,6 +892,20 @@ public class CharacterRecord {
 	}
 
 	/**
+	 * @return the inventory
+	 */
+	public Item[] getInventory() {
+		return inventory;
+	}
+
+	/**
+	 * @param inventory the inventory to set
+	 */
+	public void setInventory(Item[] inventory) {
+		this.inventory = inventory;
+	}
+
+	/**
 	 * @return the spells
 	 */
 	public Spellbook getSpells() {
@@ -922,14 +936,17 @@ public class CharacterRecord {
 				+ alignmentId + ", lifestyleId=" + lifestyleId + ", stats=" + Arrays.toString(stats) + ", bonusStats="
 				+ Arrays.toString(bonusStats) + ", overrideStats=" + Arrays.toString(overrideStats) + ", background="
 				+ background + ", race=" + race + ", notes=" + notes + ", traits=" + traits + ", preferences="
-				+ preferences + ", lifestyle=" + lifestyle + ", currencies=" + currencies + ", classes="
-				+ Arrays.toString(classes) + ", customDefenseAdjustments=" + Arrays.toString(customDefenseAdjustments)
-				+ ", customSenses=" + Arrays.toString(customSenses) + ", customSpeeds=" + Arrays.toString(customSpeeds)
-				+ ", customProficiencies=" + Arrays.toString(customProficiencies) + ", spellDefenses=" + spellDefenses
-				+ ", customActions=" + Arrays.toString(customActions) + ", characterValues="
-				+ Arrays.toString(characterValues) + ", conditions=" + Arrays.toString(conditions) + ", deathSaves="
-				+ deathSaves + ", adjustmentXp=" + adjustmentXp + ", spellSlots=" + Arrays.toString(spellSlots)
-				+ ", pactMagic=" + Arrays.toString(pactMagic) + ", activeSourceCategories="
-				+ Arrays.toString(activeSourceCategories) + ", spells=" + spells + "]";
+				+ preferences + ", lifestyle=" + lifestyle + ", inventory=" + Arrays.toString(inventory)
+				+ ", currencies=" + currencies + ", classes=" + Arrays.toString(classes) + ", customDefenseAdjustments="
+				+ Arrays.toString(customDefenseAdjustments) + ", customSenses=" + Arrays.toString(customSenses)
+				+ ", customSpeeds=" + Arrays.toString(customSpeeds) + ", customProficiencies="
+				+ Arrays.toString(customProficiencies) + ", spellDefenses=" + spellDefenses + ", customActions="
+				+ Arrays.toString(customActions) + ", characterValues=" + Arrays.toString(characterValues)
+				+ ", conditions=" + Arrays.toString(conditions) + ", deathSaves=" + deathSaves + ", adjustmentXp="
+				+ adjustmentXp + ", spellSlots=" + Arrays.toString(spellSlots) + ", pactMagic="
+				+ Arrays.toString(pactMagic) + ", activeSourceCategories=" + Arrays.toString(activeSourceCategories)
+				+ ", spells=" + spells + "]";
 	}
+	
+	
 }
