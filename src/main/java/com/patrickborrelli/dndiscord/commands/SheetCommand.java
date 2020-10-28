@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +16,6 @@ import org.javacord.api.entity.message.embed.EmbedBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
-import com.patrickborrelli.dndiscord.model.dndbeyond.CharacterRecord;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
 
 /**
@@ -62,11 +60,11 @@ public class SheetCommand implements CommandExecutor {
 	
 	private void buildSheetEmbed(Message msg, DndBeyondSheet sheet) {
 		EmbedBuilder embed = new EmbedBuilder()
-			.setTitle(sheet.getCharacter().getName())
+			.setTitle(sheet.getName())
 			.setDescription("DnDiscord is a multifaceted D&D 5e utility bot designed to enable you and your party a seamless online D&D experience.")
 		    .setColor(Color.GREEN)
 		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
-		    .setThumbnail(sheet.getCharacter().getAvatarUrl().toString());
+		    .setThumbnail(sheet.getAvatarUrl().toString());
 		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);		
 	}
 }
