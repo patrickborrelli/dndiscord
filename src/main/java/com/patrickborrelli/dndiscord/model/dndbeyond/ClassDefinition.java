@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClassDefinition {
+	
 	private long id;
 	private String name;
 	private String description;

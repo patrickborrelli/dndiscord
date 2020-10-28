@@ -13,11 +13,16 @@ public class CommandUtil {
 	public static final String ROLL = "ROLL";
 	public static final String R = "R";
 	public static final String ADMIN = "ADMIN";
-	public static final String DNDBEYOND = "DNDBEYOND";
 	public static final String SHEET = "SHEET";
+	public static final String IMPORT = "IMPORT";
 	
 	/**
 	 * subcommands
 	 */
 	public static final String RESET = "RESET";
+	
+	/**
+	 * import sources
+	 */
+	public static final String BEYOND = "BEYOND";
 }
