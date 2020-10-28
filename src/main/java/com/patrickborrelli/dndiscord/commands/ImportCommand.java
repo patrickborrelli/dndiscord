@@ -74,7 +74,7 @@ public class ImportCommand implements CommandExecutor {
 	private void buildSheetEmbed(Message msg, DndBeyondSheet sheet) {
 		EmbedBuilder embed = new EmbedBuilder()
 			.setTitle(sheet.getName())
-			.setDescription("DnDiscord is a multifaceted D&D 5e utility bot designed to enable you and your party a seamless online D&D experience.")
+			.setDescription("DnDiscord successfully imported character: " + sheet.getName())
 		    .setColor(Color.GREEN)
 		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
 		    .setThumbnail(sheet.getAvatarUrl().toString());
