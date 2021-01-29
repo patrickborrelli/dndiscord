@@ -4,28 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.TokenResponse;
-import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
 
 /**
  * Singleton instance responsible for adding, modifying, and deleting 
@@ -77,19 +65,62 @@ public class WebserviceManager {
 		
 		LOGGER.debug("Making call to API: " + buf.toString());
 		
-		NodeList nodes = getResultSet(buf.toString(), "");	
-		if(nodes == null) {
-			LOGGER.debug("No results returned.");
-			return null;
-		} else {
-			LOGGER.debug("Got results " + nodes.toString());
-			List<DiscordUser> users = NodeConverter.convertDiscordUser(nodes);
-			if(users != null && users.size() > 0) {
-				return users.get(0);
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		ObjectMapper mapper = new ObjectMapper();
+		DiscordUser user = null;
+		
+		try {
+			URL obj = new URL(buf.toString());
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			int responseCode = con.getResponseCode();			
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				//print in String
+				LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
 			} else {
-				return null;
-			}
-		}
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				//handle case where user does not currently exist:
+				if(response.toString().equalsIgnoreCase("null")) {
+					LOGGER.debug("Received a null response");
+				} else {
+					//print response:
+					LOGGER.debug(response.toString());
+					user = mapper.readValue(response.toString(), DiscordUser.class);					
+				}
+				
+				in.close();
+				con.disconnect();
+			}		
+		} catch(MalformedURLException murl) {
+			LOGGER.debug(murl.getMessage());
+			murl.printStackTrace();
+		} catch(IOException ioex) {
+			LOGGER.debug(ioex.getMessage());
+			ioex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		return user;
 	}
 	
 	private String getToken() {
@@ -176,25 +207,64 @@ public class WebserviceManager {
 		return result.toString();
 	}
 	
-	private DiscordUser createUser(String id, String username, String discriminator, 
-			String avatar, boolean bot, boolean system, boolean mfaEnabled, 
-			String locale, boolean verified, String email, int flags, int premiumType, 
-			int publicFlags) {
+	private DiscordUser retrieveCreateUserResponse(String response) {
+		DiscordUser user = null;
 		
-		return null;		
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			user = mapper.readValue(response, DiscordUser.class);
+		} catch (JsonMappingException e) {
+			LOGGER.error(e);
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			LOGGER.error(e);
+			e.printStackTrace();
+		}		
+		return user;
 	}
 	
-	private NodeList getResultSet(String url, String nodeName) {
-		NodeList result = null;
+	/**
+	 * Creates the DiscordUser in the datastore.
+	 *  
+	 * @param id
+	 * @param username
+	 * @param discriminator
+	 * @param avatar
+	 * @param bot
+	 * @param system
+	 * @return the DiscordUser or null if one could not be created.
+	 */
+	public DiscordUser createUser(
+			String id, String username, String discriminator, 
+			String avatar, boolean bot, boolean system) {
+		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
+		DiscordUser result = null;
+		
+		final String POST_PARAMS = "{\n\t" + "\"discord_id\": \"" + id + "\",\n" +
+				   "\t" + "\"username\": \"" + username + "\",\n" + 
+				   "\t" + "\"discriminator\": \"" + discriminator + "\",\n" + 
+				   "\t" + "\"avatar_hash\": \"" + avatar + "\",\n" + 
+				   "\t" + "\"bot\": \"" + bot + "\",\n" + 
+				   "\t" + "\"password\": \"" + "nonsense" + "\",\n" + 
+				   "\t" + "\"system_user\": \"" + system + "\"\n}";
+		
+		LOGGER.debug("Using parameters: " + POST_PARAMS);
 		
 		try {
-			URL obj = new URL(url);
+			URL obj = new URL(CREATE_USER_URL);
 			con = (HttpURLConnection) obj.openConnection();
-			con.setRequestMethod("GET");
+			con.setRequestMethod("POST");
 			con.setRequestProperty("Content-Type", "application/json");
 			con.setRequestProperty("x-access-token", TOKEN);
+			con.setDoOutput(true);
+			
+			OutputStream os = con.getOutputStream();
+			os.write(POST_PARAMS.getBytes());
+			os.flush();
+			os.close();
+				
 			int responseCode = con.getResponseCode();
 			
 			if(responseCode != HttpURLConnection.HTTP_OK) {
@@ -205,13 +275,11 @@ public class WebserviceManager {
 					errorResponse.append(inputLine);
 				}
 				
-				//print in String
-				LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				LOGGER.error("Error while creating user: " + errorResponse.toString());
 				in.close();
 				con.disconnect();
 				throw new IOException(errorResponse.toString());
 			} else {
-				LOGGER.debug("Response Code : " + responseCode);
 				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 				String inputLine;
 				StringBuffer response = new StringBuffer();
@@ -219,22 +287,8 @@ public class WebserviceManager {
 					response.append(inputLine);
 				}
 				
-				//handle case where user does not currently exist:
-				if(response.toString().equalsIgnoreCase("null")) {
-					LOGGER.debug("Received a null response");
-				} else {
-					//print response:
-					LOGGER.debug(response.toString());
-					Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-							.parse(new InputSource(new StringReader(response.toString())));
-					
-					if(nodeName != null) {
-						result = doc.getElementsByTagName(nodeName);
-					} else {
-						result = doc.getElementsByTagName("*");
-					}
-				}
-				
+				LOGGER.debug(response.toString());
+				result = retrieveCreateUserResponse(response.toString());			
 				in.close();
 				con.disconnect();
 			}		
@@ -244,9 +298,8 @@ public class WebserviceManager {
 		} catch(IOException ioex) {
 			LOGGER.debug(ioex.getMessage());
 			ioex.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
+		}
+
 		return result;
-	}
+	}		
 }

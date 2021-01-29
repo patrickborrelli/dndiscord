@@ -10,6 +10,7 @@ import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageAttachment;
 import org.javacord.api.entity.message.MessageAuthor;
 import org.javacord.api.entity.user.User;
+import org.javacord.api.entity.user.UserFlag;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.javacord.api.listener.message.MessageCreateListener;
 
@@ -75,7 +76,17 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 				user = wsManager.getUser(String.valueOf(currentUser.getId()));
 				if(user == null) {
 					//no user found so create one:
-					
+					LOGGER.error("Could not find user.  Must create one.");
+					user = wsManager.createUser(
+							String.valueOf(currentUser.getId()), 
+							currentUser.getName(), 
+							currentUser.getDiscriminator(), 
+							String.valueOf(currentUser.getAvatar().hashCode()), 
+							currentUser.isBot(), 
+							currentUser.getUserFlags().contains(UserFlag.SYSTEM));
+					LOGGER.debug("Created user: " + user.toString());
+				} else {
+					LOGGER.debug("Retrieved existing user: " + user.toString());
 				}
 			}
 		}	
