@@ -8,6 +8,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.patrickborrelli.dndiscord.exceptions.MalformedEquationException;
+
 /**
  * Class to represent mechanics of an equation for rolling dice.
  * 
@@ -98,8 +100,12 @@ public class PrimaryEquation {
 	 * current value of its private member variables and store
 	 * both the total sum, and a string representation of the 
 	 * completed calculation in appropriate member variables.
+	 * 
+	 * @throws MalformedEquationException if the format of the 
+	 *  primary equation does not have a die type.
 	 */
-	public void solveEquation() {
+	public void solveEquation() throws MalformedEquationException {
+		if(die == null) throw new MalformedEquationException("Cannot compute malformed equation, die type not provided.  See -help roll.");
 		Dice diceRoller = new Dice();
 		List<Token> rolls = new ArrayList<>();
 		int currentResult = 0;
