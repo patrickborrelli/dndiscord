@@ -13,6 +13,7 @@ import org.javacord.api.entity.user.User;
 
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
+import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 
@@ -50,7 +51,8 @@ public class HelpCommand implements CommandExecutor {
 			"**roll XdY+/-Z[critd|critr]** - optional roll modifiers.\n" + 
 			"***__critd__*** - critical hit, double the dice rolled.\n" +
 			"***__critr__*** - critical hit, double the rolled result.\n" +
-			"***roll repeat(<A>, <B>*** - repeatedly calculate expression A, B times.\n";
+			"***roll repeat(<A>, <B>)*** - repeatedly calculate expression A, B times.\n" +
+			"***roll save(<A>, <B>)*** - saves roll A with name B.\n";
 	
 	private static final String ROLL_EXAMPLE_TEXT = 
 			"**1d8+5** - rolls a d8 and adds a modifier of 5\n" +
@@ -61,7 +63,8 @@ public class HelpCommand implements CommandExecutor {
 			"**1d8+6 critd** - rolls critical hit, doubles the dice rolled\n" +
 			"**1d8+6 critr** - rolls critical hit, doubles the dice result rolled\n" +
 			"**1d8+6 + 2d6** - combined roll expressions\n" +
-			"**repeat(4d6k3, 6)** - generate 6 results, perhaps for character creation.\n";
+			"**repeat(4d6k3, 6)** - generate 6 results, perhaps for character creation.\n" +
+			"**save(4d6kh3, statroll)** - saves function 4d6kh3 which can now be run using [roll $statroll].\n";
 	
 	private static final String PREFIX_TEXT = 
 			"**prefix** <<new prefix characters>>\n" +
@@ -73,7 +76,7 @@ public class HelpCommand implements CommandExecutor {
 	}
 
 	@Override
-	public void onCommand(Message msg) throws CommandProcessingException {
+	public void onCommand(Message msg, DiscordUser user) throws CommandProcessingException {
 		TextChannel channel = msg.getChannel();
 		String[] args = msg.getContent().split(" ");
 		

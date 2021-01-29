@@ -8,6 +8,7 @@ import org.javacord.api.entity.message.Message;
 
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
+import com.patrickborrelli.dndiscord.model.DiscordUser;
 
 /**
  * Command class to handle all types of ping commands
@@ -18,7 +19,7 @@ import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 public class PingCommand implements CommandExecutor {
 
 	@Override
-	public void onCommand(Message msg) throws CommandProcessingException {
+	public void onCommand(Message msg, DiscordUser user) throws CommandProcessingException {
 		TextChannel channel = msg.getChannel();
 		String[] args = msg.getContent().split(" ");
 		

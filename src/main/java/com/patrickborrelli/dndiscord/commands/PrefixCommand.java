@@ -15,6 +15,7 @@ import com.patrickborrelli.dndiscord.DNDiscordMain;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.exceptions.MissingEnvironmentVarException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
+import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
 import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
 
@@ -43,7 +44,7 @@ public class PrefixCommand implements CommandExecutor {
 	}
 
 	@Override
-	public void onCommand(Message msg) throws CommandProcessingException {
+	public void onCommand(Message msg, DiscordUser user) throws CommandProcessingException {
 		TextChannel channel = msg.getChannel();
 		String[] args = msg.getContent().split(" ");
 		String currentPrefix = configUtil.getBotPrefix();

@@ -15,6 +15,7 @@ import org.javacord.api.entity.message.embed.EmbedBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
+import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 
@@ -29,7 +30,7 @@ public class ImportCommand implements CommandExecutor {
 	private List<MessageAttachment> attachments;
 
 	@Override
-	public void onCommand(Message msg) throws CommandProcessingException {
+	public void onCommand(Message msg, DiscordUser user) throws CommandProcessingException {
 		TextChannel channel = msg.getChannel();
 		String[] args = msg.getContent().split(" ");
 		

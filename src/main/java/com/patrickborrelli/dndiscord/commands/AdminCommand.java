@@ -13,6 +13,7 @@ import org.javacord.api.entity.user.User;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.exceptions.MissingEnvironmentVarException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
+import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
@@ -42,7 +43,7 @@ public class AdminCommand implements CommandExecutor {
 	}
 
 	@Override
-	public void onCommand(Message msg) throws CommandProcessingException {
+	public void onCommand(Message msg, DiscordUser user) throws CommandProcessingException {
 		String[] args = msg.getContent().split(" ");
 		String primaryToken = args.length > 0 ? args[1].toUpperCase() : null;
 		String secondaryToken = args.length > 1 ? args[2].toUpperCase() : null;
