@@ -1,5 +1,6 @@
 package com.patrickborrelli.dndiscord.listeners;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,8 @@ import com.patrickborrelli.dndiscord.commands.CommandExecutor;
 import com.patrickborrelli.dndiscord.commands.CommandExecutorRouter;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.exceptions.MissingEnvironmentVarException;
+import com.patrickborrelli.dndiscord.model.DiscordUser;
+import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
@@ -31,12 +34,14 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 	private static final Logger LOGGER = LogManager.getLogger(DNDiscordMessageCreateListener.class);
 	private CommandExecutorRouter router = CommandExecutorRouter.getInstance();
 	private CommandExecutor executor = null;
+	WebserviceManager wsManager;
 	
 	ConfigurationUtil instance;
 	
 	public DNDiscordMessageCreateListener() {
 		try {
 			instance = ConfigurationUtil.getInstance();
+			wsManager = WebserviceManager.getInstance();
 		} catch (MissingEnvironmentVarException e) {
 			LOGGER.error("Unable to get instance of ConfigurationUtil.");
 			LOGGER.error(e.getStackTrace());
@@ -45,6 +50,7 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 	
 	@Override
 	public void onMessageCreate(MessageCreateEvent event) {
+		DiscordUser user;
 		Message message = event.getMessage();
 		LOGGER.debug("Received message: " + message.toString());
 		List<MessageAttachment> attachments = message.getAttachments();
@@ -65,7 +71,14 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 		
 		if(currentUser != null) {
 			LOGGER.debug("Message sent by user: " + currentUser.toString());
-		}
+			if(isRealUser) {
+				user = wsManager.getUser(String.valueOf(currentUser.getId()));
+				if(user == null) {
+					//no user found so create one:
+					
+				}
+			}
+		}	
 		
 		if(isRealUser && isMyMessage(message)) {		
 			try {	
