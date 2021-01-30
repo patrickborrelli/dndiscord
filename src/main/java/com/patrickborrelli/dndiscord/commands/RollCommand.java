@@ -16,6 +16,7 @@ import com.patrickborrelli.dndiscord.mechanics.DieType;
 import com.patrickborrelli.dndiscord.mechanics.PrimaryEquation;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
+import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
 
 /**
  * Command class to handle all types of dice rolling
@@ -37,6 +38,8 @@ public class RollCommand implements CommandExecutor {
 	private static final String CRITD = "critd";
 	private static final String CRITR = "critr";
 	private static final String SAVE = "s";
+	
+	WebserviceManager wsManager = WebserviceManager.getInstance();
 
 	/**
 	 * {@inheritDoc}
@@ -86,7 +89,8 @@ public class RollCommand implements CommandExecutor {
 					break;
 					
 				case FORMULA:
-					//TODO: process formula assignment
+					//process saved roll:
+					result.append(buildFormulaResponse(param, user));
 					break;
 					
 				case REPEAT:
@@ -95,7 +99,7 @@ public class RollCommand implements CommandExecutor {
 					break;
 					
 				case SAVE:
-					//TODO: validate roll format and save to user account:
+					//validate roll format and save to user account:
 					result.append(storeSavedRoll(param, user));
 					break;
 					
@@ -104,6 +108,28 @@ public class RollCommand implements CommandExecutor {
 					break;
 			}
 		}						
+		return result.toString();
+	}
+	
+	private String buildFormulaResponse(String param, DiscordUser user) {
+		StringBuilder result = new StringBuilder();
+		boolean formulaHasRepeat = false;
+		String roll = null;
+		String name = param.substring(1);
+		
+		LOGGER.debug("Processing roll request for: " + param);
+		
+		//retrieve user formula:
+		roll = wsManager.getUserFormula(user, name);
+		
+		//confirm whether there is a repeat in the function:
+		if(null != roll) formulaHasRepeat = (roll.substring(0, 1).equalsIgnoreCase(REPEAT));
+		if(formulaHasRepeat) {
+			//call build repeat
+		} else {
+			//call build roll
+		}
+				
 		return result.toString();
 	}
 		
@@ -144,7 +170,7 @@ public class RollCommand implements CommandExecutor {
 		}
 		
 		//at this point our roll formula is valid, so save it and report success or failure to user:
-		
+		result.append(wsManager.addUserFormula(user, roll, name));
 		
 		return result.toString();
 	}
@@ -220,7 +246,6 @@ public class RollCommand implements CommandExecutor {
 		return buf.toString();
 	}
 
-	
 	private boolean isDigit(String character) {
 		return Pattern.matches("\\d", character);
 	}

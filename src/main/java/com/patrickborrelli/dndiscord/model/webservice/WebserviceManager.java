@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
+import com.patrickborrelli.dndiscord.model.Formula;
 import com.patrickborrelli.dndiscord.model.TokenResponse;
 
 /**
@@ -24,13 +25,17 @@ import com.patrickborrelli.dndiscord.model.TokenResponse;
 public class WebserviceManager {
 	private volatile static WebserviceManager instance;
 	private static final Logger LOGGER = LogManager.getLogger(WebserviceManager.class.getName());
+	private static final String ADMIN_USERNAME = System.getenv("DNDISCORD_ADMIN_USER");
+	private static final String ADMIN_CREDENTIALS = System.getenv("DNDISCORD_ADMIN_CREDENTIALS");
+	private static String TOKEN = "";
+	
+	//static URLs
 	private static final String BASE_URL = System.getenv("DNDISCORD_API_BASE");
 	private static final String GET_USER_URL = BASE_URL + "/users/discordUser/";
 	private static final String CREATE_USER_URL = BASE_URL + "/users/register";
 	private static final String LOGIN_URL = BASE_URL + "/users/login";
-	private static final String ADMIN_USERNAME = System.getenv("DNDISCORD_ADMIN_USER");
-	private static final String ADMIN_CREDENTIALS = System.getenv("DNDISCORD_ADMIN_CREDENTIALS");
-	private static String TOKEN = "";
+	private static final String FORMULA_URL = BASE_URL + "/formulae";
+	private static final String QUERY = "?";
 	
 	private WebserviceManager() {
 		TOKEN = getToken();
@@ -50,6 +55,143 @@ public class WebserviceManager {
 			}
 		}
 		return instance;
+	}
+	
+	/**
+	 * Adds a new roll formula for the provided user.
+	 * 
+	 * @param user
+	 * @param formula
+	 * @param name
+	 * @return
+	 */
+	public String addUserFormula(DiscordUser user, String formula, String name) {
+		StringBuilder buff = new StringBuilder();
+		
+		LOGGER.debug("Making call to API: " + FORMULA_URL);
+		
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		ObjectMapper mapper = new ObjectMapper();
+		
+		final String POST_PARAMS = "{\n\t" + "\"user\": \"" + user.getId() + "\",\n" +
+				   "\t" + "\"name\": \"" + name + "\",\n" + 
+				   "\t" + "\"roll\": \"" + formula + "\"\n}";
+		
+		LOGGER.debug("Using parameters: " + POST_PARAMS);
+		
+		try {
+			URL obj = new URL(FORMULA_URL);
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			con.setDoOutput(true);
+			
+			OutputStream os = con.getOutputStream();
+			os.write(POST_PARAMS.getBytes());
+			os.flush();
+			os.close();
+				
+			int responseCode = con.getResponseCode();
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				LOGGER.error("Error while adding formula: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				LOGGER.debug("Saved successfully: " + response.toString());
+				buff.append("User formula: " + formula + " can now be called with roll $" + name);		
+				in.close();
+				con.disconnect();
+			}		
+		} catch(MalformedURLException murl) {
+			LOGGER.debug(murl.getMessage());
+			murl.printStackTrace();
+		} catch(IOException ioex) {
+			LOGGER.debug(ioex.getMessage());
+			ioex.printStackTrace();
+		}
+		return buff.toString();
+	}
+	
+	public String getUserFormula(DiscordUser user, String name) {
+		StringBuilder url = new StringBuilder().append(FORMULA_URL).append(QUERY);
+		url.append("user=" + user.getId() + "&name=" + name);
+		LOGGER.debug("Making call to API: " + url.toString());
+		
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		ObjectMapper mapper = new ObjectMapper();
+		Formula formula = null;
+		
+		try {
+			URL obj = new URL(url.toString());
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			int responseCode = con.getResponseCode();			
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				//print in String
+				LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				//handle case where user does not currently exist:
+				if(response.toString().equalsIgnoreCase("null") || response.toString().equalsIgnoreCase("[]")) {
+					LOGGER.debug("Received a null response");
+				} else {
+					//print response:
+					LOGGER.debug(response.toString());
+					formula = mapper.readValue(response.toString(), Formula.class);					
+				}
+				
+				in.close();
+				con.disconnect();
+			}		
+		} catch(MalformedURLException murl) {
+			LOGGER.debug(murl.getMessage());
+			murl.printStackTrace();
+		} catch(IOException ioex) {
+			LOGGER.debug(ioex.getMessage());
+			ioex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		
+		return (formula == null) ? null : formula.getRoll();
 	}
 	
 	/**
@@ -122,6 +264,86 @@ public class WebserviceManager {
 		}	
 		return user;
 	}
+	
+	/**
+	 * Creates the DiscordUser in the datastore.
+	 *  
+	 * @param id
+	 * @param username
+	 * @param discriminator
+	 * @param avatar
+	 * @param bot
+	 * @param system
+	 * @return the DiscordUser or null if one could not be created.
+	 */
+	public DiscordUser createUser(
+			String id, String username, String discriminator, 
+			String avatar, boolean bot, boolean system) {
+		
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		DiscordUser result = null;
+		
+		final String POST_PARAMS = "{\n\t" + "\"discord_id\": \"" + id + "\",\n" +
+				   "\t" + "\"username\": \"" + username + "\",\n" + 
+				   "\t" + "\"discriminator\": \"" + discriminator + "\",\n" + 
+				   "\t" + "\"avatar_hash\": \"" + avatar + "\",\n" + 
+				   "\t" + "\"bot\": \"" + bot + "\",\n" + 
+				   "\t" + "\"password\": \"" + "nonsense" + "\",\n" + 
+				   "\t" + "\"system_user\": \"" + system + "\"\n}";
+		
+		LOGGER.debug("Using parameters: " + POST_PARAMS);
+		
+		try {
+			URL obj = new URL(CREATE_USER_URL);
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			con.setDoOutput(true);
+			
+			OutputStream os = con.getOutputStream();
+			os.write(POST_PARAMS.getBytes());
+			os.flush();
+			os.close();
+				
+			int responseCode = con.getResponseCode();
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				LOGGER.error("Error while creating user: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				LOGGER.debug(response.toString());
+				result = retrieveCreateUserResponse(response.toString());			
+				in.close();
+				con.disconnect();
+			}		
+		} catch(MalformedURLException murl) {
+			LOGGER.debug(murl.getMessage());
+			murl.printStackTrace();
+		} catch(IOException ioex) {
+			LOGGER.debug(ioex.getMessage());
+			ioex.printStackTrace();
+		}
+
+		return result;
+	}		
 	
 	private String getToken() {
 		StringBuffer result = new StringBuffer();
@@ -223,83 +445,4 @@ public class WebserviceManager {
 		return user;
 	}
 	
-	/**
-	 * Creates the DiscordUser in the datastore.
-	 *  
-	 * @param id
-	 * @param username
-	 * @param discriminator
-	 * @param avatar
-	 * @param bot
-	 * @param system
-	 * @return the DiscordUser or null if one could not be created.
-	 */
-	public DiscordUser createUser(
-			String id, String username, String discriminator, 
-			String avatar, boolean bot, boolean system) {
-		
-		BufferedReader in = null;
-		HttpURLConnection con = null;
-		DiscordUser result = null;
-		
-		final String POST_PARAMS = "{\n\t" + "\"discord_id\": \"" + id + "\",\n" +
-				   "\t" + "\"username\": \"" + username + "\",\n" + 
-				   "\t" + "\"discriminator\": \"" + discriminator + "\",\n" + 
-				   "\t" + "\"avatar_hash\": \"" + avatar + "\",\n" + 
-				   "\t" + "\"bot\": \"" + bot + "\",\n" + 
-				   "\t" + "\"password\": \"" + "nonsense" + "\",\n" + 
-				   "\t" + "\"system_user\": \"" + system + "\"\n}";
-		
-		LOGGER.debug("Using parameters: " + POST_PARAMS);
-		
-		try {
-			URL obj = new URL(CREATE_USER_URL);
-			con = (HttpURLConnection) obj.openConnection();
-			con.setRequestMethod("POST");
-			con.setRequestProperty("Content-Type", "application/json");
-			con.setRequestProperty("x-access-token", TOKEN);
-			con.setDoOutput(true);
-			
-			OutputStream os = con.getOutputStream();
-			os.write(POST_PARAMS.getBytes());
-			os.flush();
-			os.close();
-				
-			int responseCode = con.getResponseCode();
-			
-			if(responseCode != HttpURLConnection.HTTP_OK) {
-				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
-				String inputLine;
-				StringBuffer errorResponse = new StringBuffer();
-				while ((inputLine = in.readLine()) != null) {
-					errorResponse.append(inputLine);
-				}
-				
-				LOGGER.error("Error while creating user: " + errorResponse.toString());
-				in.close();
-				con.disconnect();
-				throw new IOException(errorResponse.toString());
-			} else {
-				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-				String inputLine;
-				StringBuffer response = new StringBuffer();
-				while ((inputLine = in.readLine()) != null) {
-					response.append(inputLine);
-				}
-				
-				LOGGER.debug(response.toString());
-				result = retrieveCreateUserResponse(response.toString());			
-				in.close();
-				con.disconnect();
-			}		
-		} catch(MalformedURLException murl) {
-			LOGGER.debug(murl.getMessage());
-			murl.printStackTrace();
-		} catch(IOException ioex) {
-			LOGGER.debug(ioex.getMessage());
-			ioex.printStackTrace();
-		}
-
-		return result;
-	}		
 }

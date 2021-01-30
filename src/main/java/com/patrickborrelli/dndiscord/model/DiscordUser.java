@@ -13,8 +13,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DiscordUser {
 	
-	@JsonProperty("discord_id")
+	@JsonProperty("_id")
 	private String id;
+	private String discord_id;
 	private String username;
 	private String discriminator;
 	private String avatar;
@@ -24,24 +25,6 @@ public class DiscordUser {
 	//default constructor:
 	public DiscordUser() {
 		
-	}
-
-	/**
-	 * Full constructor
-	 * 
-	 * @param id
-	 * @param username
-	 * @param discriminator
-	 * @param avatar
-	 * @param bot
-	 * @param system
-	 */
-	public DiscordUser(String id, String username, String discriminator, String avatar, boolean bot, boolean system) {
-		this.id = id;
-		this.username = username;
-		this.discriminator = discriminator;
-		this.avatar = avatar;
-		this.bot = bot;
 	}
 
 	/**
@@ -56,6 +39,20 @@ public class DiscordUser {
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return String the discord_id
+	 */
+	public String getDiscord_id() {
+		return discord_id;
+	}
+
+	/**
+	 * @param String the discord_id to set
+	 */
+	public void setDiscord_id(String discord_id) {
+		this.discord_id = discord_id;
 	}
 
 	/**
@@ -134,6 +131,7 @@ public class DiscordUser {
 		int result = 1;
 		result = prime * result + ((avatar == null) ? 0 : avatar.hashCode());
 		result = prime * result + (bot ? 1231 : 1237);
+		result = prime * result + ((discord_id == null) ? 0 : discord_id.hashCode());
 		result = prime * result + ((discriminator == null) ? 0 : discriminator.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + (system ? 1231 : 1237);
@@ -157,6 +155,11 @@ public class DiscordUser {
 			return false;
 		if (bot != other.bot)
 			return false;
+		if (discord_id == null) {
+			if (other.discord_id != null)
+				return false;
+		} else if (!discord_id.equals(other.discord_id))
+			return false;
 		if (discriminator == null) {
 			if (other.discriminator != null)
 				return false;
@@ -179,8 +182,7 @@ public class DiscordUser {
 
 	@Override
 	public String toString() {
-		return "DiscordUser [id=" + id + ", username=" + username + ", discriminator=" + discriminator + ", avatar="
-				+ avatar + ", bot=" + bot + ", system=" + system + "]";
+		return "DiscordUser [id=" + id + ", discord_id=" + discord_id + ", username=" + username + ", discriminator="
+				+ discriminator + ", avatar=" + avatar + ", bot=" + bot + ", system=" + system + "]";
 	}
-
 }
