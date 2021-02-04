@@ -1,13 +1,13 @@
 package com.patrickborrelli.dndiscord.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Model of a user roll formula.
  * 
  * @author Patrick Borrelli
  */
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Formula {
 

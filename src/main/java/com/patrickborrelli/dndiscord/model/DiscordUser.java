@@ -18,8 +18,10 @@ public class DiscordUser {
 	private String discord_id;
 	private String username;
 	private String discriminator;
+	@JsonProperty("avatar_hash")
 	private String avatar;
 	private boolean bot;
+	@JsonProperty("system_user")
 	private boolean system;
 	
 	//default constructor:

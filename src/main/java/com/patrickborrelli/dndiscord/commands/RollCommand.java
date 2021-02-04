@@ -111,7 +111,7 @@ public class RollCommand implements CommandExecutor {
 		return result.toString();
 	}
 	
-	private String buildFormulaResponse(String param, DiscordUser user) {
+	private String buildFormulaResponse(String param, DiscordUser user) throws MalformedEquationException {
 		StringBuilder result = new StringBuilder();
 		boolean formulaHasRepeat = false;
 		String roll = null;
@@ -125,9 +125,9 @@ public class RollCommand implements CommandExecutor {
 		//confirm whether there is a repeat in the function:
 		if(null != roll) formulaHasRepeat = (roll.substring(0, 1).equalsIgnoreCase(REPEAT));
 		if(formulaHasRepeat) {
-			//call build repeat
+			result.append(buildRepeatResponse(roll));
 		} else {
-			//call build roll
+			result.append(buildDieResponse(roll));
 		}
 				
 		return result.toString();

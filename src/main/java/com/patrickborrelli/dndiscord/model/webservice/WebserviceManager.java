@@ -138,7 +138,7 @@ public class WebserviceManager {
 		BufferedReader in = null;
 		HttpURLConnection con = null;
 		ObjectMapper mapper = new ObjectMapper();
-		Formula formula = null;
+		Formula[] formulas = null;
 		
 		try {
 			URL obj = new URL(url.toString());
@@ -175,7 +175,7 @@ public class WebserviceManager {
 				} else {
 					//print response:
 					LOGGER.debug(response.toString());
-					formula = mapper.readValue(response.toString(), Formula.class);					
+					formulas = mapper.readValue(response.toString(), Formula[].class);			
 				}
 				
 				in.close();
@@ -191,7 +191,7 @@ public class WebserviceManager {
 			e.printStackTrace();
 		}	
 		
-		return (formula == null) ? null : formula.getRoll();
+		return (formulas == null) ? null : formulas[0].getRoll();
 	}
 	
 	/**
