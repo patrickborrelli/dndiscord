@@ -1,5 +1,8 @@
 package com.patrickborrelli.dndiscord.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Representational data encapsulating a
  * Discord user for identification and
@@ -7,57 +10,23 @@ package com.patrickborrelli.dndiscord.model;
  *
  * @author Patrick Borrelli
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DiscordUser {
+	
+	@JsonProperty("_id")
 	private String id;
+	private String discord_id;
 	private String username;
 	private String discriminator;
+	@JsonProperty("avatar_hash")
 	private String avatar;
 	private boolean bot;
+	@JsonProperty("system_user")
 	private boolean system;
-	private boolean mfaEnabled;
-	private String locale;
-	private boolean verified;
-	private String email;
-	private int flags;
-	private int premiumType;
-	private int publicFlags;
 	
 	//default constructor:
 	public DiscordUser() {
 		
-	}
-
-	/**
-	 * @param id
-	 * @param username
-	 * @param discriminator
-	 * @param avatar
-	 * @param bot
-	 * @param system
-	 * @param mfaEnabled
-	 * @param locale
-	 * @param verified
-	 * @param email
-	 * @param flags
-	 * @param premiumType
-	 * @param publicFlags
-	 */
-	public DiscordUser(String id, String username, String discriminator, String avatar, boolean bot, boolean system,
-			boolean mfaEnabled, String locale, boolean verified, String email, int flags, int premiumType,
-			int publicFlags) {
-		this.id = id;
-		this.username = username;
-		this.discriminator = discriminator;
-		this.avatar = avatar;
-		this.bot = bot;
-		this.system = system;
-		this.mfaEnabled = mfaEnabled;
-		this.locale = locale;
-		this.verified = verified;
-		this.email = email;
-		this.flags = flags;
-		this.premiumType = premiumType;
-		this.publicFlags = publicFlags;
 	}
 
 	/**
@@ -72,6 +41,20 @@ public class DiscordUser {
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return String the discord_id
+	 */
+	public String getDiscord_id() {
+		return discord_id;
+	}
+
+	/**
+	 * @param String the discord_id to set
+	 */
+	public void setDiscord_id(String discord_id) {
+		this.discord_id = discord_id;
 	}
 
 	/**
@@ -144,109 +127,64 @@ public class DiscordUser {
 		this.system = system;
 	}
 
-	/**
-	 * @return boolean the mfaEnabled
-	 */
-	public boolean isMfaEnabled() {
-		return mfaEnabled;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((avatar == null) ? 0 : avatar.hashCode());
+		result = prime * result + (bot ? 1231 : 1237);
+		result = prime * result + ((discord_id == null) ? 0 : discord_id.hashCode());
+		result = prime * result + ((discriminator == null) ? 0 : discriminator.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + (system ? 1231 : 1237);
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		return result;
 	}
 
-	/**
-	 * @param boolean the mfaEnabled to set
-	 */
-	public void setMfaEnabled(boolean mfaEnabled) {
-		this.mfaEnabled = mfaEnabled;
-	}
-
-	/**
-	 * @return String the locale
-	 */
-	public String getLocale() {
-		return locale;
-	}
-
-	/**
-	 * @param String the locale to set
-	 */
-	public void setLocale(String locale) {
-		this.locale = locale;
-	}
-
-	/**
-	 * @return boolean the verified
-	 */
-	public boolean isVerified() {
-		return verified;
-	}
-
-	/**
-	 * @param boolean the verified to set
-	 */
-	public void setVerified(boolean verified) {
-		this.verified = verified;
-	}
-
-	/**
-	 * @return String the email
-	 */
-	public String getEmail() {
-		return email;
-	}
-
-	/**
-	 * @param String the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	/**
-	 * @return int the flags
-	 */
-	public int getFlags() {
-		return flags;
-	}
-
-	/**
-	 * @param int the flags to set
-	 */
-	public void setFlags(int flags) {
-		this.flags = flags;
-	}
-
-	/**
-	 * @return int the premiumType
-	 */
-	public int getPremiumType() {
-		return premiumType;
-	}
-
-	/**
-	 * @param int the premiumType to set
-	 */
-	public void setPremiumType(int premiumType) {
-		this.premiumType = premiumType;
-	}
-
-	/**
-	 * @return int the publicFlags
-	 */
-	public int getPublicFlags() {
-		return publicFlags;
-	}
-
-	/**
-	 * @param int the publicFlags to set
-	 */
-	public void setPublicFlags(int publicFlags) {
-		this.publicFlags = publicFlags;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DiscordUser other = (DiscordUser) obj;
+		if (avatar == null) {
+			if (other.avatar != null)
+				return false;
+		} else if (!avatar.equals(other.avatar))
+			return false;
+		if (bot != other.bot)
+			return false;
+		if (discord_id == null) {
+			if (other.discord_id != null)
+				return false;
+		} else if (!discord_id.equals(other.discord_id))
+			return false;
+		if (discriminator == null) {
+			if (other.discriminator != null)
+				return false;
+		} else if (!discriminator.equals(other.discriminator))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (system != other.system)
+			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
+			return false;
+		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "DiscordUser [id=" + id + ", username=" + username + ", discriminator=" + discriminator + ", avatar="
-				+ avatar + ", bot=" + bot + ", system=" + system + ", mfaEnabled=" + mfaEnabled + ", locale=" + locale
-				+ ", verified=" + verified + ", email=" + email + ", flags=" + flags + ", premiumType=" + premiumType
-				+ ", publicFlags=" + publicFlags + "]";
+		return "DiscordUser [id=" + id + ", discord_id=" + discord_id + ", username=" + username + ", discriminator="
+				+ discriminator + ", avatar=" + avatar + ", bot=" + bot + ", system=" + system + "]";
 	}
 }

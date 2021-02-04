@@ -11,9 +11,12 @@ import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
 
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
+import com.patrickborrelli.dndiscord.exceptions.MalformedEquationException;
 import com.patrickborrelli.dndiscord.mechanics.DieType;
 import com.patrickborrelli.dndiscord.mechanics.PrimaryEquation;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
+import com.patrickborrelli.dndiscord.model.DiscordUser;
+import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
 
 /**
  * Command class to handle all types of dice rolling
@@ -34,9 +37,15 @@ public class RollCommand implements CommandExecutor {
 	private static final String REROLL = "r";
 	private static final String CRITD = "critd";
 	private static final String CRITR = "critr";
+	private static final String SAVE = "s";
+	
+	WebserviceManager wsManager = WebserviceManager.getInstance();
 
-	@Override
-	public void onCommand(Message msg) throws CommandProcessingException {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override	
+	public void onCommand(Message msg, DiscordUser user) throws CommandProcessingException {
 		TextChannel channel = msg.getChannel();
 		String[] args = msg.getContent().split(" ");
 		StringBuilder rollString = extractCommand(args);
@@ -47,7 +56,12 @@ public class RollCommand implements CommandExecutor {
 		} else {
 			StringBuilder buf = new StringBuilder();
 			buf.append("<@" + msg.getAuthor().getId() + ">: " + rollString.toString() + " --> ");
-			buf.append(generateRollResponse(rollString.toString().toLowerCase()));
+			try {
+				buf.append(generateRollResponse(rollString.toString().toLowerCase(), user));
+			} catch(MalformedEquationException mee) {
+				buf.append(mee.getMessage());
+				LOGGER.error(mee.getMessage());
+			}
 			LOGGER.debug("Sending back reply: " + buf.toString());
 			MessageResponse.sendReply(channel, buf.toString());
 		}
@@ -61,7 +75,7 @@ public class RollCommand implements CommandExecutor {
 		return result;		
 	}
 	
-	private String generateRollResponse(String param) {
+	private String generateRollResponse(String param, DiscordUser user) throws MalformedEquationException {
 		StringBuilder result = new StringBuilder();
 		String firstChar = param.substring(0, 1);
 		
@@ -75,12 +89,18 @@ public class RollCommand implements CommandExecutor {
 					break;
 					
 				case FORMULA:
-					//process formula assignment
+					//process saved roll:
+					result.append(buildFormulaResponse(param, user));
 					break;
 					
 				case REPEAT:
 					//process repeat calculation
 					result.append(buildRepeatResponse(param));
+					break;
+					
+				case SAVE:
+					//validate roll format and save to user account:
+					result.append(storeSavedRoll(param, user));
 					break;
 					
 				default:
@@ -90,8 +110,72 @@ public class RollCommand implements CommandExecutor {
 		}						
 		return result.toString();
 	}
+	
+	private String buildFormulaResponse(String param, DiscordUser user) throws MalformedEquationException {
+		StringBuilder result = new StringBuilder();
+		boolean formulaHasRepeat = false;
+		String roll = null;
+		String name = param.substring(1);
 		
-	private String buildDieResponse(String param) {
+		LOGGER.debug("Processing roll request for: " + param);
+		
+		//retrieve user formula:
+		roll = wsManager.getUserFormula(user, name);
+		
+		//confirm whether there is a repeat in the function:
+		if(null != roll) formulaHasRepeat = (roll.substring(0, 1).equalsIgnoreCase(REPEAT));
+		if(formulaHasRepeat) {
+			result.append(buildRepeatResponse(roll));
+		} else {
+			result.append(buildDieResponse(roll));
+		}
+				
+		return result.toString();
+	}
+		
+	private String storeSavedRoll(String param, DiscordUser user) {
+		StringBuilder result = new StringBuilder();
+		boolean formulaHasRepeat = false;
+		String roll = null;
+		String name = null;
+		
+		LOGGER.debug("Processing save request for: " + param);
+		
+		//pull out roll formula:
+		int beginIndex = param.indexOf("(");
+		int endIndex = param.lastIndexOf(")");
+		String formula = param.substring(beginIndex + 1, endIndex);
+		
+		//confirm whether there is a repeat in the function:
+		formulaHasRepeat = (formula.substring(0, 1).equalsIgnoreCase(REPEAT));
+		if(formulaHasRepeat) {
+			roll = formula.substring(0, formula.indexOf(")") + 1);
+			name = formula.substring(formula.lastIndexOf(",") + 1);
+		} else {
+			roll = formula.substring(0, formula.indexOf(","));
+			name = formula.substring(formula.indexOf(",") + 1);
+		}
+		LOGGER.debug("Pulled out roll: " + roll + " and name: " + name);
+		
+		//now validate the roll formula:
+		try {
+			if(formulaHasRepeat) {
+				buildRepeatResponse(roll);
+			} else {
+				buildDieResponse(roll);
+			}
+		} catch(MalformedEquationException mee) {
+			//if we arrive here, the roll formula cannot be validated, so skip saving and notify user:
+			return new String(mee.getMessage() + " Roll will not be saved.");
+		}
+		
+		//at this point our roll formula is valid, so save it and report success or failure to user:
+		result.append(wsManager.addUserFormula(user, roll, name));
+		
+		return result.toString();
+	}
+	
+	private String buildDieResponse(String param) throws MalformedEquationException {
 		StringBuilder result = new StringBuilder();
 		int grandTotal = 0;
 		boolean critr = param.contains("critr") ? true : false;
@@ -141,7 +225,7 @@ public class RollCommand implements CommandExecutor {
 		return result.toString();
 	}	
 	
-	private String buildRepeatResponse(String param) {
+	private String buildRepeatResponse(String param) throws MalformedEquationException {
 		StringBuilder buf = new StringBuilder();
 		
 		/**
@@ -162,7 +246,6 @@ public class RollCommand implements CommandExecutor {
 		return buf.toString();
 	}
 
-	
 	private boolean isDigit(String character) {
 		return Pattern.matches("\\d", character);
 	}
@@ -175,7 +258,7 @@ public class RollCommand implements CommandExecutor {
 		return Pattern.matches("[a-z]{1}", character);
 	}
 	
-	private PrimaryEquation parseSingleEquation(LinkedList<String> inputs) {
+	private PrimaryEquation parseSingleEquation(LinkedList<String> inputs) throws MalformedEquationException {
 		PrimaryEquation equation = new PrimaryEquation();
 		StringBuilder buf = new StringBuilder();
 		boolean haveCount = false;

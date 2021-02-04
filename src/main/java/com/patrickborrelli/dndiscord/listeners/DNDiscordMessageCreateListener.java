@@ -1,5 +1,6 @@
 package com.patrickborrelli.dndiscord.listeners;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageAttachment;
 import org.javacord.api.entity.message.MessageAuthor;
 import org.javacord.api.entity.user.User;
+import org.javacord.api.entity.user.UserFlag;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.javacord.api.listener.message.MessageCreateListener;
 
@@ -16,6 +18,8 @@ import com.patrickborrelli.dndiscord.commands.CommandExecutor;
 import com.patrickborrelli.dndiscord.commands.CommandExecutorRouter;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.exceptions.MissingEnvironmentVarException;
+import com.patrickborrelli.dndiscord.model.DiscordUser;
+import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
@@ -31,12 +35,14 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 	private static final Logger LOGGER = LogManager.getLogger(DNDiscordMessageCreateListener.class);
 	private CommandExecutorRouter router = CommandExecutorRouter.getInstance();
 	private CommandExecutor executor = null;
+	WebserviceManager wsManager;
 	
 	ConfigurationUtil instance;
 	
 	public DNDiscordMessageCreateListener() {
 		try {
 			instance = ConfigurationUtil.getInstance();
+			wsManager = WebserviceManager.getInstance();
 		} catch (MissingEnvironmentVarException e) {
 			LOGGER.error("Unable to get instance of ConfigurationUtil.");
 			LOGGER.error(e.getStackTrace());
@@ -45,6 +51,7 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 	
 	@Override
 	public void onMessageCreate(MessageCreateEvent event) {
+		DiscordUser user = null;
 		Message message = event.getMessage();
 		LOGGER.debug("Received message: " + message.toString());
 		List<MessageAttachment> attachments = message.getAttachments();
@@ -65,7 +72,24 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 		
 		if(currentUser != null) {
 			LOGGER.debug("Message sent by user: " + currentUser.toString());
-		}
+			if(isRealUser) {
+				user = wsManager.getUser(String.valueOf(currentUser.getId()));
+				if(user == null) {
+					//no user found so create one:
+					LOGGER.error("Could not find user.  Must create one.");
+					user = wsManager.createUser(
+							String.valueOf(currentUser.getId()), 
+							currentUser.getName(), 
+							currentUser.getDiscriminator(), 
+							String.valueOf(currentUser.getAvatar().hashCode()), 
+							currentUser.isBot(), 
+							currentUser.getUserFlags().contains(UserFlag.SYSTEM));
+					LOGGER.debug("Created user: " + user.toString());
+				} else {
+					LOGGER.debug("Retrieved existing user: " + user.toString());
+				}
+			}
+		}	
 		
 		if(isRealUser && isMyMessage(message)) {		
 			try {	
@@ -73,45 +97,45 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 					case CommandUtil.PING:
 						LOGGER.debug("Handling ping message.");
 						executor = router.getCommandExecutor(CommandUtil.PING);
-						if(null != executor) executor.onCommand(message);
+						if(null != executor) executor.onCommand(message, user);
 						break;
 						
 					case CommandUtil.PREFIX:
 						LOGGER.debug("Handling prefix message.");
 						executor = router.getCommandExecutor(CommandUtil.PREFIX);
-						if(null != executor) executor.onCommand(message);
+						if(null != executor) executor.onCommand(message, user);
 						break;
 						
 					case CommandUtil.HELP:
 						LOGGER.debug("Handling help message.");
 						executor = router.getCommandExecutor(CommandUtil.HELP);
-						if(null != executor) executor.onCommand(message);
+						if(null != executor) executor.onCommand(message, user);
 						break;
 						
 					case CommandUtil.ROLL:
 					case CommandUtil.R:
 						LOGGER.debug("Handling Roll message.");
 						executor = router.getCommandExecutor(CommandUtil.ROLL);
-						if(null != executor) executor.onCommand(message);
+						if(null != executor) executor.onCommand(message, user);
 						break;
 						
 					case CommandUtil.SHEET:
 						LOGGER.debug("Handling sheet command message.");
 						executor = router.getCommandExecutor(CommandUtil.SHEET);
-						if(null != executor) executor.onCommand(message);
+						if(null != executor) executor.onCommand(message, user);
 						break;
 						
 					case CommandUtil.IMPORT:
 						LOGGER.debug("Handling import command message.");
 						executor = router.getCommandExecutor(CommandUtil.IMPORT);
-						if(null != executor) executor.onCommand(message);
+						if(null != executor) executor.onCommand(message, user);
 						break;
 						
 					default:						
 						if(message.getMentionedUsers().contains(AppUtil.getInstance().getApi().getYourself())) {
 							LOGGER.info("DNDiscord bot is mentioned in the message.");
 							executor = router.getCommandExecutor(CommandUtil.ADMIN);
-							if(null != executor) executor.onCommand(message);
+							if(null != executor) executor.onCommand(message, user);
 						} else {
 							//TODO: more rigorous error handling here:
 							LOGGER.info("Received unparsable message: " + message.getContent());
