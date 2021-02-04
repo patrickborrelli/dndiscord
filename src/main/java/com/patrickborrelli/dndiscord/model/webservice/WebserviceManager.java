@@ -365,6 +365,8 @@ public class WebserviceManager {
 			os.write(POST_PARAMS.getBytes());
 			os.flush();
 			os.close();
+			
+			LOGGER.debug("Using connection URL: " + obj.toString());
 				
 			int responseCode = con.getResponseCode();
 			
