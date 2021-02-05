@@ -52,7 +52,8 @@ public class HelpCommand implements CommandExecutor {
 			"***__critd__*** - critical hit, double the dice rolled.\n" +
 			"***__critr__*** - critical hit, double the rolled result.\n" +
 			"***roll repeat(<A>, <B>)*** - repeatedly calculate expression A, B times.\n" +
-			"***roll save(<A>, <B>)*** - saves roll A with name B.\n";
+			"***roll save(<A>, <B>)*** - saves roll A with name B.\n"  + 
+			"***roll list*** - returns a list of all saved rolls.\n";
 	
 	private static final String ROLL_EXAMPLE_TEXT = 
 			"**1d8+5** - rolls a d8 and adds a modifier of 5\n" +
