@@ -1,5 +1,6 @@
 package com.patrickborrelli.dndiscord.commands;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
+import org.javacord.api.entity.message.embed.EmbedBuilder;
 
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.exceptions.MalformedEquationException;
@@ -18,6 +20,7 @@ import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.Formula;
 import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
+import com.patrickborrelli.dndiscord.utilities.AppUtil;
 
 /**
  * Command class to handle all types of dice rolling
@@ -59,7 +62,7 @@ public class RollCommand implements CommandExecutor {
 			StringBuilder buf = new StringBuilder();
 			buf.append("<@" + msg.getAuthor().getId() + ">: " + rollString.toString() + " --> ");
 			try {
-				buf.append(generateRollResponse(rollString.toString().toLowerCase(), user));
+				buf.append(generateRollResponse(rollString.toString().toLowerCase(), user, msg));
 			} catch(MalformedEquationException mee) {
 				buf.append(mee.getMessage());
 				LOGGER.error(mee.getMessage());
@@ -77,7 +80,7 @@ public class RollCommand implements CommandExecutor {
 		return result;		
 	}
 	
-	private String generateRollResponse(String param, DiscordUser user) throws MalformedEquationException {
+	private String generateRollResponse(String param, DiscordUser user, Message msg) throws MalformedEquationException {
 		StringBuilder result = new StringBuilder();
 		String firstChar = param.substring(0, 1);
 		
@@ -107,7 +110,7 @@ public class RollCommand implements CommandExecutor {
 					
 				case LIST:
 					//retrieve a list of user's saved rolls:
-					result.append(retrieveSavedRolls(user));
+					buildRollEmbed(msg, retrieveSavedRolls(user));
 					break;
 					
 				default:
@@ -159,6 +162,17 @@ public class RollCommand implements CommandExecutor {
 		}		
 				
 		return result.toString();
+	}
+	
+	private void buildRollEmbed(Message msg, String contents) {
+		EmbedBuilder embed = new EmbedBuilder()
+				.setTitle("Saved Rolls")
+				.setDescription(contents)
+			    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", AppUtil.getInstance().getBotAvatarUrl().toString())
+			    .setColor(Color.GREEN)
+			    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
+			    .setThumbnail(AppUtil.getInstance().getBotAvatarUrl().toString());
+			MessageResponse.sendEmbedMessage(msg.getChannel(), embed);	
 	}
 		
 	private String storeSavedRoll(String param, DiscordUser user) {
