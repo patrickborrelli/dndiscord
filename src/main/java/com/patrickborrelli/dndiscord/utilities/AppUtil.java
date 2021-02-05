@@ -1,6 +1,9 @@
 package com.patrickborrelli.dndiscord.utilities;
 
+import java.net.URL;
+
 import org.javacord.api.DiscordApi;
+import org.javacord.api.entity.user.User;
 
 /**
  * A singleton application utility to provide 
@@ -45,5 +48,11 @@ public class AppUtil {
 	
 	public String getScope() {
 		return scope;
+	}
+	
+	public URL getBotAvatarUrl() {
+		DiscordApi apiConnection = instance.getApi();
+		User botUser = apiConnection.getYourself();		
+		return botUser.getAvatar().getUrl();
 	}
 }

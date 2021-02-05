@@ -25,7 +25,7 @@ import com.patrickborrelli.dndiscord.utilities.CommandUtil;
  */
 public class HelpCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(HelpCommand.class);
-	private AppUtil instance;
+	private AppUtil appUtil;
 	private static final String HELP_TEXT = 
 			"**help** - shows this message.\n" +
 			"__**ping**__ - tests the bot's connection.\n" +
@@ -73,7 +73,7 @@ public class HelpCommand implements CommandExecutor {
 			
 	
 	public HelpCommand() {
-		instance = AppUtil.getInstance();
+		appUtil = AppUtil.getInstance();
 	}
 
 	@Override
@@ -106,11 +106,11 @@ public class HelpCommand implements CommandExecutor {
 		EmbedBuilder embed = new EmbedBuilder()
 				.setTitle("DnDiscord Help - prefix")
 				.setDescription("Changes the server prefix for DnDiscord.")
-			    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", getBotAvatarUrl().toString())
+			    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", appUtil.getBotAvatarUrl().toString())
 			    .addField("Format", PREFIX_TEXT)
 			    .setColor(Color.GREEN)
 			    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
-			    .setThumbnail(getBotAvatarUrl().toString());
+			    .setThumbnail(appUtil.getBotAvatarUrl().toString());
 			MessageResponse.sendEmbedMessage(msg.getChannel(), embed);	
 	}
 	
@@ -118,12 +118,12 @@ public class HelpCommand implements CommandExecutor {
 		EmbedBuilder embed = new EmbedBuilder()
 			.setTitle("DnDiscord Help")
 			.setDescription("DnDiscord is a multifaceted D&D 5e utility bot designed to enable you and your party a seamless online D&D experience.")
-		    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", getBotAvatarUrl().toString())
+		    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", appUtil.getBotAvatarUrl().toString())
 		    .addField("Basic Commands", HELP_TEXT)
 		    .addField("More Help", MORE_HELP)
 		    .setColor(Color.GREEN)
 		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
-		    .setThumbnail(getBotAvatarUrl().toString());
+		    .setThumbnail(appUtil.getBotAvatarUrl().toString());
 		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);		
 	}
 	
@@ -131,19 +131,13 @@ public class HelpCommand implements CommandExecutor {
 		EmbedBuilder embed = new EmbedBuilder()
 			.setTitle("DnDiscord Help - roll, r")
 			.setDescription("Rolls dice in an XdY format.")
-		    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", getBotAvatarUrl().toString())
+		    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", appUtil.getBotAvatarUrl().toString())
 		    .addField("Formatting", ROLL_HELP_TEXT)
 		    .addField("Examples", ROLL_EXAMPLE_TEXT)
 		    .addField("Additional Help", MORE_HELP)
 		    .setColor(Color.GREEN)
 		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
-		    .setThumbnail(getBotAvatarUrl().toString());
+		    .setThumbnail(appUtil.getBotAvatarUrl().toString());
 		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);
-	}
-	
-	private URL getBotAvatarUrl() {
-		DiscordApi apiConnection = instance.getApi();
-		User botUser = apiConnection.getYourself();		
-		return botUser.getAvatar().getUrl();
 	}
 }
