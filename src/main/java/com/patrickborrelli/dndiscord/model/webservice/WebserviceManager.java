@@ -7,6 +7,10 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -60,10 +64,10 @@ public class WebserviceManager {
 	/**
 	 * Adds a new roll formula for the provided user.
 	 * 
-	 * @param user
-	 * @param formula
-	 * @param name
-	 * @return
+	 * @param user a DiscordUser
+	 * @param formula a String containing the roll formula to be saved
+	 * @param name a String representing the name of the saved roll
+	 * @return a String representing the status of the save attempt.
 	 */
 	public String addUserFormula(DiscordUser user, String formula, String name) {
 		StringBuilder buff = new StringBuilder();
@@ -130,6 +134,14 @@ public class WebserviceManager {
 		return buff.toString();
 	}
 	
+	/**
+	 * Retrieves a user saved formula by name.  Returns a string representation 
+	 * of the roll formula or null if none exists.
+	 * 
+	 * @param user a DiscordUser 
+	 * @param name a String representing the saved roll name
+	 * @return a String representation of the roll formula or a null if none exists.
+	 */
 	public String getUserFormula(DiscordUser user, String name) {
 		StringBuilder url = new StringBuilder().append(FORMULA_URL).append(QUERY);
 		url.append("user=" + user.getId() + "&name=" + name);
@@ -192,6 +204,79 @@ public class WebserviceManager {
 		}	
 		
 		return (formulas == null) ? null : formulas[0].getRoll();
+	}
+	
+	/**
+	 * Retrieves a list of all saved roll Formulas
+	 * belonging to the provided user.
+	 * 
+	 * @param user a DiscordUser
+	 * @return a List of Formula objects containing all saved rolls for the provided user.
+	 */
+	public List<Formula> getUserFormulas(DiscordUser user) {
+		List<Formula> result = new ArrayList<>();
+		StringBuilder url = new StringBuilder().append(FORMULA_URL).append(QUERY);
+		url.append("user=" + user.getId());
+		LOGGER.debug("Making call to API: " + url.toString());
+		
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		ObjectMapper mapper = new ObjectMapper();
+		Formula[] formulas = null;
+		
+		try {
+			URL obj = new URL(url.toString());
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			int responseCode = con.getResponseCode();			
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				//print in String
+				LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				//handle case where user does not currently exist:
+				if(response.toString().equalsIgnoreCase("null") || response.toString().equalsIgnoreCase("[]")) {
+					LOGGER.debug("Received a null response");
+				} else {
+					//print response:
+					LOGGER.debug(response.toString());
+					formulas = mapper.readValue(response.toString(), Formula[].class);			
+				}
+				
+				in.close();
+				con.disconnect();
+			}		
+		} catch(MalformedURLException murl) {
+			LOGGER.debug(murl.getMessage());
+			murl.printStackTrace();
+		} catch(IOException ioex) {
+			LOGGER.debug(ioex.getMessage());
+			ioex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		
+		result = new ArrayList<>(Arrays.asList(formulas));		
+		return result;
 	}
 	
 	/**
