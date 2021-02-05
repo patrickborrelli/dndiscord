@@ -44,6 +44,8 @@ public class RollCommand implements CommandExecutor {
 	private static final String SAVE = "s";
 	private static final String LIST = "l";
 	
+	private boolean sendEmbed = false;
+	
 	WebserviceManager wsManager = WebserviceManager.getInstance();
 
 	/**
@@ -68,7 +70,11 @@ public class RollCommand implements CommandExecutor {
 				LOGGER.error(mee.getMessage());
 			}
 			LOGGER.debug("Sending back reply: " + buf.toString());
-			MessageResponse.sendReply(channel, buf.toString());
+			if(!sendEmbed) {
+				MessageResponse.sendReply(channel, buf.toString());
+			} else {
+				sendEmbed = false;
+			}
 		}
 	}
 	
@@ -111,6 +117,7 @@ public class RollCommand implements CommandExecutor {
 				case LIST:
 					//retrieve a list of user's saved rolls:
 					buildRollEmbed(msg, retrieveSavedRolls(user));
+					sendEmbed = true;
 					break;
 					
 				default:

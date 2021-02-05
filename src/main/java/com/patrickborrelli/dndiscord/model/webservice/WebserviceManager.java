@@ -76,7 +76,6 @@ public class WebserviceManager {
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
-		ObjectMapper mapper = new ObjectMapper();
 		
 		final String POST_PARAMS = "{\n\t" + "\"user\": \"" + user.getId() + "\",\n" +
 				   "\t" + "\"name\": \"" + name + "\",\n" + 
