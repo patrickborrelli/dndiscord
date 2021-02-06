@@ -1,5 +1,6 @@
 package com.patrickborrelli.dndiscord.commands;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
+import org.javacord.api.entity.message.embed.EmbedBuilder;
 
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.exceptions.MalformedEquationException;
@@ -18,6 +20,7 @@ import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.Formula;
 import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
+import com.patrickborrelli.dndiscord.utilities.AppUtil;
 
 /**
  * Command class to handle all types of dice rolling
@@ -40,6 +43,11 @@ public class RollCommand implements CommandExecutor {
 	private static final String CRITR = "critr";
 	private static final String SAVE = "s";
 	private static final String LIST = "l";
+	private static final String CLEAR = "clear";
+	private static final String C = "c";
+	
+	private boolean sendEmbed = false;
+	private boolean sendBoth = false;
 	
 	WebserviceManager wsManager = WebserviceManager.getInstance();
 
@@ -59,13 +67,18 @@ public class RollCommand implements CommandExecutor {
 			StringBuilder buf = new StringBuilder();
 			buf.append("<@" + msg.getAuthor().getId() + ">: " + rollString.toString() + " --> ");
 			try {
-				buf.append(generateRollResponse(rollString.toString().toLowerCase(), user));
+				buf.append(generateRollResponse(rollString.toString().toLowerCase(), user, msg));
 			} catch(MalformedEquationException mee) {
 				buf.append(mee.getMessage());
 				LOGGER.error(mee.getMessage());
 			}
 			LOGGER.debug("Sending back reply: " + buf.toString());
-			MessageResponse.sendReply(channel, buf.toString());
+			if(!sendEmbed || sendBoth) {
+				MessageResponse.sendReply(channel, buf.toString());
+			} else {
+				sendEmbed = false;
+				sendBoth = false;
+			}
 		}
 	}
 	
@@ -77,7 +90,7 @@ public class RollCommand implements CommandExecutor {
 		return result;		
 	}
 	
-	private String generateRollResponse(String param, DiscordUser user) throws MalformedEquationException {
+	private String generateRollResponse(String param, DiscordUser user, Message msg) throws MalformedEquationException {
 		StringBuilder result = new StringBuilder();
 		String firstChar = param.substring(0, 1);
 		
@@ -105,9 +118,15 @@ public class RollCommand implements CommandExecutor {
 					result.append(storeSavedRoll(param, user));
 					break;
 					
+				case C:
+					//process clear request:
+					result.append(clearRolls(param, user));
+					sendBoth = true;
+					
 				case LIST:
 					//retrieve a list of user's saved rolls:
-					result.append(retrieveSavedRolls(user));
+					buildRollEmbed(msg, retrieveSavedRolls(user));
+					sendEmbed = true;
 					break;
 					
 				default:
@@ -118,19 +137,48 @@ public class RollCommand implements CommandExecutor {
 		return result.toString();
 	}
 	
+	private String clearRolls(String param, DiscordUser user) {
+		StringBuilder result = new StringBuilder();
+		/**
+		 * check to see if there are one or more named parameters,
+		 * if there are, individually delete them all, if not, 
+		 * delete all formulas for this user
+		 */
+		LOGGER.debug("Processing parameters ["+ param + "] to clear values");
+		//confirm param contains 'clear':
+		if(param.contains(CLEAR)) {
+			param = param.replaceAll(CLEAR, "");
+			LOGGER.debug("Parameter stripped of clear = " + param);
+			String[] params = param.split("\\$");		
+			
+			if(params.length == 0) {
+				LOGGER.debug("Empty parameters, clearing ALL saved rolls");
+				result.append(wsManager.deleteUserFormula(user, params));
+			} else {
+				//process remaining parameters:
+				LOGGER.debug("Empty parameters, clearing ALL saved rolls");
+				result.append(wsManager.deleteUserFormula(user, params));
+			}
+		} else {
+			LOGGER.error("Invalid format for clear request: " + param);
+			result.append("Invalid format for clear request.");
+		}
+		retrieveSavedRolls(user);
+		return result.toString();
+	}
+	
 	private String retrieveSavedRolls(DiscordUser user) {
 		StringBuilder result = new StringBuilder();
 		List<Formula> formulas = wsManager.getUserFormulas(user);
 		
-		if(formulas.size() == 0) {
+		if(null == formulas || formulas.size() == 0) {
 			result.append("No saved rolls found for user");
 		} else {
 			//format results:
 			for(Formula roll : formulas) {
 				result.append("\n" + "$" + roll.getName() + ": " + roll.getRoll());
 			}
-		}
-		
+		}		
 		return result.toString();
 	}
 	
@@ -159,6 +207,17 @@ public class RollCommand implements CommandExecutor {
 		}		
 				
 		return result.toString();
+	}
+	
+	private void buildRollEmbed(Message msg, String contents) {
+		EmbedBuilder embed = new EmbedBuilder()
+				.setTitle("Saved Rolls")
+				.setDescription(contents)
+			    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", AppUtil.getInstance().getBotAvatarUrl().toString())
+			    .setColor(Color.GREEN)
+			    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
+			    .setThumbnail(AppUtil.getInstance().getBotAvatarUrl().toString());
+			MessageResponse.sendEmbedMessage(msg.getChannel(), embed);	
 	}
 		
 	private String storeSavedRoll(String param, DiscordUser user) {

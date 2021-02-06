@@ -62,6 +62,73 @@ public class WebserviceManager {
 	}
 	
 	/**
+	 * Delete saved formulas for the provided user.
+	 * 
+	 * @param user a DiscordUser
+	 * @param names an array of Strings representing the name of the rolls
+	 * @return a String representing the status of the delete attempt.
+	 */
+	public String deleteUserFormula(DiscordUser user, String[] names) {
+		StringBuilder buff = new StringBuilder();
+		
+		StringBuilder params = new StringBuilder().append("user=" + user.getId());
+		for(int i = 0; i < names.length; i++) {
+			if(!names[i].isEmpty()) {
+				params.append("&name=" + names[i]);
+			}
+		}
+		
+		LOGGER.debug("Making call to API: " + FORMULA_URL + QUERY + params.toString());
+		
+		BufferedReader in = null;
+		HttpURLConnection con = null;		
+				
+		try {
+			URL obj = new URL(FORMULA_URL + QUERY + params.toString());
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("DELETE");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			con.setDoOutput(true);
+			
+			int responseCode = con.getResponseCode();
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				LOGGER.error("Error while deleting formula.");
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				LOGGER.debug("Deleted successfully: " + response.toString());
+				buff.append(response.toString());		
+				in.close();
+				con.disconnect();
+			}		
+		} catch(MalformedURLException murl) {
+			LOGGER.debug(murl.getMessage());
+			murl.printStackTrace();
+		} catch(IOException ioex) {
+			LOGGER.debug(ioex.getMessage());
+			ioex.printStackTrace();
+		}
+		return buff.toString();
+	}
+	
+	/**
 	 * Adds a new roll formula for the provided user.
 	 * 
 	 * @param user a DiscordUser
@@ -76,7 +143,6 @@ public class WebserviceManager {
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
-		ObjectMapper mapper = new ObjectMapper();
 		
 		final String POST_PARAMS = "{\n\t" + "\"user\": \"" + user.getId() + "\",\n" +
 				   "\t" + "\"name\": \"" + name + "\",\n" + 
@@ -275,7 +341,7 @@ public class WebserviceManager {
 			e.printStackTrace();
 		}	
 		
-		result = new ArrayList<>(Arrays.asList(formulas));		
+		result = (formulas == null) ? null : new ArrayList<>(Arrays.asList(formulas));		
 		return result;
 	}
 	
