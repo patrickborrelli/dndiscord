@@ -43,8 +43,11 @@ public class RollCommand implements CommandExecutor {
 	private static final String CRITR = "critr";
 	private static final String SAVE = "s";
 	private static final String LIST = "l";
+	private static final String CLEAR = "clear";
+	private static final String C = "c";
 	
 	private boolean sendEmbed = false;
+	private boolean sendBoth = false;
 	
 	WebserviceManager wsManager = WebserviceManager.getInstance();
 
@@ -70,10 +73,11 @@ public class RollCommand implements CommandExecutor {
 				LOGGER.error(mee.getMessage());
 			}
 			LOGGER.debug("Sending back reply: " + buf.toString());
-			if(!sendEmbed) {
+			if(!sendEmbed || sendBoth) {
 				MessageResponse.sendReply(channel, buf.toString());
 			} else {
 				sendEmbed = false;
+				sendBoth = false;
 			}
 		}
 	}
@@ -114,6 +118,11 @@ public class RollCommand implements CommandExecutor {
 					result.append(storeSavedRoll(param, user));
 					break;
 					
+				case C:
+					//process clear request:
+					result.append(clearRolls(param, user));
+					sendBoth = true;
+					
 				case LIST:
 					//retrieve a list of user's saved rolls:
 					buildRollEmbed(msg, retrieveSavedRolls(user));
@@ -128,19 +137,48 @@ public class RollCommand implements CommandExecutor {
 		return result.toString();
 	}
 	
+	private String clearRolls(String param, DiscordUser user) {
+		StringBuilder result = new StringBuilder();
+		/**
+		 * check to see if there are one or more named parameters,
+		 * if there are, individually delete them all, if not, 
+		 * delete all formulas for this user
+		 */
+		LOGGER.debug("Processing parameters ["+ param + "] to clear values");
+		//confirm param contains 'clear':
+		if(param.contains(CLEAR)) {
+			param = param.replaceAll(CLEAR, "");
+			LOGGER.debug("Parameter stripped of clear = " + param);
+			String[] params = param.split("\\$");		
+			
+			if(params.length == 0) {
+				LOGGER.debug("Empty parameters, clearing ALL saved rolls");
+				result.append(wsManager.deleteUserFormula(user, params));
+			} else {
+				//process remaining parameters:
+				LOGGER.debug("Empty parameters, clearing ALL saved rolls");
+				result.append(wsManager.deleteUserFormula(user, params));
+			}
+		} else {
+			LOGGER.error("Invalid format for clear request: " + param);
+			result.append("Invalid format for clear request.");
+		}
+		retrieveSavedRolls(user);
+		return result.toString();
+	}
+	
 	private String retrieveSavedRolls(DiscordUser user) {
 		StringBuilder result = new StringBuilder();
 		List<Formula> formulas = wsManager.getUserFormulas(user);
 		
-		if(formulas.size() == 0) {
+		if(null == formulas || formulas.size() == 0) {
 			result.append("No saved rolls found for user");
 		} else {
 			//format results:
 			for(Formula roll : formulas) {
 				result.append("\n" + "$" + roll.getName() + ": " + roll.getRoll());
 			}
-		}
-		
+		}		
 		return result.toString();
 	}
 	
