@@ -19,14 +19,16 @@ import com.patrickborrelli.dndiscord.model.DiscordUser;
 public class PingCommand implements CommandExecutor {
 
 	@Override
-	public void onCommand(Message msg, DiscordUser user) throws CommandProcessingException {
+	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
 		TextChannel channel = msg.getChannel();
 		String[] args = msg.getContent().split(" ");
 		
 		if(args.length > 2) {
 			MessageResponse.sendReply(channel, "Too many arguments provided");
 		} else if(args.length == 1) {
-			MessageResponse.sendReply(channel, "Pong bitches!");
+			long currentTime = System.currentTimeMillis();
+			
+			MessageResponse.sendReply(channel, "Message processing time: " + (currentTime - messageReceiptTime) + " milliseconds.");
 		} else if(args.length == 2) {
 			if(args[1].equals("author")) {
 				MessageResponse.sendReply(channel, "- **Name:** Patrick Borrelli\n" +
