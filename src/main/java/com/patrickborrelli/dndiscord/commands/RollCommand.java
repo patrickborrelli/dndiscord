@@ -55,7 +55,7 @@ public class RollCommand implements CommandExecutor {
 	 * {@inheritDoc}
 	 */
 	@Override	
-	public void onCommand(Message msg, DiscordUser user) throws CommandProcessingException {
+	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
 		TextChannel channel = msg.getChannel();
 		String[] args = msg.getContent().split(" ");
 		StringBuilder rollString = extractCommand(args);

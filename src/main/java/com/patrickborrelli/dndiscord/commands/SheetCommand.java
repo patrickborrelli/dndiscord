@@ -29,7 +29,7 @@ public class SheetCommand implements CommandExecutor {
 	private List<MessageAttachment> attachments;
 
 	@Override
-	public void onCommand(Message msg, DiscordUser user) throws CommandProcessingException {
+	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
 		InputStream stream = null;
 		DndBeyondSheet sheet = null;
 		//TODO: need to store currently loaded characters in a CharacterModel, along with indication of currently active character:

@@ -15,7 +15,8 @@ public interface CommandExecutor {
 	 * 
 	 * @param msg the DiscordMessage to be processed
 	 * @param user the DiscordUser who is sending the message
+	 * @param messageReceiptTime a long containing the time the message was received
 	 * @throws CommandProcessingException
 	 */
-	public void onCommand(Message msg, DiscordUser user) throws CommandProcessingException;
+	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException;
 }

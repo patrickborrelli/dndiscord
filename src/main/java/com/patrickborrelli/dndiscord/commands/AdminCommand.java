@@ -43,7 +43,7 @@ public class AdminCommand implements CommandExecutor {
 	}
 
 	@Override
-	public void onCommand(Message msg, DiscordUser user) throws CommandProcessingException {
+	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
 		String[] args = msg.getContent().split(" ");
 		String primaryToken = args.length > 0 ? args[1].toUpperCase() : null;
 		String secondaryToken = args.length > 1 ? args[2].toUpperCase() : null;

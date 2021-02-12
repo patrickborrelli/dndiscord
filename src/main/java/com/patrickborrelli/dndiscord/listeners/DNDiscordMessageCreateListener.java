@@ -50,6 +50,7 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 	
 	@Override
 	public void onMessageCreate(MessageCreateEvent event) {
+		long timeReceived = System.currentTimeMillis();
 		DiscordUser user = null;
 		Message message = event.getMessage();
 		LOGGER.debug("Received message: " + message.toString());
@@ -96,45 +97,45 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 					case CommandUtil.PING:
 						LOGGER.debug("Handling ping message.");
 						executor = router.getCommandExecutor(CommandUtil.PING);
-						if(null != executor) executor.onCommand(message, user);
+						if(null != executor) executor.onCommand(message, user, timeReceived);
 						break;
 						
 					case CommandUtil.PREFIX:
 						LOGGER.debug("Handling prefix message.");
 						executor = router.getCommandExecutor(CommandUtil.PREFIX);
-						if(null != executor) executor.onCommand(message, user);
+						if(null != executor) executor.onCommand(message, user, timeReceived);
 						break;
 						
 					case CommandUtil.HELP:
 						LOGGER.debug("Handling help message.");
 						executor = router.getCommandExecutor(CommandUtil.HELP);
-						if(null != executor) executor.onCommand(message, user);
+						if(null != executor) executor.onCommand(message, user, timeReceived);
 						break;
 						
 					case CommandUtil.ROLL:
 					case CommandUtil.R:
 						LOGGER.debug("Handling Roll message.");
 						executor = router.getCommandExecutor(CommandUtil.ROLL);
-						if(null != executor) executor.onCommand(message, user);
+						if(null != executor) executor.onCommand(message, user, timeReceived);
 						break;
 						
 					case CommandUtil.SHEET:
 						LOGGER.debug("Handling sheet command message.");
 						executor = router.getCommandExecutor(CommandUtil.SHEET);
-						if(null != executor) executor.onCommand(message, user);
+						if(null != executor) executor.onCommand(message, user, timeReceived);
 						break;
 						
 					case CommandUtil.IMPORT:
 						LOGGER.debug("Handling import command message.");
 						executor = router.getCommandExecutor(CommandUtil.IMPORT);
-						if(null != executor) executor.onCommand(message, user);
+						if(null != executor) executor.onCommand(message, user, timeReceived);
 						break;
 						
 					default:						
 						if(message.getMentionedUsers().contains(AppUtil.getInstance().getApi().getYourself())) {
 							LOGGER.info("DNDiscord bot is mentioned in the message.");
 							executor = router.getCommandExecutor(CommandUtil.ADMIN);
-							if(null != executor) executor.onCommand(message, user);
+							if(null != executor) executor.onCommand(message, user, timeReceived);
 						} else {
 							//TODO: more rigorous error handling here:
 							LOGGER.info("Received unparsable message: " + message.getContent());

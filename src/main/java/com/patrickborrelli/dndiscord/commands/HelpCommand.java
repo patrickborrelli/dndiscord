@@ -72,7 +72,7 @@ public class HelpCommand implements CommandExecutor {
 	}
 
 	@Override
-	public void onCommand(Message msg, DiscordUser user) throws CommandProcessingException {
+	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
 		TextChannel channel = msg.getChannel();
 		String[] args = msg.getContent().split(" ");
 		
