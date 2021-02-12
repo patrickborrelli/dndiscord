@@ -512,6 +512,8 @@ public class WebserviceManager {
 			con.setRequestProperty("Content-Type", "application/json");
 			con.setDoOutput(true);
 			
+			LOGGER.debug("Using URL: " + obj.toExternalForm());
+			
 			OutputStream os = con.getOutputStream();
 			os.write(POST_PARAMS.getBytes());
 			os.flush();
