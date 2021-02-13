@@ -43,15 +43,27 @@ public class CharacterSheet {
 	private int baseStrength;
 	private int baseDexterity;
 	private int baseConstitution;
-	private int baseWisdom;
 	private int baseIntelligence;
+	private int baseWisdom;
 	private int baseCharisma;
 	private int strengthBonus;
 	private int dexterityBonus;
 	private int constitutionBonus;
-	private int wisdomBonus;
 	private int intelligenceBonus;
+	private int wisdomBonus;
 	private int charismaBonus;	
+	private int totalStrength;
+	private int totalDexterity;
+	private int totalConstitution;
+	private int totalIntelligence;
+	private int totalWisdom;
+	private int totalCharisma;
+	private int strengthMod;
+	private int dexterityMod;
+	private int constitutionMod;
+	private int intelligenceMod;
+	private int wisdomMod;
+	private int charismaMod;	
 	
 	//saving throws:
 	private int stStrength;
@@ -503,6 +515,7 @@ public class CharacterSheet {
 	 */
 	public void setBaseStrength(int baseStrength) {
 		this.baseStrength = baseStrength;
+		this.totalStrength = baseStrength + strengthBonus;
 	}
 
 	/**
@@ -517,6 +530,7 @@ public class CharacterSheet {
 	 */
 	public void setBaseDexterity(int baseDexterity) {
 		this.baseDexterity = baseDexterity;
+		this.totalDexterity = baseDexterity + dexterityBonus;
 	}
 
 	/**
@@ -531,20 +545,7 @@ public class CharacterSheet {
 	 */
 	public void setBaseConstitution(int baseConstitution) {
 		this.baseConstitution = baseConstitution;
-	}
-
-	/**
-	 * @return the baseWisdom
-	 */
-	public int getBaseWisdom() {
-		return baseWisdom;
-	}
-
-	/**
-	 * @param baseWisdom the baseWisdom to set
-	 */
-	public void setBaseWisdom(int baseWisdom) {
-		this.baseWisdom = baseWisdom;
+		this.totalConstitution = baseConstitution + constitutionBonus;
 	}
 
 	/**
@@ -559,6 +560,22 @@ public class CharacterSheet {
 	 */
 	public void setBaseIntelligence(int baseIntelligence) {
 		this.baseIntelligence = baseIntelligence;
+		this.totalIntelligence = baseIntelligence + intelligenceBonus;
+	}
+
+	/**
+	 * @return the baseWisdom
+	 */
+	public int getBaseWisdom() {
+		return baseWisdom;
+	}
+
+	/**
+	 * @param baseWisdom the baseWisdom to set
+	 */
+	public void setBaseWisdom(int baseWisdom) {
+		this.baseWisdom = baseWisdom;
+		this.totalWisdom = baseWisdom + wisdomBonus;
 	}
 
 	/**
@@ -573,6 +590,7 @@ public class CharacterSheet {
 	 */
 	public void setBaseCharisma(int baseCharisma) {
 		this.baseCharisma = baseCharisma;
+		this.totalCharisma = baseCharisma + charismaBonus;
 	}
 
 	/**
@@ -587,6 +605,7 @@ public class CharacterSheet {
 	 */
 	public void setStrengthBonus(int strengthBonus) {
 		this.strengthBonus = strengthBonus;
+		this.totalStrength = baseStrength + strengthBonus;
 	}
 
 	/**
@@ -601,6 +620,7 @@ public class CharacterSheet {
 	 */
 	public void setDexterityBonus(int dexterityBonus) {
 		this.dexterityBonus = dexterityBonus;
+		this.totalDexterity = baseDexterity + dexterityBonus;
 	}
 
 	/**
@@ -615,20 +635,7 @@ public class CharacterSheet {
 	 */
 	public void setConstitutionBonus(int constitutionBonus) {
 		this.constitutionBonus = constitutionBonus;
-	}
-
-	/**
-	 * @return the wisdomBonus
-	 */
-	public int getWisdomBonus() {
-		return wisdomBonus;
-	}
-
-	/**
-	 * @param wisdomBonus the wisdomBonus to set
-	 */
-	public void setWisdomBonus(int wisdomBonus) {
-		this.wisdomBonus = wisdomBonus;
+		this.totalConstitution = baseConstitution + constitutionBonus;
 	}
 
 	/**
@@ -643,6 +650,22 @@ public class CharacterSheet {
 	 */
 	public void setIntelligenceBonus(int intelligenceBonus) {
 		this.intelligenceBonus = intelligenceBonus;
+		this.totalIntelligence = baseIntelligence + intelligenceBonus;
+	}
+
+	/**
+	 * @return the wisdomBonus
+	 */
+	public int getWisdomBonus() {
+		return wisdomBonus;
+	}
+
+	/**
+	 * @param wisdomBonus the wisdomBonus to set
+	 */
+	public void setWisdomBonus(int wisdomBonus) {
+		this.wisdomBonus = wisdomBonus;
+		this.totalWisdom = baseWisdom + wisdomBonus;
 	}
 
 	/**
@@ -657,6 +680,175 @@ public class CharacterSheet {
 	 */
 	public void setCharismaBonus(int charismaBonus) {
 		this.charismaBonus = charismaBonus;
+		this.totalCharisma = baseCharisma + charismaBonus;
+	}
+
+	/**
+	 * @return the totalStrength
+	 */
+	public int getTotalStrength() {
+		return totalStrength;
+	}
+
+	/**
+	 * @param totalStrength the totalStrength to set
+	 */
+	public void setTotalStrength(int totalStrength) {
+		this.totalStrength = totalStrength;
+	}
+
+	/**
+	 * @return the totalDexterity
+	 */
+	public int getTotalDexterity() {
+		return totalDexterity;
+	}
+
+	/**
+	 * @param totalDexterity the totalDexterity to set
+	 */
+	public void setTotalDexterity(int totalDexterity) {
+		this.totalDexterity = totalDexterity;
+	}
+
+	/**
+	 * @return the totalConstitution
+	 */
+	public int getTotalConstitution() {
+		return totalConstitution;
+	}
+
+	/**
+	 * @param totalConstitution the totalConstitution to set
+	 */
+	public void setTotalConstitution(int totalConstitution) {
+		this.totalConstitution = totalConstitution;
+	}
+
+	/**
+	 * @return the totalIntelligence
+	 */
+	public int getTotalIntelligence() {
+		return totalIntelligence;
+	}
+
+	/**
+	 * @param totalIntelligence the totalIntelligence to set
+	 */
+	public void setTotalIntelligence(int totalIntelligence) {
+		this.totalIntelligence = totalIntelligence;
+	}
+
+	/**
+	 * @return the totalWisdom
+	 */
+	public int getTotalWisdom() {
+		return totalWisdom;
+	}
+
+	/**
+	 * @param totalWisdom the totalWisdom to set
+	 */
+	public void setTotalWisdom(int totalWisdom) {
+		this.totalWisdom = totalWisdom;
+	}
+
+	/**
+	 * @return the totalCharisma
+	 */
+	public int getTotalCharisma() {
+		return totalCharisma;
+	}
+
+	/**
+	 * @param totalCharisma the totalCharisma to set
+	 */
+	public void setTotalCharisma(int totalCharisma) {
+		this.totalCharisma = totalCharisma;
+	}
+
+	/**
+	 * @return the strengthMod
+	 */
+	public int getStrengthMod() {
+		return strengthMod;
+	}
+
+	/**
+	 * @param strengthMod the strengthMod to set
+	 */
+	public void setStrengthMod(int strengthMod) {
+		this.strengthMod = strengthMod;
+	}
+
+	/**
+	 * @return the dexterityMod
+	 */
+	public int getDexterityMod() {
+		return dexterityMod;
+	}
+
+	/**
+	 * @param dexterityMod the dexterityMod to set
+	 */
+	public void setDexterityMod(int dexterityMod) {
+		this.dexterityMod = dexterityMod;
+	}
+
+	/**
+	 * @return the constitutionMod
+	 */
+	public int getConstitutionMod() {
+		return constitutionMod;
+	}
+
+	/**
+	 * @param constitutionMod the constitutionMod to set
+	 */
+	public void setConstitutionMod(int constitutionMod) {
+		this.constitutionMod = constitutionMod;
+	}
+
+	/**
+	 * @return the intelligenceMod
+	 */
+	public int getIntelligenceMod() {
+		return intelligenceMod;
+	}
+
+	/**
+	 * @param intelligenceMod the intelligenceMod to set
+	 */
+	public void setIntelligenceMod(int intelligenceMod) {
+		this.intelligenceMod = intelligenceMod;
+	}
+
+	/**
+	 * @return the wisdomMod
+	 */
+	public int getWisdomMod() {
+		return wisdomMod;
+	}
+
+	/**
+	 * @param wisdomMod the wisdomMod to set
+	 */
+	public void setWisdomMod(int wisdomMod) {
+		this.wisdomMod = wisdomMod;
+	}
+
+	/**
+	 * @return the charismaMod
+	 */
+	public int getCharismaMod() {
+		return charismaMod;
+	}
+
+	/**
+	 * @param charismaMod the charismaMod to set
+	 */
+	public void setCharismaMod(int charismaMod) {
+		this.charismaMod = charismaMod;
 	}
 
 	/**
@@ -1668,421 +1860,6 @@ public class CharacterSheet {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + age;
-		result = prime * result + ((alignment == null) ? 0 : alignment.hashCode());
-		result = prime * result + ((appearance == null) ? 0 : appearance.hashCode());
-		result = prime * result + attackCount;
-		result = prime * result + ((attacks == null) ? 0 : attacks.hashCode());
-		result = prime * result + attacksUsed;
-		result = prime * result + ((avatarUrl == null) ? 0 : avatarUrl.hashCode());
-		result = prime * result + ((background == null) ? 0 : background.hashCode());
-		result = prime * result + baseCharisma;
-		result = prime * result + baseConstitution;
-		result = prime * result + baseDexterity;
-		result = prime * result + baseIntelligence;
-		result = prime * result + baseStrength;
-		result = prime * result + baseWisdom;
-		result = prime * result + ((bonds == null) ? 0 : bonds.hashCode());
-		result = prime * result + burrowSpeed;
-		result = prime * result + ((characterClasses == null) ? 0 : characterClasses.hashCode());
-		result = prime * result + ((characterName == null) ? 0 : characterName.hashCode());
-		result = prime * result + charismaBonus;
-		result = prime * result + climbSpeed;
-		result = prime * result + constitutionBonus;
-		result = prime * result + copperPieces;
-		result = prime * result + currentHitDice;
-		result = prime * result + currentHitPoints;
-		result = prime * result + dexterityBonus;
-		result = prime * result + electrumPieces;
-		result = prime * result + experiencePoints;
-		result = prime * result + ((faith == null) ? 0 : faith.hashCode());
-		result = prime * result + ((flaws == null) ? 0 : flaws.hashCode());
-		result = prime * result + flySpeed;
-		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
-		result = prime * result + goldPieces;
-		result = prime * result + ((hair == null) ? 0 : hair.hashCode());
-		result = prime * result + ((height == null) ? 0 : height.hashCode());
-		result = prime * result + hitDiceBase;
-		result = prime * result + ((ideals == null) ? 0 : ideals.hashCode());
-		result = prime * result + (inspiration ? 1231 : 1237);
-		result = prime * result + intelligenceBonus;
-		result = prime * result + ((lifestyle == null) ? 0 : lifestyle.hashCode());
-		result = prime * result + maxHitPoints;
-		result = prime * result + (pbAcrobatics ? 1231 : 1237);
-		result = prime * result + (pbAnimalHandling ? 1231 : 1237);
-		result = prime * result + (pbArcana ? 1231 : 1237);
-		result = prime * result + (pbAthletics ? 1231 : 1237);
-		result = prime * result + (pbCharisma ? 1231 : 1237);
-		result = prime * result + (pbConstitution ? 1231 : 1237);
-		result = prime * result + (pbDeception ? 1231 : 1237);
-		result = prime * result + (pbDexterity ? 1231 : 1237);
-		result = prime * result + (pbHistory ? 1231 : 1237);
-		result = prime * result + (pbInsight ? 1231 : 1237);
-		result = prime * result + (pbIntelligence ? 1231 : 1237);
-		result = prime * result + (pbIntimidation ? 1231 : 1237);
-		result = prime * result + (pbInvestigation ? 1231 : 1237);
-		result = prime * result + (pbMedicine ? 1231 : 1237);
-		result = prime * result + (pbNature ? 1231 : 1237);
-		result = prime * result + (pbPerception ? 1231 : 1237);
-		result = prime * result + (pbPerformance ? 1231 : 1237);
-		result = prime * result + (pbPersuasion ? 1231 : 1237);
-		result = prime * result + (pbReligion ? 1231 : 1237);
-		result = prime * result + (pbSleightOfHand ? 1231 : 1237);
-		result = prime * result + (pbStealth ? 1231 : 1237);
-		result = prime * result + (pbStrength ? 1231 : 1237);
-		result = prime * result + (pbSurvival ? 1231 : 1237);
-		result = prime * result + (pbWisdom ? 1231 : 1237);
-		result = prime * result + ((personalityTraits == null) ? 0 : personalityTraits.hashCode());
-		result = prime * result + platinumPieces;
-		result = prime * result + ((race == null) ? 0 : race.hashCode());
-		result = prime * result + racialCharismaMod;
-		result = prime * result + racialConstitutionMod;
-		result = prime * result + racialDexterityMod;
-		result = prime * result + racialIntelligenceMod;
-		result = prime * result + racialStrengthMod;
-		result = prime * result + racialWisdomMod;
-		result = prime * result + ((sheetSource == null) ? 0 : sheetSource.hashCode());
-		result = prime * result + silverPieces;
-		result = prime * result + ((size == null) ? 0 : size.hashCode());
-		result = prime * result + ((skin == null) ? 0 : skin.hashCode());
-		result = prime * result + spAcrobatics;
-		result = prime * result + spAnimalHandling;
-		result = prime * result + spArcana;
-		result = prime * result + spAthletics;
-		result = prime * result + spDeception;
-		result = prime * result + spHistory;
-		result = prime * result + spInsight;
-		result = prime * result + spIntimidation;
-		result = prime * result + spInvestigation;
-		result = prime * result + spMedicine;
-		result = prime * result + spNature;
-		result = prime * result + spPerception;
-		result = prime * result + spPerformance;
-		result = prime * result + spPersuasion;
-		result = prime * result + spReligion;
-		result = prime * result + spSleightOfHand;
-		result = prime * result + spStealth;
-		result = prime * result + spSurvival;
-		result = prime * result + stCharisma;
-		result = prime * result + stConstitution;
-		result = prime * result + stDexterity;
-		result = prime * result + stIntelligence;
-		result = prime * result + stStrength;
-		result = prime * result + stWisdom;
-		result = prime * result + strengthBonus;
-		result = prime * result + ((subclass == null) ? 0 : subclass.hashCode());
-		result = prime * result + swimSpeed;
-		result = prime * result + temporaryHitPoints;
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
-		result = prime * result + walkSpeed;
-		result = prime * result + ((weight == null) ? 0 : weight.hashCode());
-		result = prime * result + wisdomBonus;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		CharacterSheet other = (CharacterSheet) obj;
-		if (age != other.age)
-			return false;
-		if (alignment == null) {
-			if (other.alignment != null)
-				return false;
-		} else if (!alignment.equals(other.alignment))
-			return false;
-		if (appearance == null) {
-			if (other.appearance != null)
-				return false;
-		} else if (!appearance.equals(other.appearance))
-			return false;
-		if (attackCount != other.attackCount)
-			return false;
-		if (attacks == null) {
-			if (other.attacks != null)
-				return false;
-		} else if (!attacks.equals(other.attacks))
-			return false;
-		if (attacksUsed != other.attacksUsed)
-			return false;
-		if (avatarUrl == null) {
-			if (other.avatarUrl != null)
-				return false;
-		} else if (!avatarUrl.equals(other.avatarUrl))
-			return false;
-		if (background == null) {
-			if (other.background != null)
-				return false;
-		} else if (!background.equals(other.background))
-			return false;
-		if (baseCharisma != other.baseCharisma)
-			return false;
-		if (baseConstitution != other.baseConstitution)
-			return false;
-		if (baseDexterity != other.baseDexterity)
-			return false;
-		if (baseIntelligence != other.baseIntelligence)
-			return false;
-		if (baseStrength != other.baseStrength)
-			return false;
-		if (baseWisdom != other.baseWisdom)
-			return false;
-		if (bonds == null) {
-			if (other.bonds != null)
-				return false;
-		} else if (!bonds.equals(other.bonds))
-			return false;
-		if (burrowSpeed != other.burrowSpeed)
-			return false;
-		if (characterClasses == null) {
-			if (other.characterClasses != null)
-				return false;
-		} else if (!characterClasses.equals(other.characterClasses))
-			return false;
-		if (characterName == null) {
-			if (other.characterName != null)
-				return false;
-		} else if (!characterName.equals(other.characterName))
-			return false;
-		if (charismaBonus != other.charismaBonus)
-			return false;
-		if (climbSpeed != other.climbSpeed)
-			return false;
-		if (constitutionBonus != other.constitutionBonus)
-			return false;
-		if (copperPieces != other.copperPieces)
-			return false;
-		if (currentHitDice != other.currentHitDice)
-			return false;
-		if (currentHitPoints != other.currentHitPoints)
-			return false;
-		if (dexterityBonus != other.dexterityBonus)
-			return false;
-		if (electrumPieces != other.electrumPieces)
-			return false;
-		if (experiencePoints != other.experiencePoints)
-			return false;
-		if (faith == null) {
-			if (other.faith != null)
-				return false;
-		} else if (!faith.equals(other.faith))
-			return false;
-		if (flaws == null) {
-			if (other.flaws != null)
-				return false;
-		} else if (!flaws.equals(other.flaws))
-			return false;
-		if (flySpeed != other.flySpeed)
-			return false;
-		if (gender == null) {
-			if (other.gender != null)
-				return false;
-		} else if (!gender.equals(other.gender))
-			return false;
-		if (goldPieces != other.goldPieces)
-			return false;
-		if (hair == null) {
-			if (other.hair != null)
-				return false;
-		} else if (!hair.equals(other.hair))
-			return false;
-		if (height == null) {
-			if (other.height != null)
-				return false;
-		} else if (!height.equals(other.height))
-			return false;
-		if (hitDiceBase != other.hitDiceBase)
-			return false;
-		if (ideals == null) {
-			if (other.ideals != null)
-				return false;
-		} else if (!ideals.equals(other.ideals))
-			return false;
-		if (inspiration != other.inspiration)
-			return false;
-		if (intelligenceBonus != other.intelligenceBonus)
-			return false;
-		if (lifestyle == null) {
-			if (other.lifestyle != null)
-				return false;
-		} else if (!lifestyle.equals(other.lifestyle))
-			return false;
-		if (maxHitPoints != other.maxHitPoints)
-			return false;
-		if (pbAcrobatics != other.pbAcrobatics)
-			return false;
-		if (pbAnimalHandling != other.pbAnimalHandling)
-			return false;
-		if (pbArcana != other.pbArcana)
-			return false;
-		if (pbAthletics != other.pbAthletics)
-			return false;
-		if (pbCharisma != other.pbCharisma)
-			return false;
-		if (pbConstitution != other.pbConstitution)
-			return false;
-		if (pbDeception != other.pbDeception)
-			return false;
-		if (pbDexterity != other.pbDexterity)
-			return false;
-		if (pbHistory != other.pbHistory)
-			return false;
-		if (pbInsight != other.pbInsight)
-			return false;
-		if (pbIntelligence != other.pbIntelligence)
-			return false;
-		if (pbIntimidation != other.pbIntimidation)
-			return false;
-		if (pbInvestigation != other.pbInvestigation)
-			return false;
-		if (pbMedicine != other.pbMedicine)
-			return false;
-		if (pbNature != other.pbNature)
-			return false;
-		if (pbPerception != other.pbPerception)
-			return false;
-		if (pbPerformance != other.pbPerformance)
-			return false;
-		if (pbPersuasion != other.pbPersuasion)
-			return false;
-		if (pbReligion != other.pbReligion)
-			return false;
-		if (pbSleightOfHand != other.pbSleightOfHand)
-			return false;
-		if (pbStealth != other.pbStealth)
-			return false;
-		if (pbStrength != other.pbStrength)
-			return false;
-		if (pbSurvival != other.pbSurvival)
-			return false;
-		if (pbWisdom != other.pbWisdom)
-			return false;
-		if (personalityTraits == null) {
-			if (other.personalityTraits != null)
-				return false;
-		} else if (!personalityTraits.equals(other.personalityTraits))
-			return false;
-		if (platinumPieces != other.platinumPieces)
-			return false;
-		if (race == null) {
-			if (other.race != null)
-				return false;
-		} else if (!race.equals(other.race))
-			return false;
-		if (racialCharismaMod != other.racialCharismaMod)
-			return false;
-		if (racialConstitutionMod != other.racialConstitutionMod)
-			return false;
-		if (racialDexterityMod != other.racialDexterityMod)
-			return false;
-		if (racialIntelligenceMod != other.racialIntelligenceMod)
-			return false;
-		if (racialStrengthMod != other.racialStrengthMod)
-			return false;
-		if (racialWisdomMod != other.racialWisdomMod)
-			return false;
-		if (sheetSource == null) {
-			if (other.sheetSource != null)
-				return false;
-		} else if (!sheetSource.equals(other.sheetSource))
-			return false;
-		if (silverPieces != other.silverPieces)
-			return false;
-		if (size == null) {
-			if (other.size != null)
-				return false;
-		} else if (!size.equals(other.size))
-			return false;
-		if (skin == null) {
-			if (other.skin != null)
-				return false;
-		} else if (!skin.equals(other.skin))
-			return false;
-		if (spAcrobatics != other.spAcrobatics)
-			return false;
-		if (spAnimalHandling != other.spAnimalHandling)
-			return false;
-		if (spArcana != other.spArcana)
-			return false;
-		if (spAthletics != other.spAthletics)
-			return false;
-		if (spDeception != other.spDeception)
-			return false;
-		if (spHistory != other.spHistory)
-			return false;
-		if (spInsight != other.spInsight)
-			return false;
-		if (spIntimidation != other.spIntimidation)
-			return false;
-		if (spInvestigation != other.spInvestigation)
-			return false;
-		if (spMedicine != other.spMedicine)
-			return false;
-		if (spNature != other.spNature)
-			return false;
-		if (spPerception != other.spPerception)
-			return false;
-		if (spPerformance != other.spPerformance)
-			return false;
-		if (spPersuasion != other.spPersuasion)
-			return false;
-		if (spReligion != other.spReligion)
-			return false;
-		if (spSleightOfHand != other.spSleightOfHand)
-			return false;
-		if (spStealth != other.spStealth)
-			return false;
-		if (spSurvival != other.spSurvival)
-			return false;
-		if (stCharisma != other.stCharisma)
-			return false;
-		if (stConstitution != other.stConstitution)
-			return false;
-		if (stDexterity != other.stDexterity)
-			return false;
-		if (stIntelligence != other.stIntelligence)
-			return false;
-		if (stStrength != other.stStrength)
-			return false;
-		if (stWisdom != other.stWisdom)
-			return false;
-		if (strengthBonus != other.strengthBonus)
-			return false;
-		if (subclass == null) {
-			if (other.subclass != null)
-				return false;
-		} else if (!subclass.equals(other.subclass))
-			return false;
-		if (swimSpeed != other.swimSpeed)
-			return false;
-		if (temporaryHitPoints != other.temporaryHitPoints)
-			return false;
-		if (user == null) {
-			if (other.user != null)
-				return false;
-		} else if (!user.equals(other.user))
-			return false;
-		if (walkSpeed != other.walkSpeed)
-			return false;
-		if (weight == null) {
-			if (other.weight != null)
-				return false;
-		} else if (!weight.equals(other.weight))
-			return false;
-		if (wisdomBonus != other.wisdomBonus)
-			return false;
-		return true;
-	}
-
-	@Override
 	public String toString() {
 		return "CharacterSheet [sheetSource=" + sheetSource + ", user=" + user + ", characterName=" + characterName
 				+ ", avatarUrl=" + avatarUrl + ", faith=" + faith + ", age=" + age + ", hair=" + hair + ", skin=" + skin
@@ -2092,25 +1869,30 @@ public class CharacterSheet {
 				+ flaws + ", appearance=" + appearance + ", copperPieces=" + copperPieces + ", silverPieces="
 				+ silverPieces + ", electrumPieces=" + electrumPieces + ", goldPieces=" + goldPieces
 				+ ", platinumPieces=" + platinumPieces + ", baseStrength=" + baseStrength + ", baseDexterity="
-				+ baseDexterity + ", baseConstitution=" + baseConstitution + ", baseWisdom=" + baseWisdom
-				+ ", baseIntelligence=" + baseIntelligence + ", baseCharisma=" + baseCharisma + ", strengthBonus="
-				+ strengthBonus + ", dexterityBonus=" + dexterityBonus + ", constitutionBonus=" + constitutionBonus
-				+ ", wisdomBonus=" + wisdomBonus + ", intelligenceBonus=" + intelligenceBonus + ", charismaBonus="
-				+ charismaBonus + ", stStrength=" + stStrength + ", stDexterity=" + stDexterity + ", stConstitution="
-				+ stConstitution + ", stIntelligence=" + stIntelligence + ", stWisdom=" + stWisdom + ", stCharisma="
-				+ stCharisma + ", pbStrength=" + pbStrength + ", pbDexterity=" + pbDexterity + ", pbConstitution="
-				+ pbConstitution + ", pbIntelligence=" + pbIntelligence + ", pbWisdom=" + pbWisdom + ", pbCharisma="
-				+ pbCharisma + ", spAcrobatics=" + spAcrobatics + ", spAnimalHandling=" + spAnimalHandling
-				+ ", spArcana=" + spArcana + ", spAthletics=" + spAthletics + ", spDeception=" + spDeception
-				+ ", spHistory=" + spHistory + ", spInsight=" + spInsight + ", spIntimidation=" + spIntimidation
-				+ ", spInvestigation=" + spInvestigation + ", spMedicine=" + spMedicine + ", spNature=" + spNature
-				+ ", spPerception=" + spPerception + ", spPerformance=" + spPerformance + ", spPersuasion="
-				+ spPersuasion + ", spReligion=" + spReligion + ", spSleightOfHand=" + spSleightOfHand + ", spStealth="
-				+ spStealth + ", spSurvival=" + spSurvival + ", pbAcrobatics=" + pbAcrobatics + ", pbAnimalHandling="
-				+ pbAnimalHandling + ", pbArcana=" + pbArcana + ", pbAthletics=" + pbAthletics + ", pbDeception="
-				+ pbDeception + ", pbHistory=" + pbHistory + ", pbInsight=" + pbInsight + ", pbIntimidation="
-				+ pbIntimidation + ", pbInvestigation=" + pbInvestigation + ", pbMedicine=" + pbMedicine + ", pbNature="
-				+ pbNature + ", pbPerception=" + pbPerception + ", pbPerformance=" + pbPerformance + ", pbPersuasion="
+				+ baseDexterity + ", baseConstitution=" + baseConstitution + ", baseIntelligence=" + baseIntelligence
+				+ ", baseWisdom=" + baseWisdom + ", baseCharisma=" + baseCharisma + ", strengthBonus=" + strengthBonus
+				+ ", dexterityBonus=" + dexterityBonus + ", constitutionBonus=" + constitutionBonus
+				+ ", intelligenceBonus=" + intelligenceBonus + ", wisdomBonus=" + wisdomBonus + ", charismaBonus="
+				+ charismaBonus + ", totalStrength=" + totalStrength + ", totalDexterity=" + totalDexterity
+				+ ", totalConstitution=" + totalConstitution + ", totalIntelligence=" + totalIntelligence
+				+ ", totalWisdom=" + totalWisdom + ", totalCharisma=" + totalCharisma + ", strengthMod=" + strengthMod
+				+ ", dexterityMod=" + dexterityMod + ", constitutionMod=" + constitutionMod + ", intelligenceMod="
+				+ intelligenceMod + ", wisdomMod=" + wisdomMod + ", charismaMod=" + charismaMod + ", stStrength="
+				+ stStrength + ", stDexterity=" + stDexterity + ", stConstitution=" + stConstitution
+				+ ", stIntelligence=" + stIntelligence + ", stWisdom=" + stWisdom + ", stCharisma=" + stCharisma
+				+ ", pbStrength=" + pbStrength + ", pbDexterity=" + pbDexterity + ", pbConstitution=" + pbConstitution
+				+ ", pbIntelligence=" + pbIntelligence + ", pbWisdom=" + pbWisdom + ", pbCharisma=" + pbCharisma
+				+ ", spAcrobatics=" + spAcrobatics + ", spAnimalHandling=" + spAnimalHandling + ", spArcana=" + spArcana
+				+ ", spAthletics=" + spAthletics + ", spDeception=" + spDeception + ", spHistory=" + spHistory
+				+ ", spInsight=" + spInsight + ", spIntimidation=" + spIntimidation + ", spInvestigation="
+				+ spInvestigation + ", spMedicine=" + spMedicine + ", spNature=" + spNature + ", spPerception="
+				+ spPerception + ", spPerformance=" + spPerformance + ", spPersuasion=" + spPersuasion + ", spReligion="
+				+ spReligion + ", spSleightOfHand=" + spSleightOfHand + ", spStealth=" + spStealth + ", spSurvival="
+				+ spSurvival + ", pbAcrobatics=" + pbAcrobatics + ", pbAnimalHandling=" + pbAnimalHandling
+				+ ", pbArcana=" + pbArcana + ", pbAthletics=" + pbAthletics + ", pbDeception=" + pbDeception
+				+ ", pbHistory=" + pbHistory + ", pbInsight=" + pbInsight + ", pbIntimidation=" + pbIntimidation
+				+ ", pbInvestigation=" + pbInvestigation + ", pbMedicine=" + pbMedicine + ", pbNature=" + pbNature
+				+ ", pbPerception=" + pbPerception + ", pbPerformance=" + pbPerformance + ", pbPersuasion="
 				+ pbPersuasion + ", pbReligion=" + pbReligion + ", pbSleightOfHand=" + pbSleightOfHand + ", pbStealth="
 				+ pbStealth + ", pbSurvival=" + pbSurvival + ", background=" + background + ", race=" + race + ", size="
 				+ size + ", walkSpeed=" + walkSpeed + ", flySpeed=" + flySpeed + ", burrowSpeed=" + burrowSpeed
@@ -2123,4 +1905,5 @@ public class CharacterSheet {
 				+ currentHitDice + ", attackCount=" + attackCount + ", attacksUsed=" + attacksUsed + ", attacks="
 				+ attacks + "]";
 	}
+
 }

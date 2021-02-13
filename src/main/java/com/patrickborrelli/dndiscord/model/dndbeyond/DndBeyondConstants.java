@@ -6,6 +6,7 @@ public class DndBeyondConstants {
 	public static final String PROFICIENCY = "proficiency";
 	public static final String ADVANTAGE = "advantage";
 	public static final String BONUS = "bonus";
+	public static final String SET = "set";
 	public static final String LANGUAGE = "language";
 	
 	//subtypes:

@@ -24,6 +24,7 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.Stat;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.utilities.AlignmentType;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
+import com.patrickborrelli.dndiscord.utilities.RulesetUtil;
 import com.patrickborrelli.dndiscord.utilities.SheetSourceType;
 
 /**
@@ -35,6 +36,7 @@ import com.patrickborrelli.dndiscord.utilities.SheetSourceType;
 public class ImportCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(ImportCommand.class);
 	private List<MessageAttachment> attachments;
+	private RulesetUtil ruleset = RulesetUtil.getInstance();
 
 	@Override
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
@@ -111,21 +113,45 @@ public class ImportCommand implements CommandExecutor {
 			sheet.setGoldPieces(character.getCurrencies().getGoldPieces());
 			sheet.setElectrumPieces(character.getCurrencies().getElectrumPieces());
 			sheet.setSilverPieces(character.getCurrencies().getSilverPieces());
-			sheet.setCopperPieces(character.getCurrencies().getCopperPieces());
-			processBeyondModifiers(sheet, character);
-			
-			
+			sheet.setCopperPieces(character.getCurrencies().getCopperPieces());		
 			convertBeyondStats(sheet, character);
+			processBeyondModifiers(sheet, character);	
+			applyAbilityScoreMods(sheet);
 		}
 		LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
 	}
 	
+	private void applyAbilityScoreMods(CharacterSheet sheet) {
+		sheet.setStrengthMod(ruleset.getAbilityScoreMod(sheet.getTotalStrength()));
+		sheet.setDexterityMod(ruleset.getAbilityScoreMod(sheet.getTotalDexterity()));
+		sheet.setConstitutionMod(ruleset.getAbilityScoreMod(sheet.getTotalConstitution()));
+		sheet.setWisdomMod(ruleset.getAbilityScoreMod(sheet.getTotalWisdom()));
+		sheet.setIntelligenceMod(ruleset.getAbilityScoreMod(sheet.getTotalIntelligence()));
+		sheet.setCharismaMod(ruleset.getAbilityScoreMod(sheet.getTotalCharisma()));
+	}
+	
 	private void processBeyondModifiers(CharacterSheet sheet, DndBeyondSheet character) {
-		//first get racial modifiers for ability scores
+		
 		List<Modifier> racialModifiers = Arrays.asList(character.getModifiers().getRace());
-		for(Modifier mod : racialModifiers) {
-			LOGGER.debug("Racial modifier: " + mod.toString());
+		List<Modifier> classModifiers = Arrays.asList(character.getModifiers().getClass_mod());
+		List<Modifier> backgroundModifiers = Arrays.asList(character.getModifiers().getBackground());
+		List<Modifier> itemModifiers = Arrays.asList(character.getModifiers().getItem());
+		List<Modifier> featModifiers = Arrays.asList(character.getModifiers().getFeat());
+		List<Modifier> conditionModifiers = Arrays.asList(character.getModifiers().getCondition());
+		
+		processBeyondModifierSet(racialModifiers, sheet, "Race");
+		processBeyondModifierSet(classModifiers, sheet, "Class");
+		processBeyondModifierSet(backgroundModifiers, sheet, "Background");
+		processBeyondModifierSet(itemModifiers, sheet, "Item");
+		processBeyondModifierSet(featModifiers, sheet, "Feat");
+		processBeyondModifierSet(conditionModifiers, sheet, "Condition");				
+	}
+	
+	private void processBeyondModifierSet(List<Modifier> mods, CharacterSheet sheet, String modifierType) {
+		LOGGER.debug("Processing "+ modifierType + " modifiers.");
+		for(Modifier mod : mods) {
+			LOGGER.debug("Modifier: " + mod.toString());
 			if(mod.getType().equalsIgnoreCase(DndBeyondConstants.BONUS)) {
 				switch(mod.getSubType()) {
 					case DndBeyondConstants.STRENGTH_SCORE:
@@ -155,8 +181,37 @@ public class ImportCommand implements CommandExecutor {
 					default:
 						LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());													
 				}
+			} else if(mod.getType().equalsIgnoreCase(DndBeyondConstants.SET)) {
+				switch(mod.getSubType()) {
+					case DndBeyondConstants.STRENGTH_SCORE:
+						sheet.setTotalStrength(mod.getValue());
+						break;
+	
+					case DndBeyondConstants.DEXTERITY_SCORE:
+						sheet.setTotalDexterity(mod.getValue());
+						break;	
+						
+					case DndBeyondConstants.CONSTITUTION_SCORE:
+						sheet.setTotalConstitution(mod.getValue());
+						break;
+						
+					case DndBeyondConstants.WISDOM_SCORE:
+						sheet.setTotalWisdom(mod.getValue());
+						break;
+						
+					case DndBeyondConstants.INTELLIGENCE_SCORE:
+						sheet.setTotalIntelligence(mod.getValue());
+						break;
+						
+					case DndBeyondConstants.CHARISMA_SCORE:
+						sheet.setTotalCharisma(mod.getValue());
+						break;
+						
+					default:
+						LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());	
+				}
 			}
-		}		
+		}
 	}
 	
 	private void convertBeyondStats(CharacterSheet sheet, DndBeyondSheet character) {
@@ -174,10 +229,10 @@ public class ImportCommand implements CommandExecutor {
 					sheet.setBaseConstitution(value);
 					break;
 				case 4:
-					sheet.setBaseWisdom(value);
+					sheet.setBaseIntelligence(value);
 					break;
 				case 5:
-					sheet.setBaseIntelligence(value);
+					sheet.setBaseWisdom(value);
 					break;
 				case 6:
 					sheet.setBaseCharisma(value);
