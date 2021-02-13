@@ -13,6 +13,7 @@ import org.javacord.api.DiscordApi;
 public class RulesetUtil {
 	private static volatile RulesetUtil instance;
 	private static HashMap<Integer, Integer> modMap;
+	private static HashMap<Integer, Integer> proficiencyMap;
 	
 	static {
 		modMap = new HashMap<Integer, Integer>();
@@ -46,6 +47,28 @@ public class RulesetUtil {
 		modMap.put(28, 9);
 		modMap.put(29, 9);
 		modMap.put(30, 10);
+		
+		proficiencyMap = new HashMap<Integer, Integer>();
+		proficiencyMap.put(1, 2);
+		proficiencyMap.put(2, 2);
+		proficiencyMap.put(3, 2);
+		proficiencyMap.put(4, 2);
+		proficiencyMap.put(5, 3);
+		proficiencyMap.put(6, 3);
+		proficiencyMap.put(7, 3);
+		proficiencyMap.put(8, 3);
+		proficiencyMap.put(9, 4);
+		proficiencyMap.put(10, 4);
+		proficiencyMap.put(11, 4);
+		proficiencyMap.put(12, 4);
+		proficiencyMap.put(13, 5);
+		proficiencyMap.put(14, 5);
+		proficiencyMap.put(15, 5);
+		proficiencyMap.put(16, 5);
+		proficiencyMap.put(17, 6);
+		proficiencyMap.put(18, 6);
+		proficiencyMap.put(19, 6);
+		proficiencyMap.put(20, 6);
 	}
 	
 	private RulesetUtil() {
@@ -77,6 +100,16 @@ public class RulesetUtil {
 	 */
 	public int getAbilityScoreMod(int value) {
 		return modMap.get(value);
+	}
+	
+	/**
+	 * Retrieves the appropriate proficiency score for a given level.
+	 * 
+	 * @param level an int representing the total character level.
+	 * @return an int representing the proficiency bonus
+	 */
+	public int getProficiencyScore(int level) {
+		return proficiencyMap.get(level);
 	}
 	
 }

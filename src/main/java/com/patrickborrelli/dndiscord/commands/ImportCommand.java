@@ -3,6 +3,7 @@ package com.patrickborrelli.dndiscord.commands;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Modifier;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Stat;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
 import com.patrickborrelli.dndiscord.utilities.AlignmentType;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 import com.patrickborrelli.dndiscord.utilities.RulesetUtil;
@@ -113,13 +115,44 @@ public class ImportCommand implements CommandExecutor {
 			sheet.setGoldPieces(character.getCurrencies().getGoldPieces());
 			sheet.setElectrumPieces(character.getCurrencies().getElectrumPieces());
 			sheet.setSilverPieces(character.getCurrencies().getSilverPieces());
-			sheet.setCopperPieces(character.getCurrencies().getCopperPieces());		
+			sheet.setCopperPieces(character.getCurrencies().getCopperPieces());	
+			setClasses(sheet, character);
 			convertBeyondStats(sheet, character);
 			processBeyondModifiers(sheet, character);	
 			applyAbilityScoreMods(sheet);
+			applySavingThrowMods(sheet);
 		}
 		LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
+	}
+	
+	private void applySavingThrowMods(CharacterSheet sheet) {
+		int profBonus = ruleset.getProficiencyScore(sheet.getTotalLevel());
+		sheet.setStrengthSave(sheet.getStrengthMod() + (sheet.isStrengthSaveProficiency() ? profBonus : 0));
+		sheet.setDexteritySave(sheet.getDexterityMod() + (sheet.isDexteritySaveProficiency() ? profBonus : 0));
+		sheet.setConstitutionSave(sheet.getConstitutionMod() + (sheet.isConstitutionSaveProficiency() ? profBonus : 0));
+		sheet.setIntelligenceSave(sheet.getIntelligenceMod() + (sheet.isIntelligenceSaveProficiency() ? profBonus : 0));
+		sheet.setWisdomSave(sheet.getWisdomMod() + (sheet.isWisdomSaveProficiency() ? profBonus : 0));
+		sheet.setCharismaSave(sheet.getCharismaMod() + (sheet.isCharismaSaveProficiency() ? profBonus : 0));
+	}
+	
+	private void setClasses(CharacterSheet sheet, DndBeyondSheet character) {
+		List<com.patrickborrelli.dndiscord.model.dndbeyond.CharacterClass> beyondClasses =
+				Arrays.asList(character.getClasses());
+		List<CharacterClass> discordClasses = new ArrayList<>();
+		CharacterClass thisClass = null;
+		int totalLevel = 0;
+		
+		for(com.patrickborrelli.dndiscord.model.dndbeyond.CharacterClass beyondClass : beyondClasses) {
+			thisClass = new CharacterClass();
+			thisClass.setLevel(beyondClass.getLevel());
+			thisClass.setName(beyondClass.getDefinition().getName());
+			thisClass.setStartingClass(beyondClass.isStartingClass());
+			discordClasses.add(thisClass);
+			totalLevel += beyondClass.getLevel();
+		}
+		sheet.setCharacterClasses(discordClasses);
+		sheet.setTotalLevel(totalLevel);
 	}
 	
 	private void applyAbilityScoreMods(CharacterSheet sheet) {
@@ -205,6 +238,35 @@ public class ImportCommand implements CommandExecutor {
 						
 					case DndBeyondConstants.CHARISMA_SCORE:
 						sheet.setTotalCharisma(mod.getValue());
+						break;
+						
+					default:
+						LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());	
+				}
+			} else if(mod.getType().equalsIgnoreCase(DndBeyondConstants.PROFICIENCY)) {
+				switch(mod.getSubType()) {
+					case DndBeyondConstants.STRENGTH_SAVE:
+						sheet.setStrengthSaveProficiency(true);
+						break;
+	
+					case DndBeyondConstants.DEXTERITY_SAVE:
+						sheet.setDexteritySaveProficiency(true);
+						break;	
+						
+					case DndBeyondConstants.CONSTITUTION_SAVE:
+						sheet.setConstitutionSaveProficiency(true);
+						break;
+						
+					case DndBeyondConstants.INTELLIGENCE_SAVE:
+						sheet.setIntelligenceSaveProficiency(true);
+						break;
+						
+					case DndBeyondConstants.WISDOM_SAVE:
+						sheet.setWisdomSaveProficiency(true);
+						break;
+						
+					case DndBeyondConstants.CHARISMA_SAVE:
+						sheet.setCharismaSaveProficiency(true);
 						break;
 						
 					default:

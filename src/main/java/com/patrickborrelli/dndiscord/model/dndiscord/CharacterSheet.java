@@ -66,56 +66,74 @@ public class CharacterSheet {
 	private int charismaMod;	
 	
 	//saving throws:
-	private int stStrength;
-	private int stDexterity;
-	private int stConstitution;
-	private int stIntelligence;
-	private int stWisdom;
-	private int stCharisma;
-	boolean pbStrength;
-	boolean pbDexterity;
-	boolean pbConstitution;
-	boolean pbIntelligence;
-	boolean pbWisdom;
-	boolean pbCharisma;
+	private int strengthSave;
+	private int dexteritySave;
+	private int constitutionSave;
+	private int intelligenceSave;
+	private int wisdomSave;
+	private int charismaSave;
+	private boolean strengthSaveProficiency;
+	private boolean dexteritySaveProficiency;
+	private boolean constitutionSaveProficiency;
+	private boolean intelligenceSaveProficiency;
+	private boolean wisdomSaveProficiency;
+	private boolean charismaSaveProficiency;
 	
 	//skills:
-	int spAcrobatics;
-	int spAnimalHandling;
-	int spArcana;
-	int spAthletics;
-	int spDeception;
-	int spHistory;
-	int spInsight;
-	int spIntimidation;
-	int spInvestigation;
-	int spMedicine;
-	int spNature;
-	int spPerception;
-	int spPerformance;
-	int spPersuasion;
-	int spReligion;
-	int spSleightOfHand;
-	int spStealth;
-	int spSurvival;
-	boolean pbAcrobatics;
-	boolean pbAnimalHandling;
-	boolean pbArcana;
-	boolean pbAthletics;
-	boolean pbDeception;
-	boolean pbHistory;
-	boolean pbInsight;
-	boolean pbIntimidation;
-	boolean pbInvestigation;
-	boolean pbMedicine;
-	boolean pbNature;
-	boolean pbPerception;
-	boolean pbPerformance;
-	boolean pbPersuasion;
-	boolean pbReligion;
-	boolean pbSleightOfHand;
-	boolean pbStealth;
-	boolean pbSurvival;	
+	private int acrobaticsMod;
+	private int animalHandlingMod;
+	private int arcanaMod;
+	private int athleticsMod;
+	private int deceptionMod;
+	private int historyMod;
+	private int insightMod;
+	private int intimidationMod;
+	private int investigationMod;
+	private int medicineMod;
+	private int natureMod;
+	private int perceptionMod;
+	private int performanceMod;
+	private int persuasionMod;
+	private int religionMod;
+	private int sleightOfHandMod;
+	private int stealthMod;
+	private int survivalMod;
+	private boolean acrobaticsProficiency;
+	private boolean animalHandlingProficiency;
+	private boolean arcanaProficiency;
+	private boolean athleticsProficiency;
+	private boolean deceptionProficiency;
+	private boolean historyProficiency;
+	private boolean insightProficiency;
+	private boolean intimidationProficiency;
+	private boolean investigationProficiency;
+	private boolean medicineProficiency;
+	private boolean natureProficiency;
+	private boolean perceptionProficiency;
+	private boolean performanceProficiency;
+	private boolean persuasionProficiency;
+	private boolean religionProficiency;
+	private boolean sleightOfHandProficiency;
+	private boolean stealthProficiency;
+	private boolean survivalProficiency;	
+	private boolean acrobaticsExpertise;
+	private boolean animalHandlingExpertise;
+	private boolean arcanaExpertise;
+	private boolean athleticsExpertise;
+	private boolean deceptionExpertise;
+	private boolean historyExpertise;
+	private boolean insightExpertise;
+	private boolean intimidationExpertise;
+	private boolean investigationExpertise;
+	private boolean medicineExpertise;
+	private boolean natureExpertise;
+	private boolean perceptionExpertise;
+	private boolean performanceExpertise;
+	private boolean persuasionExpertise;
+	private boolean religionExpertise;
+	private boolean sleightOfHandExpertise;
+	private boolean stealthExpertise;
+	private boolean survivalExpertise;
 	
 	//Background and related traits:
 	private String background;
@@ -137,6 +155,7 @@ public class CharacterSheet {
 	
 	//Classes and subclasses and related traits:
 	private List<CharacterClass> characterClasses;
+	private int totalLevel;
 	private String subclass;
 	private int maxHitPoints;
 	private int currentHitPoints;
@@ -852,675 +871,927 @@ public class CharacterSheet {
 	}
 
 	/**
-	 * @return the stStrength
+	 * @return the strengthSave
 	 */
-	public int getStStrength() {
-		return stStrength;
+	public int getStrengthSave() {
+		return strengthSave;
 	}
 
 	/**
-	 * @param stStrength the stStrength to set
+	 * @param strengthSave the strengthSave to set
 	 */
-	public void setStStrength(int stStrength) {
-		this.stStrength = stStrength;
+	public void setStrengthSave(int strengthSave) {
+		this.strengthSave = strengthSave;
 	}
 
 	/**
-	 * @return the stDexterity
+	 * @return the dexteritySave
 	 */
-	public int getStDexterity() {
-		return stDexterity;
+	public int getDexteritySave() {
+		return dexteritySave;
 	}
 
 	/**
-	 * @param stDexterity the stDexterity to set
+	 * @param dexteritySave the dexteritySave to set
 	 */
-	public void setStDexterity(int stDexterity) {
-		this.stDexterity = stDexterity;
+	public void setDexteritySave(int dexteritySave) {
+		this.dexteritySave = dexteritySave;
 	}
 
 	/**
-	 * @return the stConstitution
+	 * @return the constitutionSave
 	 */
-	public int getStConstitution() {
-		return stConstitution;
+	public int getConstitutionSave() {
+		return constitutionSave;
 	}
 
 	/**
-	 * @param stConstitution the stConstitution to set
+	 * @param constitutionSave the constitutionSave to set
 	 */
-	public void setStConstitution(int stConstitution) {
-		this.stConstitution = stConstitution;
+	public void setConstitutionSave(int constitutionSave) {
+		this.constitutionSave = constitutionSave;
 	}
 
 	/**
-	 * @return the stIntelligence
+	 * @return the intelligenceSave
 	 */
-	public int getStIntelligence() {
-		return stIntelligence;
+	public int getIntelligenceSave() {
+		return intelligenceSave;
 	}
 
 	/**
-	 * @param stIntelligence the stIntelligence to set
+	 * @param intelligenceSave the intelligenceSave to set
 	 */
-	public void setStIntelligence(int stIntelligence) {
-		this.stIntelligence = stIntelligence;
+	public void setIntelligenceSave(int intelligenceSave) {
+		this.intelligenceSave = intelligenceSave;
 	}
 
 	/**
-	 * @return the stWisdom
+	 * @return the wisdomSave
 	 */
-	public int getStWisdom() {
-		return stWisdom;
+	public int getWisdomSave() {
+		return wisdomSave;
 	}
 
 	/**
-	 * @param stWisdom the stWisdom to set
+	 * @param wisdomSave the wisdomSave to set
 	 */
-	public void setStWisdom(int stWisdom) {
-		this.stWisdom = stWisdom;
+	public void setWisdomSave(int wisdomSave) {
+		this.wisdomSave = wisdomSave;
 	}
 
 	/**
-	 * @return the stCharisma
+	 * @return the charismaSave
 	 */
-	public int getStCharisma() {
-		return stCharisma;
+	public int getCharismaSave() {
+		return charismaSave;
 	}
 
 	/**
-	 * @param stCharisma the stCharisma to set
+	 * @param charismaSave the charismaSave to set
 	 */
-	public void setStCharisma(int stCharisma) {
-		this.stCharisma = stCharisma;
+	public void setCharismaSave(int charismaSave) {
+		this.charismaSave = charismaSave;
 	}
 
 	/**
-	 * @return the pbStrength
+	 * @return the strengthSaveProficiency
 	 */
-	public boolean isPbStrength() {
-		return pbStrength;
+	public boolean isStrengthSaveProficiency() {
+		return strengthSaveProficiency;
 	}
 
 	/**
-	 * @param pbStrength the pbStrength to set
+	 * @param strengthSaveProficiency the strengthSaveProficiency to set
 	 */
-	public void setPbStrength(boolean pbStrength) {
-		this.pbStrength = pbStrength;
+	public void setStrengthSaveProficiency(boolean strengthSaveProficiency) {
+		this.strengthSaveProficiency = strengthSaveProficiency;
 	}
 
 	/**
-	 * @return the pbDexterity
+	 * @return the dexteritySaveProficiency
 	 */
-	public boolean isPbDexterity() {
-		return pbDexterity;
+	public boolean isDexteritySaveProficiency() {
+		return dexteritySaveProficiency;
 	}
 
 	/**
-	 * @param pbDexterity the pbDexterity to set
+	 * @param dexteritySaveProficiency the dexteritySaveProficiency to set
 	 */
-	public void setPbDexterity(boolean pbDexterity) {
-		this.pbDexterity = pbDexterity;
+	public void setDexteritySaveProficiency(boolean dexteritySaveProficiency) {
+		this.dexteritySaveProficiency = dexteritySaveProficiency;
 	}
 
 	/**
-	 * @return the pbConstitution
+	 * @return the constitutionSaveProficiency
 	 */
-	public boolean isPbConstitution() {
-		return pbConstitution;
+	public boolean isConstitutionSaveProficiency() {
+		return constitutionSaveProficiency;
 	}
 
 	/**
-	 * @param pbConstitution the pbConstitution to set
+	 * @param constitutionSaveProficiency the constitutionSaveProficiency to set
 	 */
-	public void setPbConstitution(boolean pbConstitution) {
-		this.pbConstitution = pbConstitution;
+	public void setConstitutionSaveProficiency(boolean constitutionSaveProficiency) {
+		this.constitutionSaveProficiency = constitutionSaveProficiency;
 	}
 
 	/**
-	 * @return the pbIntelligence
+	 * @return the intelligenceSaveProficiency
 	 */
-	public boolean isPbIntelligence() {
-		return pbIntelligence;
+	public boolean isIntelligenceSaveProficiency() {
+		return intelligenceSaveProficiency;
 	}
 
 	/**
-	 * @param pbIntelligence the pbIntelligence to set
+	 * @param intelligenceSaveProficiency the intelligenceSaveProficiency to set
 	 */
-	public void setPbIntelligence(boolean pbIntelligence) {
-		this.pbIntelligence = pbIntelligence;
+	public void setIntelligenceSaveProficiency(boolean intelligenceSaveProficiency) {
+		this.intelligenceSaveProficiency = intelligenceSaveProficiency;
 	}
 
 	/**
-	 * @return the pbWisdom
+	 * @return the wisdomSaveProficiency
 	 */
-	public boolean isPbWisdom() {
-		return pbWisdom;
+	public boolean isWisdomSaveProficiency() {
+		return wisdomSaveProficiency;
 	}
 
 	/**
-	 * @param pbWisdom the pbWisdom to set
+	 * @param wisdomSaveProficiency the wisdomSaveProficiency to set
 	 */
-	public void setPbWisdom(boolean pbWisdom) {
-		this.pbWisdom = pbWisdom;
+	public void setWisdomSaveProficiency(boolean wisdomSaveProficiency) {
+		this.wisdomSaveProficiency = wisdomSaveProficiency;
 	}
 
 	/**
-	 * @return the pbCharisma
+	 * @return the charismaSaveProficiency
 	 */
-	public boolean isPbCharisma() {
-		return pbCharisma;
+	public boolean isCharismaSaveProficiency() {
+		return charismaSaveProficiency;
 	}
 
 	/**
-	 * @param pbCharisma the pbCharisma to set
+	 * @param charismaSaveProficiency the charismaSaveProficiency to set
 	 */
-	public void setPbCharisma(boolean pbCharisma) {
-		this.pbCharisma = pbCharisma;
+	public void setCharismaSaveProficiency(boolean charismaSaveProficiency) {
+		this.charismaSaveProficiency = charismaSaveProficiency;
 	}
+	
+	/**
+	 * @return the acrobaticsMod
+	 */
+	public int getAcrobaticsMod() {
+		return acrobaticsMod;
+	}
+
+	/**
+	 * @param acrobaticsMod the acrobaticsMod to set
+	 */
+	public void setAcrobaticsMod(int acrobaticsMod) {
+		this.acrobaticsMod = acrobaticsMod;
+	}
+
+	/**
+	 * @return the animalHandlingMod
+	 */
+	public int getAnimalHandlingMod() {
+		return animalHandlingMod;
+	}
+
+	/**
+	 * @param animalHandlingMod the animalHandlingMod to set
+	 */
+	public void setAnimalHandlingMod(int animalHandlingMod) {
+		this.animalHandlingMod = animalHandlingMod;
+	}
+
+	/**
+	 * @return the arcanaMod
+	 */
+	public int getArcanaMod() {
+		return arcanaMod;
+	}
+
+	/**
+	 * @param arcanaMod the arcanaMod to set
+	 */
+	public void setArcanaMod(int arcanaMod) {
+		this.arcanaMod = arcanaMod;
+	}
+
+	/**
+	 * @return the athleticsMod
+	 */
+	public int getAthleticsMod() {
+		return athleticsMod;
+	}
+
+	/**
+	 * @param athleticsMod the athleticsMod to set
+	 */
+	public void setAthleticsMod(int athleticsMod) {
+		this.athleticsMod = athleticsMod;
+	}
+
+	/**
+	 * @return the deceptionMod
+	 */
+	public int getDeceptionMod() {
+		return deceptionMod;
+	}
+
+	/**
+	 * @param deceptionMod the deceptionMod to set
+	 */
+	public void setDeceptionMod(int deceptionMod) {
+		this.deceptionMod = deceptionMod;
+	}
+
+	/**
+	 * @return the historyMod
+	 */
+	public int getHistoryMod() {
+		return historyMod;
+	}
+
+	/**
+	 * @param historyMod the historyMod to set
+	 */
+	public void setHistoryMod(int historyMod) {
+		this.historyMod = historyMod;
+	}
+
+	/**
+	 * @return the insightMod
+	 */
+	public int getInsightMod() {
+		return insightMod;
+	}
+
+	/**
+	 * @param insightMod the insightMod to set
+	 */
+	public void setInsightMod(int insightMod) {
+		this.insightMod = insightMod;
+	}
+
+	/**
+	 * @return the intimidationMod
+	 */
+	public int getIntimidationMod() {
+		return intimidationMod;
+	}
+
+	/**
+	 * @param intimidationMod the intimidationMod to set
+	 */
+	public void setIntimidationMod(int intimidationMod) {
+		this.intimidationMod = intimidationMod;
+	}
+
+	/**
+	 * @return the investigationMod
+	 */
+	public int getInvestigationMod() {
+		return investigationMod;
+	}
+
+	/**
+	 * @param investigationMod the investigationMod to set
+	 */
+	public void setInvestigationMod(int investigationMod) {
+		this.investigationMod = investigationMod;
+	}
+
+	/**
+	 * @return the medicineMod
+	 */
+	public int getMedicineMod() {
+		return medicineMod;
+	}
+
+	/**
+	 * @param medicineMod the medicineMod to set
+	 */
+	public void setMedicineMod(int medicineMod) {
+		this.medicineMod = medicineMod;
+	}
+
+	/**
+	 * @return the natureMod
+	 */
+	public int getNatureMod() {
+		return natureMod;
+	}
+
+	/**
+	 * @param natureMod the natureMod to set
+	 */
+	public void setNatureMod(int natureMod) {
+		this.natureMod = natureMod;
+	}
+
+	/**
+	 * @return the perceptionMod
+	 */
+	public int getPerceptionMod() {
+		return perceptionMod;
+	}
+
+	/**
+	 * @param perceptionMod the perceptionMod to set
+	 */
+	public void setPerceptionMod(int perceptionMod) {
+		this.perceptionMod = perceptionMod;
+	}
+
+	/**
+	 * @return the performanceMod
+	 */
+	public int getPerformanceMod() {
+		return performanceMod;
+	}
+
+	/**
+	 * @param performanceMod the performanceMod to set
+	 */
+	public void setPerformanceMod(int performanceMod) {
+		this.performanceMod = performanceMod;
+	}
+
+	/**
+	 * @return the persuasionMod
+	 */
+	public int getPersuasionMod() {
+		return persuasionMod;
+	}
+
+	/**
+	 * @param persuasionMod the persuasionMod to set
+	 */
+	public void setPersuasionMod(int persuasionMod) {
+		this.persuasionMod = persuasionMod;
+	}
+
+	/**
+	 * @return the religionMod
+	 */
+	public int getReligionMod() {
+		return religionMod;
+	}
+
+	/**
+	 * @param religionMod the religionMod to set
+	 */
+	public void setReligionMod(int religionMod) {
+		this.religionMod = religionMod;
+	}
+
+	/**
+	 * @return the sleightOfHandMod
+	 */
+	public int getSleightOfHandMod() {
+		return sleightOfHandMod;
+	}
+
+	/**
+	 * @param sleightOfHandMod the sleightOfHandMod to set
+	 */
+	public void setSleightOfHandMod(int sleightOfHandMod) {
+		this.sleightOfHandMod = sleightOfHandMod;
+	}
+
+	/**
+	 * @return the stealthMod
+	 */
+	public int getStealthMod() {
+		return stealthMod;
+	}
+
+	/**
+	 * @param stealthMod the stealthMod to set
+	 */
+	public void setStealthMod(int stealthMod) {
+		this.stealthMod = stealthMod;
+	}
+
+	/**
+	 * @return the survivalMod
+	 */
+	public int getSurvivalMod() {
+		return survivalMod;
+	}
+
+	/**
+	 * @param survivalMod the survivalMod to set
+	 */
+	public void setSurvivalMod(int survivalMod) {
+		this.survivalMod = survivalMod;
+	}
 
 	/**
-	 * @return the spAcrobatics
+	 * @return the acrobaticsProficiency
 	 */
-	public int getSpAcrobatics() {
-		return spAcrobatics;
+	public boolean isAcrobaticsProficiency() {
+		return acrobaticsProficiency;
 	}
 
 	/**
-	 * @param spAcrobatics the spAcrobatics to set
+	 * @param acrobaticsProficiency the acrobaticsProficiency to set
 	 */
-	public void setSpAcrobatics(int spAcrobatics) {
-		this.spAcrobatics = spAcrobatics;
+	public void setAcrobaticsProficiency(boolean acrobaticsProficiency) {
+		this.acrobaticsProficiency = acrobaticsProficiency;
 	}
 
 	/**
-	 * @return the spAnimalHandling
+	 * @return the animalHandlingProficiency
 	 */
-	public int getSpAnimalHandling() {
-		return spAnimalHandling;
+	public boolean isAnimalHandlingProficiency() {
+		return animalHandlingProficiency;
 	}
 
 	/**
-	 * @param spAnimalHandling the spAnimalHandling to set
+	 * @param animalHandlingProficiency the animalHandlingProficiency to set
 	 */
-	public void setSpAnimalHandling(int spAnimalHandling) {
-		this.spAnimalHandling = spAnimalHandling;
+	public void setAnimalHandlingProficiency(boolean animalHandlingProficiency) {
+		this.animalHandlingProficiency = animalHandlingProficiency;
 	}
 
 	/**
-	 * @return the spArcana
+	 * @return the arcanaProficiency
 	 */
-	public int getSpArcana() {
-		return spArcana;
+	public boolean isArcanaProficiency() {
+		return arcanaProficiency;
 	}
 
 	/**
-	 * @param spArcana the spArcana to set
+	 * @param arcanaProficiency the arcanaProficiency to set
 	 */
-	public void setSpArcana(int spArcana) {
-		this.spArcana = spArcana;
+	public void setArcanaProficiency(boolean arcanaProficiency) {
+		this.arcanaProficiency = arcanaProficiency;
 	}
 
 	/**
-	 * @return the spAthletics
+	 * @return the athleticsProficiency
 	 */
-	public int getSpAthletics() {
-		return spAthletics;
+	public boolean isAthleticsProficiency() {
+		return athleticsProficiency;
 	}
 
 	/**
-	 * @param spAthletics the spAthletics to set
+	 * @param athleticsProficiency the athleticsProficiency to set
 	 */
-	public void setSpAthletics(int spAthletics) {
-		this.spAthletics = spAthletics;
+	public void setAthleticsProficiency(boolean athleticsProficiency) {
+		this.athleticsProficiency = athleticsProficiency;
 	}
 
 	/**
-	 * @return the spDeception
+	 * @return the deceptionProficiency
 	 */
-	public int getSpDeception() {
-		return spDeception;
+	public boolean isDeceptionProficiency() {
+		return deceptionProficiency;
 	}
 
 	/**
-	 * @param spDeception the spDeception to set
+	 * @param deceptionProficiency the deceptionProficiency to set
 	 */
-	public void setSpDeception(int spDeception) {
-		this.spDeception = spDeception;
+	public void setDeceptionProficiency(boolean deceptionProficiency) {
+		this.deceptionProficiency = deceptionProficiency;
 	}
 
 	/**
-	 * @return the spHistory
+	 * @return the historyProficiency
 	 */
-	public int getSpHistory() {
-		return spHistory;
+	public boolean isHistoryProficiency() {
+		return historyProficiency;
 	}
 
 	/**
-	 * @param spHistory the spHistory to set
+	 * @param historyProficiency the historyProficiency to set
 	 */
-	public void setSpHistory(int spHistory) {
-		this.spHistory = spHistory;
+	public void setHistoryProficiency(boolean historyProficiency) {
+		this.historyProficiency = historyProficiency;
 	}
 
 	/**
-	 * @return the spInsight
+	 * @return the insightProficiency
 	 */
-	public int getSpInsight() {
-		return spInsight;
+	public boolean isInsightProficiency() {
+		return insightProficiency;
 	}
 
 	/**
-	 * @param spInsight the spInsight to set
+	 * @param insightProficiency the insightProficiency to set
 	 */
-	public void setSpInsight(int spInsight) {
-		this.spInsight = spInsight;
+	public void setInsightProficiency(boolean insightProficiency) {
+		this.insightProficiency = insightProficiency;
 	}
 
 	/**
-	 * @return the spIntimidation
+	 * @return the intimidationProficiency
 	 */
-	public int getSpIntimidation() {
-		return spIntimidation;
+	public boolean isIntimidationProficiency() {
+		return intimidationProficiency;
 	}
 
 	/**
-	 * @param spIntimidation the spIntimidation to set
+	 * @param intimidationProficiency the intimidationProficiency to set
 	 */
-	public void setSpIntimidation(int spIntimidation) {
-		this.spIntimidation = spIntimidation;
+	public void setIntimidationProficiency(boolean intimidationProficiency) {
+		this.intimidationProficiency = intimidationProficiency;
 	}
 
 	/**
-	 * @return the spInvestigation
+	 * @return the investigationProficiency
 	 */
-	public int getSpInvestigation() {
-		return spInvestigation;
+	public boolean isInvestigationProficiency() {
+		return investigationProficiency;
 	}
 
 	/**
-	 * @param spInvestigation the spInvestigation to set
+	 * @param investigationProficiency the investigationProficiency to set
 	 */
-	public void setSpInvestigation(int spInvestigation) {
-		this.spInvestigation = spInvestigation;
+	public void setInvestigationProficiency(boolean investigationProficiency) {
+		this.investigationProficiency = investigationProficiency;
 	}
 
 	/**
-	 * @return the spMedicine
+	 * @return the medicineProficiency
 	 */
-	public int getSpMedicine() {
-		return spMedicine;
+	public boolean isMedicineProficiency() {
+		return medicineProficiency;
 	}
 
 	/**
-	 * @param spMedicine the spMedicine to set
+	 * @param medicineProficiency the medicineProficiency to set
 	 */
-	public void setSpMedicine(int spMedicine) {
-		this.spMedicine = spMedicine;
+	public void setMedicineProficiency(boolean medicineProficiency) {
+		this.medicineProficiency = medicineProficiency;
 	}
 
 	/**
-	 * @return the spNature
+	 * @return the natureProficiency
 	 */
-	public int getSpNature() {
-		return spNature;
+	public boolean isNatureProficiency() {
+		return natureProficiency;
 	}
 
 	/**
-	 * @param spNature the spNature to set
+	 * @param natureProficiency the natureProficiency to set
 	 */
-	public void setSpNature(int spNature) {
-		this.spNature = spNature;
+	public void setNatureProficiency(boolean natureProficiency) {
+		this.natureProficiency = natureProficiency;
 	}
 
 	/**
-	 * @return the spPerception
+	 * @return the perceptionProficiency
 	 */
-	public int getSpPerception() {
-		return spPerception;
+	public boolean isPerceptionProficiency() {
+		return perceptionProficiency;
 	}
 
 	/**
-	 * @param spPerception the spPerception to set
+	 * @param perceptionProficiency the perceptionProficiency to set
 	 */
-	public void setSpPerception(int spPerception) {
-		this.spPerception = spPerception;
+	public void setPerceptionProficiency(boolean perceptionProficiency) {
+		this.perceptionProficiency = perceptionProficiency;
 	}
 
 	/**
-	 * @return the spPerformance
+	 * @return the performanceProficiency
 	 */
-	public int getSpPerformance() {
-		return spPerformance;
+	public boolean isPerformanceProficiency() {
+		return performanceProficiency;
 	}
 
 	/**
-	 * @param spPerformance the spPerformance to set
+	 * @param performanceProficiency the performanceProficiency to set
 	 */
-	public void setSpPerformance(int spPerformance) {
-		this.spPerformance = spPerformance;
+	public void setPerformanceProficiency(boolean performanceProficiency) {
+		this.performanceProficiency = performanceProficiency;
 	}
 
 	/**
-	 * @return the spPersuasion
+	 * @return the persuasionProficiency
 	 */
-	public int getSpPersuasion() {
-		return spPersuasion;
+	public boolean isPersuasionProficiency() {
+		return persuasionProficiency;
 	}
 
 	/**
-	 * @param spPersuasion the spPersuasion to set
+	 * @param persuasionProficiency the persuasionProficiency to set
 	 */
-	public void setSpPersuasion(int spPersuasion) {
-		this.spPersuasion = spPersuasion;
+	public void setPersuasionProficiency(boolean persuasionProficiency) {
+		this.persuasionProficiency = persuasionProficiency;
 	}
 
 	/**
-	 * @return the spReligion
+	 * @return the religionProficiency
 	 */
-	public int getSpReligion() {
-		return spReligion;
+	public boolean isReligionProficiency() {
+		return religionProficiency;
 	}
 
 	/**
-	 * @param spReligion the spReligion to set
+	 * @param religionProficiency the religionProficiency to set
 	 */
-	public void setSpReligion(int spReligion) {
-		this.spReligion = spReligion;
+	public void setReligionProficiency(boolean religionProficiency) {
+		this.religionProficiency = religionProficiency;
 	}
 
 	/**
-	 * @return the spSleightOfHand
+	 * @return the sleightOfHandProficiency
 	 */
-	public int getSpSleightOfHand() {
-		return spSleightOfHand;
+	public boolean isSleightOfHandProficiency() {
+		return sleightOfHandProficiency;
 	}
 
 	/**
-	 * @param spSleightOfHand the spSleightOfHand to set
+	 * @param sleightOfHandProficiency the sleightOfHandProficiency to set
 	 */
-	public void setSpSleightOfHand(int spSleightOfHand) {
-		this.spSleightOfHand = spSleightOfHand;
+	public void setSleightOfHandProficiency(boolean sleightOfHandProficiency) {
+		this.sleightOfHandProficiency = sleightOfHandProficiency;
 	}
 
 	/**
-	 * @return the spStealth
+	 * @return the stealthProficiency
 	 */
-	public int getSpStealth() {
-		return spStealth;
+	public boolean isStealthProficiency() {
+		return stealthProficiency;
 	}
 
 	/**
-	 * @param spStealth the spStealth to set
+	 * @param stealthProficiency the stealthProficiency to set
 	 */
-	public void setSpStealth(int spStealth) {
-		this.spStealth = spStealth;
+	public void setStealthProficiency(boolean stealthProficiency) {
+		this.stealthProficiency = stealthProficiency;
 	}
 
 	/**
-	 * @return the spSurvival
+	 * @return the survivalProficiency
 	 */
-	public int getSpSurvival() {
-		return spSurvival;
+	public boolean isSurvivalProficiency() {
+		return survivalProficiency;
 	}
 
 	/**
-	 * @param spSurvival the spSurvival to set
+	 * @param survivalProficiency the survivalProficiency to set
 	 */
-	public void setSpSurvival(int spSurvival) {
-		this.spSurvival = spSurvival;
+	public void setSurvivalProficiency(boolean survivalProficiency) {
+		this.survivalProficiency = survivalProficiency;
 	}
 
 	/**
-	 * @return the pbAcrobatics
+	 * @return the acrobaticsExpertise
 	 */
-	public boolean isPbAcrobatics() {
-		return pbAcrobatics;
+	public boolean isAcrobaticsExpertise() {
+		return acrobaticsExpertise;
 	}
 
 	/**
-	 * @param pbAcrobatics the pbAcrobatics to set
+	 * @param acrobaticsExpertise the acrobaticsExpertise to set
 	 */
-	public void setPbAcrobatics(boolean pbAcrobatics) {
-		this.pbAcrobatics = pbAcrobatics;
+	public void setAcrobaticsExpertise(boolean acrobaticsExpertise) {
+		this.acrobaticsExpertise = acrobaticsExpertise;
 	}
 
 	/**
-	 * @return the pbAnimalHandling
+	 * @return the animalHandlingExpertise
 	 */
-	public boolean isPbAnimalHandling() {
-		return pbAnimalHandling;
+	public boolean isAnimalHandlingExpertise() {
+		return animalHandlingExpertise;
 	}
 
 	/**
-	 * @param pbAnimalHandling the pbAnimalHandling to set
+	 * @param animalHandlingExpertise the animalHandlingExpertise to set
 	 */
-	public void setPbAnimalHandling(boolean pbAnimalHandling) {
-		this.pbAnimalHandling = pbAnimalHandling;
+	public void setAnimalHandlingExpertise(boolean animalHandlingExpertise) {
+		this.animalHandlingExpertise = animalHandlingExpertise;
 	}
 
 	/**
-	 * @return the pbArcana
+	 * @return the arcanaExpertise
 	 */
-	public boolean isPbArcana() {
-		return pbArcana;
+	public boolean isArcanaExpertise() {
+		return arcanaExpertise;
 	}
 
 	/**
-	 * @param pbArcana the pbArcana to set
+	 * @param arcanaExpertise the arcanaExpertise to set
 	 */
-	public void setPbArcana(boolean pbArcana) {
-		this.pbArcana = pbArcana;
+	public void setArcanaExpertise(boolean arcanaExpertise) {
+		this.arcanaExpertise = arcanaExpertise;
 	}
 
 	/**
-	 * @return the pbAthletics
+	 * @return the athleticsExpertise
 	 */
-	public boolean isPbAthletics() {
-		return pbAthletics;
+	public boolean isAthleticsExpertise() {
+		return athleticsExpertise;
 	}
 
 	/**
-	 * @param pbAthletics the pbAthletics to set
+	 * @param athleticsExpertise the athleticsExpertise to set
 	 */
-	public void setPbAthletics(boolean pbAthletics) {
-		this.pbAthletics = pbAthletics;
+	public void setAthleticsExpertise(boolean athleticsExpertise) {
+		this.athleticsExpertise = athleticsExpertise;
 	}
 
 	/**
-	 * @return the pbDeception
+	 * @return the deceptionExpertise
 	 */
-	public boolean isPbDeception() {
-		return pbDeception;
+	public boolean isDeceptionExpertise() {
+		return deceptionExpertise;
 	}
 
 	/**
-	 * @param pbDeception the pbDeception to set
+	 * @param deceptionExpertise the deceptionExpertise to set
 	 */
-	public void setPbDeception(boolean pbDeception) {
-		this.pbDeception = pbDeception;
+	public void setDeceptionExpertise(boolean deceptionExpertise) {
+		this.deceptionExpertise = deceptionExpertise;
 	}
 
 	/**
-	 * @return the pbHistory
+	 * @return the historyExpertise
 	 */
-	public boolean isPbHistory() {
-		return pbHistory;
+	public boolean isHistoryExpertise() {
+		return historyExpertise;
 	}
 
 	/**
-	 * @param pbHistory the pbHistory to set
+	 * @param historyExpertise the historyExpertise to set
 	 */
-	public void setPbHistory(boolean pbHistory) {
-		this.pbHistory = pbHistory;
+	public void setHistoryExpertise(boolean historyExpertise) {
+		this.historyExpertise = historyExpertise;
 	}
 
 	/**
-	 * @return the pbInsight
+	 * @return the insightExpertise
 	 */
-	public boolean isPbInsight() {
-		return pbInsight;
+	public boolean isInsightExpertise() {
+		return insightExpertise;
 	}
 
 	/**
-	 * @param pbInsight the pbInsight to set
+	 * @param insightExpertise the insightExpertise to set
 	 */
-	public void setPbInsight(boolean pbInsight) {
-		this.pbInsight = pbInsight;
+	public void setInsightExpertise(boolean insightExpertise) {
+		this.insightExpertise = insightExpertise;
 	}
 
 	/**
-	 * @return the pbIntimidation
+	 * @return the intimidationExpertise
 	 */
-	public boolean isPbIntimidation() {
-		return pbIntimidation;
+	public boolean isIntimidationExpertise() {
+		return intimidationExpertise;
 	}
 
 	/**
-	 * @param pbIntimidation the pbIntimidation to set
+	 * @param intimidationExpertise the intimidationExpertise to set
 	 */
-	public void setPbIntimidation(boolean pbIntimidation) {
-		this.pbIntimidation = pbIntimidation;
+	public void setIntimidationExpertise(boolean intimidationExpertise) {
+		this.intimidationExpertise = intimidationExpertise;
 	}
 
 	/**
-	 * @return the pbInvestigation
+	 * @return the investigationExpertise
 	 */
-	public boolean isPbInvestigation() {
-		return pbInvestigation;
+	public boolean isInvestigationExpertise() {
+		return investigationExpertise;
 	}
 
 	/**
-	 * @param pbInvestigation the pbInvestigation to set
+	 * @param investigationExpertise the investigationExpertise to set
 	 */
-	public void setPbInvestigation(boolean pbInvestigation) {
-		this.pbInvestigation = pbInvestigation;
+	public void setInvestigationExpertise(boolean investigationExpertise) {
+		this.investigationExpertise = investigationExpertise;
 	}
 
 	/**
-	 * @return the pbMedicine
+	 * @return the medicineExpertise
 	 */
-	public boolean isPbMedicine() {
-		return pbMedicine;
+	public boolean isMedicineExpertise() {
+		return medicineExpertise;
 	}
 
 	/**
-	 * @param pbMedicine the pbMedicine to set
+	 * @param medicineExpertise the medicineExpertise to set
 	 */
-	public void setPbMedicine(boolean pbMedicine) {
-		this.pbMedicine = pbMedicine;
+	public void setMedicineExpertise(boolean medicineExpertise) {
+		this.medicineExpertise = medicineExpertise;
 	}
 
 	/**
-	 * @return the pbNature
+	 * @return the natureExpertise
 	 */
-	public boolean isPbNature() {
-		return pbNature;
+	public boolean isNatureExpertise() {
+		return natureExpertise;
 	}
 
 	/**
-	 * @param pbNature the pbNature to set
+	 * @param natureExpertise the natureExpertise to set
 	 */
-	public void setPbNature(boolean pbNature) {
-		this.pbNature = pbNature;
+	public void setNatureExpertise(boolean natureExpertise) {
+		this.natureExpertise = natureExpertise;
 	}
 
 	/**
-	 * @return the pbPerception
+	 * @return the perceptionExpertise
 	 */
-	public boolean isPbPerception() {
-		return pbPerception;
+	public boolean isPerceptionExpertise() {
+		return perceptionExpertise;
 	}
 
 	/**
-	 * @param pbPerception the pbPerception to set
+	 * @param perceptionExpertise the perceptionExpertise to set
 	 */
-	public void setPbPerception(boolean pbPerception) {
-		this.pbPerception = pbPerception;
+	public void setPerceptionExpertise(boolean perceptionExpertise) {
+		this.perceptionExpertise = perceptionExpertise;
 	}
 
 	/**
-	 * @return the pbPerformance
+	 * @return the performanceExpertise
 	 */
-	public boolean isPbPerformance() {
-		return pbPerformance;
+	public boolean isPerformanceExpertise() {
+		return performanceExpertise;
 	}
 
 	/**
-	 * @param pbPerformance the pbPerformance to set
+	 * @param performanceExpertise the performanceExpertise to set
 	 */
-	public void setPbPerformance(boolean pbPerformance) {
-		this.pbPerformance = pbPerformance;
+	public void setPerformanceExpertise(boolean performanceExpertise) {
+		this.performanceExpertise = performanceExpertise;
 	}
 
 	/**
-	 * @return the pbPersuasion
+	 * @return the persuasionExpertise
 	 */
-	public boolean isPbPersuasion() {
-		return pbPersuasion;
+	public boolean isPersuasionExpertise() {
+		return persuasionExpertise;
 	}
 
 	/**
-	 * @param pbPersuasion the pbPersuasion to set
+	 * @param persuasionExpertise the persuasionExpertise to set
 	 */
-	public void setPbPersuasion(boolean pbPersuasion) {
-		this.pbPersuasion = pbPersuasion;
+	public void setPersuasionExpertise(boolean persuasionExpertise) {
+		this.persuasionExpertise = persuasionExpertise;
 	}
 
 	/**
-	 * @return the pbReligion
+	 * @return the religionExpertise
 	 */
-	public boolean isPbReligion() {
-		return pbReligion;
+	public boolean isReligionExpertise() {
+		return religionExpertise;
 	}
 
 	/**
-	 * @param pbReligion the pbReligion to set
+	 * @param religionExpertise the religionExpertise to set
 	 */
-	public void setPbReligion(boolean pbReligion) {
-		this.pbReligion = pbReligion;
+	public void setReligionExpertise(boolean religionExpertise) {
+		this.religionExpertise = religionExpertise;
 	}
 
 	/**
-	 * @return the pbSleightOfHand
+	 * @return the sleightOfHandExpertise
 	 */
-	public boolean isPbSleightOfHand() {
-		return pbSleightOfHand;
+	public boolean isSleightOfHandExpertise() {
+		return sleightOfHandExpertise;
 	}
 
 	/**
-	 * @param pbSleightOfHand the pbSleightOfHand to set
+	 * @param sleightOfHandExpertise the sleightOfHandExpertise to set
 	 */
-	public void setPbSleightOfHand(boolean pbSleightOfHand) {
-		this.pbSleightOfHand = pbSleightOfHand;
+	public void setSleightOfHandExpertise(boolean sleightOfHandExpertise) {
+		this.sleightOfHandExpertise = sleightOfHandExpertise;
 	}
 
 	/**
-	 * @return the pbStealth
+	 * @return the stealthExpertise
 	 */
-	public boolean isPbStealth() {
-		return pbStealth;
+	public boolean isStealthExpertise() {
+		return stealthExpertise;
 	}
 
 	/**
-	 * @param pbStealth the pbStealth to set
+	 * @param stealthExpertise the stealthExpertise to set
 	 */
-	public void setPbStealth(boolean pbStealth) {
-		this.pbStealth = pbStealth;
+	public void setStealthExpertise(boolean stealthExpertise) {
+		this.stealthExpertise = stealthExpertise;
 	}
 
 	/**
-	 * @return the pbSurvival
+	 * @return the survivalExpertise
 	 */
-	public boolean isPbSurvival() {
-		return pbSurvival;
+	public boolean isSurvivalExpertise() {
+		return survivalExpertise;
 	}
 
 	/**
-	 * @param pbSurvival the pbSurvival to set
+	 * @param survivalExpertise the survivalExpertise to set
 	 */
-	public void setPbSurvival(boolean pbSurvival) {
-		this.pbSurvival = pbSurvival;
+	public void setSurvivalExpertise(boolean survivalExpertise) {
+		this.survivalExpertise = survivalExpertise;
 	}
 
 	/**
@@ -1734,6 +2005,20 @@ public class CharacterSheet {
 	}
 
 	/**
+	 * @return the totalLevel
+	 */
+	public int getTotalLevel() {
+		return totalLevel;
+	}
+
+	/**
+	 * @param totalLevel the totalLevel to set
+	 */
+	public void setTotalLevel(int totalLevel) {
+		this.totalLevel = totalLevel;
+	}
+
+	/**
 	 * @return the subclass
 	 */
 	public String getSubclass() {
@@ -1877,33 +2162,47 @@ public class CharacterSheet {
 				+ ", totalConstitution=" + totalConstitution + ", totalIntelligence=" + totalIntelligence
 				+ ", totalWisdom=" + totalWisdom + ", totalCharisma=" + totalCharisma + ", strengthMod=" + strengthMod
 				+ ", dexterityMod=" + dexterityMod + ", constitutionMod=" + constitutionMod + ", intelligenceMod="
-				+ intelligenceMod + ", wisdomMod=" + wisdomMod + ", charismaMod=" + charismaMod + ", stStrength="
-				+ stStrength + ", stDexterity=" + stDexterity + ", stConstitution=" + stConstitution
-				+ ", stIntelligence=" + stIntelligence + ", stWisdom=" + stWisdom + ", stCharisma=" + stCharisma
-				+ ", pbStrength=" + pbStrength + ", pbDexterity=" + pbDexterity + ", pbConstitution=" + pbConstitution
-				+ ", pbIntelligence=" + pbIntelligence + ", pbWisdom=" + pbWisdom + ", pbCharisma=" + pbCharisma
-				+ ", spAcrobatics=" + spAcrobatics + ", spAnimalHandling=" + spAnimalHandling + ", spArcana=" + spArcana
-				+ ", spAthletics=" + spAthletics + ", spDeception=" + spDeception + ", spHistory=" + spHistory
-				+ ", spInsight=" + spInsight + ", spIntimidation=" + spIntimidation + ", spInvestigation="
-				+ spInvestigation + ", spMedicine=" + spMedicine + ", spNature=" + spNature + ", spPerception="
-				+ spPerception + ", spPerformance=" + spPerformance + ", spPersuasion=" + spPersuasion + ", spReligion="
-				+ spReligion + ", spSleightOfHand=" + spSleightOfHand + ", spStealth=" + spStealth + ", spSurvival="
-				+ spSurvival + ", pbAcrobatics=" + pbAcrobatics + ", pbAnimalHandling=" + pbAnimalHandling
-				+ ", pbArcana=" + pbArcana + ", pbAthletics=" + pbAthletics + ", pbDeception=" + pbDeception
-				+ ", pbHistory=" + pbHistory + ", pbInsight=" + pbInsight + ", pbIntimidation=" + pbIntimidation
-				+ ", pbInvestigation=" + pbInvestigation + ", pbMedicine=" + pbMedicine + ", pbNature=" + pbNature
-				+ ", pbPerception=" + pbPerception + ", pbPerformance=" + pbPerformance + ", pbPersuasion="
-				+ pbPersuasion + ", pbReligion=" + pbReligion + ", pbSleightOfHand=" + pbSleightOfHand + ", pbStealth="
-				+ pbStealth + ", pbSurvival=" + pbSurvival + ", background=" + background + ", race=" + race + ", size="
-				+ size + ", walkSpeed=" + walkSpeed + ", flySpeed=" + flySpeed + ", burrowSpeed=" + burrowSpeed
-				+ ", swimSpeed=" + swimSpeed + ", climbSpeed=" + climbSpeed + ", racialStrengthMod=" + racialStrengthMod
-				+ ", racialDexterityMod=" + racialDexterityMod + ", racialConstitutionMod=" + racialConstitutionMod
-				+ ", racialWisdomMod=" + racialWisdomMod + ", racialIntelligenceMod=" + racialIntelligenceMod
-				+ ", racialCharismaMod=" + racialCharismaMod + ", characterClasses=" + characterClasses + ", subclass="
-				+ subclass + ", maxHitPoints=" + maxHitPoints + ", currentHitPoints=" + currentHitPoints
-				+ ", temporaryHitPoints=" + temporaryHitPoints + ", hitDiceBase=" + hitDiceBase + ", currentHitDice="
-				+ currentHitDice + ", attackCount=" + attackCount + ", attacksUsed=" + attacksUsed + ", attacks="
-				+ attacks + "]";
+				+ intelligenceMod + ", wisdomMod=" + wisdomMod + ", charismaMod=" + charismaMod + ", strengthSave="
+				+ strengthSave + ", dexteritySave=" + dexteritySave + ", constitutionSave=" + constitutionSave
+				+ ", intelligenceSave=" + intelligenceSave + ", wisdomSave=" + wisdomSave + ", charismaSave="
+				+ charismaSave + ", strengthSaveProficiency=" + strengthSaveProficiency + ", dexteritySaveProficiency="
+				+ dexteritySaveProficiency + ", constitutionSaveProficiency=" + constitutionSaveProficiency
+				+ ", intelligenceSaveProficiency=" + intelligenceSaveProficiency + ", wisdomSaveProficiency="
+				+ wisdomSaveProficiency + ", charismaSaveProficiency=" + charismaSaveProficiency + ", acrobaticsMod="
+				+ acrobaticsMod + ", animalHandlingMod=" + animalHandlingMod + ", arcanaMod=" + arcanaMod
+				+ ", athleticsMod=" + athleticsMod + ", deceptionMod=" + deceptionMod + ", historyMod=" + historyMod
+				+ ", insightMod=" + insightMod + ", intimidationMod=" + intimidationMod + ", investigationMod="
+				+ investigationMod + ", medicineMod=" + medicineMod + ", natureMod=" + natureMod + ", perceptionMod="
+				+ perceptionMod + ", performanceMod=" + performanceMod + ", persuasionMod=" + persuasionMod
+				+ ", religionMod=" + religionMod + ", sleightOfHandMod=" + sleightOfHandMod + ", stealthMod="
+				+ stealthMod + ", survivalMod=" + survivalMod + ", acrobaticsProficiency=" + acrobaticsProficiency
+				+ ", animalHandlingProficiency=" + animalHandlingProficiency + ", arcanaProficiency="
+				+ arcanaProficiency + ", athleticsProficiency=" + athleticsProficiency + ", deceptionProficiency="
+				+ deceptionProficiency + ", historyProficiency=" + historyProficiency + ", insightProficiency="
+				+ insightProficiency + ", intimidationProficiency=" + intimidationProficiency
+				+ ", investigationProficiency=" + investigationProficiency + ", medicineProficiency="
+				+ medicineProficiency + ", natureProficiency=" + natureProficiency + ", perceptionProficiency="
+				+ perceptionProficiency + ", performanceProficiency=" + performanceProficiency
+				+ ", persuasionProficiency=" + persuasionProficiency + ", religionProficiency=" + religionProficiency
+				+ ", sleightOfHandProficiency=" + sleightOfHandProficiency + ", stealthProficiency="
+				+ stealthProficiency + ", survivalProficiency=" + survivalProficiency + ", acrobaticsExpertise="
+				+ acrobaticsExpertise + ", animalHandlingExpertise=" + animalHandlingExpertise + ", arcanaExpertise="
+				+ arcanaExpertise + ", athleticsExpertise=" + athleticsExpertise + ", deceptionExpertise="
+				+ deceptionExpertise + ", historyExpertise=" + historyExpertise + ", insightExpertise="
+				+ insightExpertise + ", intimidationExpertise=" + intimidationExpertise + ", investigationExpertise="
+				+ investigationExpertise + ", medicineExpertise=" + medicineExpertise + ", natureExpertise="
+				+ natureExpertise + ", perceptionExpertise=" + perceptionExpertise + ", performanceExpertise="
+				+ performanceExpertise + ", persuasionExpertise=" + persuasionExpertise + ", religionExpertise="
+				+ religionExpertise + ", sleightOfHandExpertise=" + sleightOfHandExpertise + ", stealthExpertise="
+				+ stealthExpertise + ", survivalExpertise=" + survivalExpertise + ", background=" + background
+				+ ", race=" + race + ", size=" + size + ", walkSpeed=" + walkSpeed + ", flySpeed=" + flySpeed
+				+ ", burrowSpeed=" + burrowSpeed + ", swimSpeed=" + swimSpeed + ", climbSpeed=" + climbSpeed
+				+ ", racialStrengthMod=" + racialStrengthMod + ", racialDexterityMod=" + racialDexterityMod
+				+ ", racialConstitutionMod=" + racialConstitutionMod + ", racialWisdomMod=" + racialWisdomMod
+				+ ", racialIntelligenceMod=" + racialIntelligenceMod + ", racialCharismaMod=" + racialCharismaMod
+				+ ", characterClasses=" + characterClasses + ", totalLevel=" + totalLevel + ", subclass=" + subclass
+				+ ", maxHitPoints=" + maxHitPoints + ", currentHitPoints=" + currentHitPoints + ", temporaryHitPoints="
+				+ temporaryHitPoints + ", hitDiceBase=" + hitDiceBase + ", currentHitDice=" + currentHitDice
+				+ ", attackCount=" + attackCount + ", attacksUsed=" + attacksUsed + ", attacks=" + attacks + "]";
 	}
-
 }
