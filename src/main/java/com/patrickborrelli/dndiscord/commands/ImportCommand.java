@@ -121,9 +121,52 @@ public class ImportCommand implements CommandExecutor {
 			processBeyondModifiers(sheet, character);	
 			applyAbilityScoreMods(sheet);
 			applySavingThrowMods(sheet);
+			applySkillMods(sheet);
 		}
 		LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
+	}
+	
+	private void applySkillMods(CharacterSheet sheet) {
+		int profBonus = ruleset.getProficiencyScore(sheet.getTotalLevel());
+		int expertiseBonus = profBonus * 2;
+		
+		sheet.setAcrobaticsMod(sheet.getDexterityMod() +
+				(sheet.isAcrobaticsExpertise() ? expertiseBonus : (sheet.isAcrobaticsProficiency() ? profBonus : 0)));
+		sheet.setAnimalHandlingMod(sheet.getWisdomMod() +
+				(sheet.isAnimalHandlingExpertise() ? expertiseBonus : (sheet.isAnimalHandlingProficiency() ? profBonus : 0)));
+		sheet.setArcanaMod(sheet.getIntelligenceMod() + 
+				(sheet.isArcanaExpertise() ? expertiseBonus : (sheet.isArcanaProficiency() ? profBonus : 0)));
+		sheet.setAthleticsMod(sheet.getStrengthMod() + 
+				(sheet.isAthleticsExpertise() ? expertiseBonus : (sheet.isAthleticsProficiency() ? profBonus : 0)));
+		sheet.setDeceptionMod(sheet.getCharismaMod() + 
+				(sheet.isDeceptionExpertise() ? expertiseBonus : (sheet.isDeceptionProficiency() ? profBonus : 0)));
+		sheet.setHistoryMod(sheet.getIntelligenceMod() + 
+				(sheet.isHistoryExpertise() ? expertiseBonus : (sheet.isHistoryProficiency() ? profBonus : 0)));
+		sheet.setInsightMod(sheet.getWisdomMod() + 
+				(sheet.isInsightExpertise() ? expertiseBonus : (sheet.isInsightProficiency() ? profBonus : 0)));
+		sheet.setIntimidationMod(sheet.getCharismaMod() + 
+				(sheet.isIntimidationExpertise() ? expertiseBonus : (sheet.isIntimidationProficiency() ? profBonus : 0)));
+		sheet.setInvestigationMod(sheet.getIntelligenceMod() + 
+				(sheet.isInvestigationExpertise() ? expertiseBonus : (sheet.isInvestigationProficiency() ? profBonus : 0)));
+		sheet.setMedicineMod(sheet.getWisdomMod() + 
+				(sheet.isMedicineExpertise() ? expertiseBonus : (sheet.isMedicineProficiency() ? profBonus : 0)));
+		sheet.setNatureMod(sheet.getIntelligenceMod() + 
+				(sheet.isNatureExpertise() ? expertiseBonus : (sheet.isNatureProficiency() ? profBonus : 0)));
+		sheet.setPerceptionMod(sheet.getWisdomMod() + 
+				(sheet.isPerceptionExpertise() ? expertiseBonus : (sheet.isPerceptionProficiency() ? profBonus : 0)));
+		sheet.setPerformanceMod(sheet.getCharismaMod() + 
+				(sheet.isPerformanceExpertise() ? expertiseBonus : (sheet.isPerformanceProficiency() ? profBonus : 0)));
+		sheet.setPersuasionMod(sheet.getCharismaMod() + 
+				(sheet.isPersuasionExpertise() ? expertiseBonus : (sheet.isPersuasionProficiency() ? profBonus : 0)));
+		sheet.setReligionMod(sheet.getIntelligenceMod() + 
+				(sheet.isReligionExpertise() ? expertiseBonus : (sheet.isReligionProficiency() ? profBonus : 0)));
+		sheet.setSleightOfHandMod(sheet.getDexterityMod() + 
+				(sheet.isSleightOfHandExpertise() ? expertiseBonus : (sheet.isSleightOfHandProficiency() ? profBonus : 0)));
+		sheet.setStealthMod(sheet.getDexterityMod() + 
+				(sheet.isStealthExpertise() ? expertiseBonus : (sheet.isStealthProficiency() ? profBonus : 0)));
+		sheet.setSurvivalMod(sheet.getWisdomMod() + 
+				(sheet.isSurvivalExpertise() ? expertiseBonus : (sheet.isSurvivalProficiency() ? profBonus : 0)));
 	}
 	
 	private void applySavingThrowMods(CharacterSheet sheet) {
@@ -267,6 +310,155 @@ public class ImportCommand implements CommandExecutor {
 						
 					case DndBeyondConstants.CHARISMA_SAVE:
 						sheet.setCharismaSaveProficiency(true);
+						break;
+						
+					case DndBeyondConstants.ACROBATICS:
+						sheet.setAcrobaticsProficiency(true);
+						break;
+						
+					case DndBeyondConstants.ANIMAL_HANDLING:
+						sheet.setAnimalHandlingProficiency(true);
+						break;
+						
+					case DndBeyondConstants.ARCANA:
+						sheet.setArcanaProficiency(true);
+						break;
+						
+					case DndBeyondConstants.ATHLETICS:
+						sheet.setAthleticsProficiency(true);
+						break;
+						
+					case DndBeyondConstants.DECEPTION:
+						sheet.setDeceptionProficiency(true);
+						break;
+						
+					case DndBeyondConstants.HISTORY:
+						sheet.setHistoryProficiency(true);
+						break;
+						
+					case DndBeyondConstants.INSIGHT:
+						sheet.setInsightProficiency(true);
+						break;
+						
+					case DndBeyondConstants.INTIMIDATION:
+						sheet.setIntimidationProficiency(true);
+						break;
+						
+					case DndBeyondConstants.INVESTIGATION:
+						sheet.setInvestigationProficiency(true);
+						break;
+						
+					case DndBeyondConstants.MEDICINE:
+						sheet.setMedicineProficiency(true);
+						break;
+						
+					case DndBeyondConstants.NATURE:
+						sheet.setNatureProficiency(true);
+						break;
+						
+					case DndBeyondConstants.PERCEPTION:
+						sheet.setPerceptionProficiency(true);
+						break;
+						
+					case DndBeyondConstants.PERFORMANCE:
+						sheet.setPerformanceProficiency(true);
+						break;
+						
+					case DndBeyondConstants.PERSUASION:
+						sheet.setPersuasionProficiency(true);
+						break;
+						
+					case DndBeyondConstants.RELIGION:
+						sheet.setReligionProficiency(true);
+						break;
+						
+					case DndBeyondConstants.SLEIGHT_OF_HAND:
+						sheet.setSleightOfHandProficiency(true);
+						break;
+						
+					case DndBeyondConstants.STEALTH:
+						sheet.setStealthProficiency(true);
+						break;
+						
+					case DndBeyondConstants.SURVIVAL:
+						sheet.setSurvivalProficiency(true);
+						break;
+						
+					default:
+						LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());	
+				}
+			} else if(mod.getType().equalsIgnoreCase(DndBeyondConstants.EXPERTISE)) {
+				switch(mod.getSubType()) {
+					case DndBeyondConstants.ACROBATICS:
+						sheet.setAcrobaticsExpertise(true);
+						break;
+						
+					case DndBeyondConstants.ANIMAL_HANDLING:
+						sheet.setAnimalHandlingExpertise(true);
+						break;
+						
+					case DndBeyondConstants.ARCANA:
+						sheet.setArcanaExpertise(true);
+						break;
+						
+					case DndBeyondConstants.ATHLETICS:
+						sheet.setAthleticsExpertise(true);
+						break;
+						
+					case DndBeyondConstants.DECEPTION:
+						sheet.setDeceptionExpertise(true);
+						break;
+						
+					case DndBeyondConstants.HISTORY:
+						sheet.setHistoryExpertise(true);
+						break;
+						
+					case DndBeyondConstants.INSIGHT:
+						sheet.setInsightExpertise(true);
+						break;
+						
+					case DndBeyondConstants.INTIMIDATION:
+						sheet.setIntimidationExpertise(true);
+						break;
+						
+					case DndBeyondConstants.INVESTIGATION:
+						sheet.setInvestigationExpertise(true);
+						break;
+						
+					case DndBeyondConstants.MEDICINE:
+						sheet.setMedicineExpertise(true);
+						break;
+						
+					case DndBeyondConstants.NATURE:
+						sheet.setNatureExpertise(true);
+						break;
+						
+					case DndBeyondConstants.PERCEPTION:
+						sheet.setPerceptionExpertise(true);
+						break;
+						
+					case DndBeyondConstants.PERFORMANCE:
+						sheet.setPerformanceExpertise(true);
+						break;
+						
+					case DndBeyondConstants.PERSUASION:
+						sheet.setPersuasionExpertise(true);
+						break;
+						
+					case DndBeyondConstants.RELIGION:
+						sheet.setReligionExpertise(true);
+						break;
+						
+					case DndBeyondConstants.SLEIGHT_OF_HAND:
+						sheet.setSleightOfHandExpertise(true);
+						break;
+						
+					case DndBeyondConstants.STEALTH:
+						sheet.setStealthExpertise(true);
+						break;
+						
+					case DndBeyondConstants.SURVIVAL:
+						sheet.setSurvivalExpertise(true);
 						break;
 						
 					default:
