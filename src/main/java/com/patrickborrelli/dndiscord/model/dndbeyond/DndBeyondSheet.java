@@ -74,6 +74,7 @@ public class DndBeyondSheet {
 	private PactMagicSlot[] pactMagic;
 	private int[] activeSourceCategories;
 	private Spellbook spells;
+	private ModifierArray modifiers;
 	
 	public DndBeyondSheet() {		
 		
@@ -682,6 +683,20 @@ public class DndBeyondSheet {
 	}
 
 	/**
+	 * @return the inventory
+	 */
+	public Item[] getInventory() {
+		return inventory;
+	}
+
+	/**
+	 * @param inventory the inventory to set
+	 */
+	public void setInventory(Item[] inventory) {
+		this.inventory = inventory;
+	}
+
+	/**
 	 * @return the currencies
 	 */
 	public Coinpurse getCurrencies() {
@@ -892,20 +907,6 @@ public class DndBeyondSheet {
 	}
 
 	/**
-	 * @return the inventory
-	 */
-	public Item[] getInventory() {
-		return inventory;
-	}
-
-	/**
-	 * @param inventory the inventory to set
-	 */
-	public void setInventory(Item[] inventory) {
-		this.inventory = inventory;
-	}
-
-	/**
 	 * @return the spells
 	 */
 	public Spellbook getSpells() {
@@ -919,9 +920,23 @@ public class DndBeyondSheet {
 		this.spells = spells;
 	}
 
+	/**
+	 * @return the modifiers
+	 */
+	public ModifierArray getModifiers() {
+		return modifiers;
+	}
+
+	/**
+	 * @param modifiers the modifiers to set
+	 */
+	public void setModifiers(ModifierArray modifiers) {
+		this.modifiers = modifiers;
+	}
+
 	@Override
 	public String toString() {
-		return "CharacterRecord [id=" + id + ", readonlyUrl=" + readonlyUrl + ", avatarUrl=" + avatarUrl
+		return "DndBeyondSheet [id=" + id + ", readonlyUrl=" + readonlyUrl + ", avatarUrl=" + avatarUrl
 				+ ", frameAvatarUrl=" + frameAvatarUrl + ", backdropAvatarUrl=" + backdropAvatarUrl
 				+ ", smallBackdropAvatarUrl=" + smallBackdropAvatarUrl + ", largeBackdropAvatarUrl="
 				+ largeBackdropAvatarUrl + ", thumbnailBackdropAvatarUrl=" + thumbnailBackdropAvatarUrl + ", avatarId="
@@ -945,8 +960,7 @@ public class DndBeyondSheet {
 				+ ", conditions=" + Arrays.toString(conditions) + ", deathSaves=" + deathSaves + ", adjustmentXp="
 				+ adjustmentXp + ", spellSlots=" + Arrays.toString(spellSlots) + ", pactMagic="
 				+ Arrays.toString(pactMagic) + ", activeSourceCategories=" + Arrays.toString(activeSourceCategories)
-				+ ", spells=" + spells + "]";
+				+ ", spells=" + spells + ", modifiers=" + modifiers + "]";
 	}
-	
 	
 }

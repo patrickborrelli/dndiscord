@@ -3,6 +3,7 @@ package com.patrickborrelli.dndiscord.commands;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,8 +17,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
+import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondConstants;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
+import com.patrickborrelli.dndiscord.model.dndbeyond.Modifier;
+import com.patrickborrelli.dndiscord.model.dndbeyond.Stat;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
+import com.patrickborrelli.dndiscord.utilities.AlignmentType;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 import com.patrickborrelli.dndiscord.utilities.SheetSourceType;
 
@@ -79,12 +84,108 @@ public class ImportCommand implements CommandExecutor {
 	
 	private CharacterSheet convertFormat(SheetSourceType type, DndBeyondSheet character, DiscordUser user) {
 		CharacterSheet sheet = new CharacterSheet();
-		sheet.setSheetSource(type.getValue());
-		sheet.setUser(user);
-		sheet.setCharacterName(character.getName());
-		sheet.setAvatarUrl(character.getAvatarUrl());
+		
+		if(type == SheetSourceType.BEYOND) {
+			sheet.setSheetSource(type.getValue());
+			sheet.setUser(user);
+			sheet.setCharacterName(character.getName());
+			sheet.setAvatarUrl(character.getAvatarUrl());
+			sheet.setAge(character.getAge());
+			sheet.setAlignment(AlignmentType.getEnum(character.getAlignmentId()).getStringValue());
+			sheet.setBackground(character.getBackground().getDefinition().getName());
+			sheet.setFaith(character.getFaith());
+			sheet.setBonds(character.getTraits().getBonds());
+			sheet.setPersonalityTraits(character.getTraits().getPersonalityTraits());
+			sheet.setIdeals(character.getTraits().getIdeals());
+			sheet.setFlaws(character.getTraits().getFlaws());
+			sheet.setAppearance(character.getTraits().getAppearance());
+			sheet.setHair(character.getHair());
+			sheet.setSkin(character.getSkin());
+			sheet.setHeight(character.getHeight());
+			sheet.setWeight(character.getWeight());
+			sheet.setInspiration(character.isInspiration());
+			sheet.setGender(character.getGender());
+			sheet.setExperiencePoints(character.getCurrentXp());
+			sheet.setLifestyle(character.getLifestyle());
+			sheet.setPlatinumPieces(character.getCurrencies().getPlatinumPieces());
+			sheet.setGoldPieces(character.getCurrencies().getGoldPieces());
+			sheet.setElectrumPieces(character.getCurrencies().getElectrumPieces());
+			sheet.setSilverPieces(character.getCurrencies().getSilverPieces());
+			sheet.setCopperPieces(character.getCurrencies().getCopperPieces());
+			processBeyondModifiers(sheet, character);
+			
+			
+			convertBeyondStats(sheet, character);
+		}
 		LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
+	}
+	
+	private void processBeyondModifiers(CharacterSheet sheet, DndBeyondSheet character) {
+		//first get racial modifiers for ability scores
+		List<Modifier> racialModifiers = Arrays.asList(character.getModifiers().getRace());
+		for(Modifier mod : racialModifiers) {
+			LOGGER.debug("Racial modifier: " + mod.toString());
+			if(mod.getType().equalsIgnoreCase(DndBeyondConstants.BONUS)) {
+				switch(mod.getSubType()) {
+					case DndBeyondConstants.STRENGTH_SCORE:
+						sheet.setStrengthBonus(sheet.getStrengthBonus() + mod.getValue());
+						break;
+
+					case DndBeyondConstants.DEXTERITY_SCORE:
+						sheet.setDexterityBonus(sheet.getDexterityBonus() + mod.getValue());
+						break;	
+						
+					case DndBeyondConstants.CONSTITUTION_SCORE:
+						sheet.setConstitutionBonus(sheet.getConstitutionBonus() + mod.getValue());
+						break;
+						
+					case DndBeyondConstants.WISDOM_SCORE:
+						sheet.setWisdomBonus(sheet.getWisdomBonus() + mod.getValue());
+						break;
+						
+					case DndBeyondConstants.INTELLIGENCE_SCORE:
+						sheet.setIntelligenceBonus(sheet.getIntelligenceBonus() + mod.getValue());
+						break;
+						
+					case DndBeyondConstants.CHARISMA_SCORE:
+						sheet.setCharismaBonus(sheet.getCharismaBonus() + mod.getValue());
+						break;
+						
+					default:
+						LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());													
+				}
+			}
+		}		
+	}
+	
+	private void convertBeyondStats(CharacterSheet sheet, DndBeyondSheet character) {
+		Stat[] stats = character.getStats();
+		for(int i = 0; i < stats.length; i++) {
+			int value = stats[i].getValue();
+			switch(stats[i].getId()) {
+				case 1:
+					sheet.setBaseStrength(value);
+					break;
+				case 2:
+					sheet.setBaseDexterity(value);
+					break;
+				case 3:
+					sheet.setBaseConstitution(value);
+					break;
+				case 4:
+					sheet.setBaseWisdom(value);
+					break;
+				case 5:
+					sheet.setBaseIntelligence(value);
+					break;
+				case 6:
+					sheet.setBaseCharisma(value);
+					break;
+				default:
+					LOGGER.error("Unidentified stat id discovered during conversion of DNDBeyond sheet: " + value);			
+			}
+		}
 	}
 	
 	private void buildSheetEmbed(Message msg, DndBeyondSheet sheet) {
