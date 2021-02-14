@@ -18,7 +18,7 @@ public enum AlignmentType {
 	private Integer value;
 	private String stringValue;
 	private static HashMap<Integer, AlignmentType> valuesMap;
-	private static HashMap<String, AlignmentType> stringMap;
+	private static HashMap<AlignmentType, String> stringMap;
 	
 	static {
 		valuesMap = 
@@ -34,16 +34,16 @@ public enum AlignmentType {
 		valuesMap.put(9, CHAOTIC_EVIL);
 		
 		stringMap = 
-			new HashMap<String, AlignmentType>(AlignmentType.values().length);
-		stringMap.put("Lawful good", LAWFUL_GOOD);
-		stringMap.put("Neutral good", NEUTRAL_GOOD);
-		stringMap.put("Chaotic good", CHAOTIC_GOOD);
-		stringMap.put("Lawful neutral", LAWFUL_NEUTRAL);
-		stringMap.put("Neutral", NEUTRAL);
-		stringMap.put("Chaotic neutral", CHAOTIC_NEUTRAL);
-		stringMap.put("Lawful evil", LAWFUL_EVIL);
-		stringMap.put("Neutral evil", NEUTRAL_EVIL);
-		stringMap.put("Chaotic evil", CHAOTIC_EVIL);
+			new HashMap<AlignmentType, String>(AlignmentType.values().length);
+		stringMap.put(LAWFUL_GOOD, "Lawful good");
+		stringMap.put(NEUTRAL_GOOD, "Neutral good");
+		stringMap.put(CHAOTIC_GOOD, "Chaotic good");
+		stringMap.put(LAWFUL_NEUTRAL, "Lawful neutral");
+		stringMap.put(NEUTRAL, "Neutral");
+		stringMap.put(CHAOTIC_NEUTRAL, "Chaotic neutral");
+		stringMap.put(LAWFUL_EVIL, "Lawful evil");
+		stringMap.put(NEUTRAL_EVIL, "Neutral evil");
+		stringMap.put(CHAOTIC_EVIL, "Chaotic evil");
 	}
 	
 	private AlignmentType(Integer theValue) {
@@ -65,7 +65,7 @@ public enum AlignmentType {
 	 * @return a String containing the value of the enumeration
 	 */
 	public String getStringValue() {
-		return stringValue;
+		return stringMap.get(this);
 	}
 	
 	/**
