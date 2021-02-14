@@ -140,18 +140,13 @@ public class CharacterSheet {
 	
 	//Race and related traits:
 	private String race;
+	private String baseRace;
 	private String size;
 	private int walkSpeed;
 	private int flySpeed;
 	private int burrowSpeed;
 	private int swimSpeed;
 	private int climbSpeed;
-	private int racialStrengthMod;
-	private int racialDexterityMod;
-	private int racialConstitutionMod;
-	private int racialWisdomMod;
-	private int racialIntelligenceMod;
-	private int racialCharismaMod;
 	
 	//Classes and subclasses and related traits:
 	private List<CharacterClass> characterClasses;
@@ -1823,6 +1818,20 @@ public class CharacterSheet {
 	}
 
 	/**
+	 * @return the baseRace
+	 */
+	public String getBaseRace() {
+		return baseRace;
+	}
+
+	/**
+	 * @param baseRace the baseRace to set
+	 */
+	public void setBaseRace(String baseRace) {
+		this.baseRace = baseRace;
+	}
+
+	/**
 	 * @return the size
 	 */
 	public String getSize() {
@@ -1905,91 +1914,7 @@ public class CharacterSheet {
 	public void setClimbSpeed(int climbSpeed) {
 		this.climbSpeed = climbSpeed;
 	}
-
-	/**
-	 * @return the racialStrengthMod
-	 */
-	public int getRacialStrengthMod() {
-		return racialStrengthMod;
-	}
-
-	/**
-	 * @param racialStrengthMod the racialStrengthMod to set
-	 */
-	public void setRacialStrengthMod(int racialStrengthMod) {
-		this.racialStrengthMod = racialStrengthMod;
-	}
-
-	/**
-	 * @return the racialDexterityMod
-	 */
-	public int getRacialDexterityMod() {
-		return racialDexterityMod;
-	}
-
-	/**
-	 * @param racialDexterityMod the racialDexterityMod to set
-	 */
-	public void setRacialDexterityMod(int racialDexterityMod) {
-		this.racialDexterityMod = racialDexterityMod;
-	}
-
-	/**
-	 * @return the racialConstitutionMod
-	 */
-	public int getRacialConstitutionMod() {
-		return racialConstitutionMod;
-	}
-
-	/**
-	 * @param racialConstitutionMod the racialConstitutionMod to set
-	 */
-	public void setRacialConstitutionMod(int racialConstitutionMod) {
-		this.racialConstitutionMod = racialConstitutionMod;
-	}
-
-	/**
-	 * @return the racialWisdomMod
-	 */
-	public int getRacialWisdomMod() {
-		return racialWisdomMod;
-	}
-
-	/**
-	 * @param racialWisdomMod the racialWisdomMod to set
-	 */
-	public void setRacialWisdomMod(int racialWisdomMod) {
-		this.racialWisdomMod = racialWisdomMod;
-	}
-
-	/**
-	 * @return the racialIntelligenceMod
-	 */
-	public int getRacialIntelligenceMod() {
-		return racialIntelligenceMod;
-	}
-
-	/**
-	 * @param racialIntelligenceMod the racialIntelligenceMod to set
-	 */
-	public void setRacialIntelligenceMod(int racialIntelligenceMod) {
-		this.racialIntelligenceMod = racialIntelligenceMod;
-	}
-
-	/**
-	 * @return the racialCharismaMod
-	 */
-	public int getRacialCharismaMod() {
-		return racialCharismaMod;
-	}
-
-	/**
-	 * @param racialCharismaMod the racialCharismaMod to set
-	 */
-	public void setRacialCharismaMod(int racialCharismaMod) {
-		this.racialCharismaMod = racialCharismaMod;
-	}
-
+	
 	/**
 	 * @return the characterClasses
 	 */
@@ -2195,14 +2120,13 @@ public class CharacterSheet {
 				+ performanceExpertise + ", persuasionExpertise=" + persuasionExpertise + ", religionExpertise="
 				+ religionExpertise + ", sleightOfHandExpertise=" + sleightOfHandExpertise + ", stealthExpertise="
 				+ stealthExpertise + ", survivalExpertise=" + survivalExpertise + ", background=" + background
-				+ ", race=" + race + ", size=" + size + ", walkSpeed=" + walkSpeed + ", flySpeed=" + flySpeed
-				+ ", burrowSpeed=" + burrowSpeed + ", swimSpeed=" + swimSpeed + ", climbSpeed=" + climbSpeed
-				+ ", racialStrengthMod=" + racialStrengthMod + ", racialDexterityMod=" + racialDexterityMod
-				+ ", racialConstitutionMod=" + racialConstitutionMod + ", racialWisdomMod=" + racialWisdomMod
-				+ ", racialIntelligenceMod=" + racialIntelligenceMod + ", racialCharismaMod=" + racialCharismaMod
-				+ ", characterClasses=" + characterClasses + ", totalLevel=" + totalLevel + ", subclass=" + subclass
-				+ ", maxHitPoints=" + maxHitPoints + ", currentHitPoints=" + currentHitPoints + ", temporaryHitPoints="
-				+ temporaryHitPoints + ", hitDiceBase=" + hitDiceBase + ", currentHitDice=" + currentHitDice
-				+ ", attackCount=" + attackCount + ", attacksUsed=" + attacksUsed + ", attacks=" + attacks + "]";
+				+ ", race=" + race + ", baseRace=" + baseRace + ", size=" + size + ", walkSpeed=" + walkSpeed
+				+ ", flySpeed=" + flySpeed + ", burrowSpeed=" + burrowSpeed + ", swimSpeed=" + swimSpeed
+				+ ", climbSpeed=" + climbSpeed + ", characterClasses=" + characterClasses + ", totalLevel=" + totalLevel
+				+ ", subclass=" + subclass + ", maxHitPoints=" + maxHitPoints + ", currentHitPoints=" + currentHitPoints
+				+ ", temporaryHitPoints=" + temporaryHitPoints + ", hitDiceBase=" + hitDiceBase + ", currentHitDice="
+				+ currentHitDice + ", attackCount=" + attackCount + ", attacksUsed=" + attacksUsed + ", attacks="
+				+ attacks + "]";
 	}
+
 }

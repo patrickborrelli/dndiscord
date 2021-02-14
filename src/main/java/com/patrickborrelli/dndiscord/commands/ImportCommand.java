@@ -116,6 +116,14 @@ public class ImportCommand implements CommandExecutor {
 			sheet.setElectrumPieces(character.getCurrencies().getElectrumPieces());
 			sheet.setSilverPieces(character.getCurrencies().getSilverPieces());
 			sheet.setCopperPieces(character.getCurrencies().getCopperPieces());	
+			sheet.setRace(character.getRace().getFullName());
+			sheet.setBaseRace(character.getRace().getBaseName());
+			sheet.setSize(character.getRace().getSize());
+			sheet.setWalkSpeed(character.getRace().getWeightSpeeds().getNormal().getWalk());
+			sheet.setFlySpeed(character.getRace().getWeightSpeeds().getNormal().getFly());
+			sheet.setBurrowSpeed(character.getRace().getWeightSpeeds().getNormal().getBurrow());
+			sheet.setSwimSpeed(character.getRace().getWeightSpeeds().getNormal().getSwim());
+			sheet.setClimbSpeed(character.getRace().getWeightSpeeds().getNormal().getClimb());
 			setClasses(sheet, character);
 			convertBeyondStats(sheet, character);
 			processBeyondModifiers(sheet, character);	
