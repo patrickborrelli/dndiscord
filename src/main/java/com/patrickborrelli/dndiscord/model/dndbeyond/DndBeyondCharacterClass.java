@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @author Patrick Borrelli
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CharacterClass {
+public class DndBeyondCharacterClass {
 
 	private long id;
 	private long entityTypeId;
@@ -22,14 +22,14 @@ public class CharacterClass {
 	private ClassDefinition subclassDefinition;
 	private ClassFeature[] classFeatures;
 	
-	public CharacterClass() {
+	public DndBeyondCharacterClass() {
 		
 	}
 
 	@Override
 	public String toString() {
-		return "CharacterClass [id=" + id + ", entityTypeId=" + entityTypeId + ", level=" + level + ", isStartingClass="
-				+ isStartingClass + ", hitDiceUsed=" + hitDiceUsed + ", definition=" + definition
+		return "DndBeyondCharacterClass [id=" + id + ", entityTypeId=" + entityTypeId + ", level=" + level
+				+ ", isStartingClass=" + isStartingClass + ", hitDiceUsed=" + hitDiceUsed + ", definition=" + definition
 				+ ", subclassDefinition=" + subclassDefinition + ", classFeatures=" + Arrays.toString(classFeatures)
 				+ "]";
 	}

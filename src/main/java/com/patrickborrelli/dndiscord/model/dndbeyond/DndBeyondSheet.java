@@ -58,7 +58,7 @@ public class DndBeyondSheet {
 	private String lifestyle;
 	private Item[] inventory;
 	private Coinpurse currencies;
-	private CharacterClass[] classes;
+	private DndBeyondCharacterClass[] classes;
 	//private Feat[] feats;
 	private String[] customDefenseAdjustments;
 	private String[] customSenses;
@@ -713,14 +713,14 @@ public class DndBeyondSheet {
 	/**
 	 * @return the classes
 	 */
-	public CharacterClass[] getClasses() {
+	public DndBeyondCharacterClass[] getClasses() {
 		return classes;
 	}
 
 	/**
 	 * @param classes the classes to set
 	 */
-	public void setClasses(CharacterClass[] classes) {
+	public void setClasses(DndBeyondCharacterClass[] classes) {
 		this.classes = classes;
 	}
 

@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
+import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondCharacterClass;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondConstants;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Modifier;
@@ -188,17 +189,18 @@ public class ImportCommand implements CommandExecutor {
 	}
 	
 	private void setClasses(CharacterSheet sheet, DndBeyondSheet character) {
-		List<com.patrickborrelli.dndiscord.model.dndbeyond.CharacterClass> beyondClasses =
+		List<DndBeyondCharacterClass> beyondClasses =
 				Arrays.asList(character.getClasses());
 		List<CharacterClass> discordClasses = new ArrayList<>();
 		CharacterClass thisClass = null;
 		int totalLevel = 0;
 		
-		for(com.patrickborrelli.dndiscord.model.dndbeyond.CharacterClass beyondClass : beyondClasses) {
+		for(DndBeyondCharacterClass beyondClass : beyondClasses) {
 			thisClass = new CharacterClass();
 			thisClass.setLevel(beyondClass.getLevel());
 			thisClass.setName(beyondClass.getDefinition().getName());
 			thisClass.setStartingClass(beyondClass.isStartingClass());
+			thisClass.setSubclassName(beyondClass.getSubclassDefinition().getName());
 			discordClasses.add(thisClass);
 			totalLevel += beyondClass.getLevel();
 		}

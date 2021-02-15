@@ -9,7 +9,7 @@ public class DndBeyondConstants {
 	public static final String BONUS = "bonus";
 	public static final String SET = "set";
 	public static final String LANGUAGE = "language";
-	public static final String ARCHIVED = "(archived)";
+	public static final String ARCHIVED = "\\(archived\\)";
 	
 	//subtypes:
 	public static final String STRENGTH_SCORE = "strength-score";

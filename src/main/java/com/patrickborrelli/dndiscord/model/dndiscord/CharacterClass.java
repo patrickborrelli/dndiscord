@@ -1,6 +1,7 @@
 package com.patrickborrelli.dndiscord.model.dndiscord;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondConstants;
 
 /**
  * Model of dDnDiscord Character Class.
@@ -71,7 +72,8 @@ public class CharacterClass {
 	 * @param subclassName the subclassName to set
 	 */
 	public void setSubclassName(String subclassName) {
-		this.subclassName = subclassName;
+		String newStr = subclassName.replaceAll(DndBeyondConstants.ARCHIVED, "");
+		this.subclassName = newStr.trim();
 	}
 
 	@Override

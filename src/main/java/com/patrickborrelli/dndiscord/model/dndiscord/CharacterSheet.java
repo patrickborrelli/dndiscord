@@ -151,7 +151,6 @@ public class CharacterSheet {
 	//Classes and subclasses and related traits:
 	private List<CharacterClass> characterClasses;
 	private int totalLevel;
-	private String subclass;
 	private int maxHitPoints;
 	private int currentHitPoints;
 	private int temporaryHitPoints;
@@ -1944,20 +1943,6 @@ public class CharacterSheet {
 	}
 
 	/**
-	 * @return the subclass
-	 */
-	public String getSubclass() {
-		return subclass;
-	}
-
-	/**
-	 * @param subclass the subclass to set
-	 */
-	public void setSubclass(String subclass) {
-		this.subclass = subclass;
-	}
-
-	/**
 	 * @return the maxHitPoints
 	 */
 	public int getMaxHitPoints() {
@@ -2123,10 +2108,9 @@ public class CharacterSheet {
 				+ ", race=" + race + ", baseRace=" + baseRace + ", size=" + size + ", walkSpeed=" + walkSpeed
 				+ ", flySpeed=" + flySpeed + ", burrowSpeed=" + burrowSpeed + ", swimSpeed=" + swimSpeed
 				+ ", climbSpeed=" + climbSpeed + ", characterClasses=" + characterClasses + ", totalLevel=" + totalLevel
-				+ ", subclass=" + subclass + ", maxHitPoints=" + maxHitPoints + ", currentHitPoints=" + currentHitPoints
-				+ ", temporaryHitPoints=" + temporaryHitPoints + ", hitDiceBase=" + hitDiceBase + ", currentHitDice="
-				+ currentHitDice + ", attackCount=" + attackCount + ", attacksUsed=" + attacksUsed + ", attacks="
-				+ attacks + "]";
+				+ ", maxHitPoints=" + maxHitPoints + ", currentHitPoints=" + currentHitPoints + ", temporaryHitPoints="
+				+ temporaryHitPoints + ", hitDiceBase=" + hitDiceBase + ", currentHitDice=" + currentHitDice
+				+ ", attackCount=" + attackCount + ", attacksUsed=" + attacksUsed + ", attacks=" + attacks + "]";
 	}
 
 }
