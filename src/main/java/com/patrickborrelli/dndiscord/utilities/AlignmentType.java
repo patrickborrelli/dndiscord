@@ -2,6 +2,11 @@ package com.patrickborrelli.dndiscord.utilities;
 
 import java.util.HashMap;
 
+/**
+ * Enumerated type used to indicate character alignment.
+ * 
+ * @author Patrick Borrelli
+ */
 public enum AlignmentType {
 	
 	LAWFUL_GOOD(1),
@@ -16,7 +21,6 @@ public enum AlignmentType {
 	
 	
 	private Integer value;
-	private String stringValue;
 	private static HashMap<Integer, AlignmentType> valuesMap;
 	private static HashMap<AlignmentType, String> stringMap;
 	

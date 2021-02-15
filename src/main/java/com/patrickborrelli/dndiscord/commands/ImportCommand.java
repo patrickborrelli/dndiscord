@@ -27,6 +27,7 @@ import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
 import com.patrickborrelli.dndiscord.utilities.AlignmentType;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
+import com.patrickborrelli.dndiscord.utilities.LifestyleType;
 import com.patrickborrelli.dndiscord.utilities.RulesetUtil;
 import com.patrickborrelli.dndiscord.utilities.SheetSourceType;
 
@@ -97,6 +98,7 @@ public class ImportCommand implements CommandExecutor {
 			sheet.setAvatarUrl(character.getAvatarUrl());
 			sheet.setAge(character.getAge());
 			sheet.setAlignment(AlignmentType.getEnum(character.getAlignmentId()).getStringValue());
+			sheet.setLifestyle(LifestyleType.getEnum(character.getLifestyleId()).getStringValue());
 			sheet.setBackground(character.getBackground().getDefinition().getName());
 			sheet.setFaith(character.getFaith());
 			sheet.setBonds(character.getTraits().getBonds());
@@ -111,7 +113,6 @@ public class ImportCommand implements CommandExecutor {
 			sheet.setInspiration(character.isInspiration());
 			sheet.setGender(character.getGender());
 			sheet.setExperiencePoints(character.getCurrentXp());
-			sheet.setLifestyle(character.getLifestyle());
 			sheet.setPlatinumPieces(character.getCurrencies().getPlatinumPieces());
 			sheet.setGoldPieces(character.getCurrencies().getGoldPieces());
 			sheet.setElectrumPieces(character.getCurrencies().getElectrumPieces());

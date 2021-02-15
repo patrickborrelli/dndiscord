@@ -2,7 +2,6 @@ package com.patrickborrelli.dndiscord.utilities;
 
 import java.util.HashMap;
 
-
 /**
  * Enumerated type used to indicate character sheet source.
  * 
