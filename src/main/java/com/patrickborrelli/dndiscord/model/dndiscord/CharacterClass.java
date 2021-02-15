@@ -12,6 +12,7 @@ public class CharacterClass {
 	private String name;
 	private boolean startingClass;
 	private int level;
+	private String subclassName;
 	
 	public CharacterClass() {
 		
@@ -58,6 +59,20 @@ public class CharacterClass {
 	public void setLevel(int level) {
 		this.level = level;
 	}
+	
+	/**
+	 * @return the subclassName
+	 */
+	public String getSubclassName() {
+		return subclassName;
+	}
+
+	/**
+	 * @param subclassName the subclassName to set
+	 */
+	public void setSubclassName(String subclassName) {
+		this.subclassName = subclassName;
+	}
 
 	@Override
 	public int hashCode() {
@@ -66,6 +81,7 @@ public class CharacterClass {
 		result = prime * result + level;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + (startingClass ? 1231 : 1237);
+		result = prime * result + ((subclassName == null) ? 0 : subclassName.hashCode());
 		return result;
 	}
 
@@ -87,11 +103,17 @@ public class CharacterClass {
 			return false;
 		if (startingClass != other.startingClass)
 			return false;
+		if (subclassName == null) {
+			if (other.subclassName != null)
+				return false;
+		} else if (!subclassName.equals(other.subclassName))
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "CharacterClass [name=" + name + ", startingClass=" + startingClass + ", level=" + level + "]";
+		return "CharacterClass [name=" + name + ", startingClass=" + startingClass + ", level=" + level
+				+ ", subclassName=" + subclassName + "]";
 	}
 }

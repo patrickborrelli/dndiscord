@@ -123,7 +123,7 @@ public class ImportCommand implements CommandExecutor {
 			sheet.setFlySpeed(character.getRace().getWeightSpeeds().getNormal().getFly());
 			sheet.setBurrowSpeed(character.getRace().getWeightSpeeds().getNormal().getBurrow());
 			sheet.setSwimSpeed(character.getRace().getWeightSpeeds().getNormal().getSwim());
-			sheet.setClimbSpeed(character.getRace().getWeightSpeeds().getNormal().getClimb());
+			sheet.setClimbSpeed(character.getRace().getWeightSpeeds().getNormal().getClimb()); 
 			setClasses(sheet, character);
 			convertBeyondStats(sheet, character);
 			processBeyondModifiers(sheet, character);	
