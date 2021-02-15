@@ -132,6 +132,10 @@ public class ImportCommand implements CommandExecutor {
 			applyAbilityScoreMods(sheet);
 			applySavingThrowMods(sheet);
 			applySkillMods(sheet);
+			sheet.setMaxHitPoints(character.getBaseHitPoints() + (sheet.getTotalLevel() * sheet.getConstitutionMod()));
+			sheet.setCurrentHitPoints(sheet.getMaxHitPoints() - character.getRemovedHitPoints());
+			sheet.setTemporaryHitPoints(character.getTemporaryHitPoints());
+			
 		}
 		LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
@@ -202,6 +206,8 @@ public class ImportCommand implements CommandExecutor {
 			thisClass.setName(beyondClass.getDefinition().getName());
 			thisClass.setStartingClass(beyondClass.isStartingClass());
 			thisClass.setSubclassName(beyondClass.getSubclassDefinition().getName());
+			thisClass.setHitDiceUsed(beyondClass.getHitDiceUsed());
+			thisClass.setHitDieType(beyondClass.getDefinition().getHitDice());
 			discordClasses.add(thisClass);
 			totalLevel += beyondClass.getLevel();
 		}

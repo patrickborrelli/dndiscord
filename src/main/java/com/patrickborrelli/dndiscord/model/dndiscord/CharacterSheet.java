@@ -154,8 +154,6 @@ public class CharacterSheet {
 	private int maxHitPoints;
 	private int currentHitPoints;
 	private int temporaryHitPoints;
-	private int hitDiceBase;
-	private int currentHitDice;
 	
 	//attacks and actions:
 	private int attackCount;
@@ -1983,35 +1981,7 @@ public class CharacterSheet {
 	public void setTemporaryHitPoints(int temporaryHitPoints) {
 		this.temporaryHitPoints = temporaryHitPoints;
 	}
-
-	/**
-	 * @return the hitDiceBase
-	 */
-	public int getHitDiceBase() {
-		return hitDiceBase;
-	}
-
-	/**
-	 * @param hitDiceBase the hitDiceBase to set
-	 */
-	public void setHitDiceBase(int hitDiceBase) {
-		this.hitDiceBase = hitDiceBase;
-	}
-
-	/**
-	 * @return the currentHitDice
-	 */
-	public int getCurrentHitDice() {
-		return currentHitDice;
-	}
-
-	/**
-	 * @param currentHitDice the currentHitDice to set
-	 */
-	public void setCurrentHitDice(int currentHitDice) {
-		this.currentHitDice = currentHitDice;
-	}
-
+	
 	/**
 	 * @return the attackCount
 	 */
@@ -2109,8 +2079,7 @@ public class CharacterSheet {
 				+ ", flySpeed=" + flySpeed + ", burrowSpeed=" + burrowSpeed + ", swimSpeed=" + swimSpeed
 				+ ", climbSpeed=" + climbSpeed + ", characterClasses=" + characterClasses + ", totalLevel=" + totalLevel
 				+ ", maxHitPoints=" + maxHitPoints + ", currentHitPoints=" + currentHitPoints + ", temporaryHitPoints="
-				+ temporaryHitPoints + ", hitDiceBase=" + hitDiceBase + ", currentHitDice=" + currentHitDice
-				+ ", attackCount=" + attackCount + ", attacksUsed=" + attacksUsed + ", attacks=" + attacks + "]";
+				+ temporaryHitPoints + ", attackCount=" + attackCount + ", attacksUsed=" + attacksUsed + ", attacks=" + attacks + "]";
 	}
 
 }

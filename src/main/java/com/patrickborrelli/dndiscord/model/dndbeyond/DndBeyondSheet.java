@@ -44,6 +44,7 @@ public class DndBeyondSheet {
 	private int bonusHitPoints;
 	private int overrideHitPoints;
 	private int temporaryHitPoints;
+	private int removedHitPoints;
 	private int currentXp;
 	private int alignmentId;
 	private int lifestyleId;
@@ -515,6 +516,20 @@ public class DndBeyondSheet {
 	}
 
 	/**
+	 * @return the removedHitPoints
+	 */
+	public int getRemovedHitPoints() {
+		return removedHitPoints;
+	}
+
+	/**
+	 * @param removedHitPoints the removedHitPoints to set
+	 */
+	public void setRemovedHitPoints(int removedHitPoints) {
+		this.removedHitPoints = removedHitPoints;
+	}
+
+	/**
 	 * @return the currentXp
 	 */
 	public int getCurrentXp() {
@@ -947,20 +962,20 @@ public class DndBeyondSheet {
 				+ ", faith=" + faith + ", age=" + age + ", hair=" + hair + ", eyes=" + eyes + ", skin=" + skin
 				+ ", height=" + height + ", weight=" + weight + ", inspiration=" + inspiration + ", baseHitPoints="
 				+ baseHitPoints + ", bonusHitPoints=" + bonusHitPoints + ", overrideHitPoints=" + overrideHitPoints
-				+ ", temporaryHitPoints=" + temporaryHitPoints + ", currentXp=" + currentXp + ", alignmentId="
-				+ alignmentId + ", lifestyleId=" + lifestyleId + ", stats=" + Arrays.toString(stats) + ", bonusStats="
-				+ Arrays.toString(bonusStats) + ", overrideStats=" + Arrays.toString(overrideStats) + ", background="
-				+ background + ", race=" + race + ", notes=" + notes + ", traits=" + traits + ", preferences="
-				+ preferences + ", lifestyle=" + lifestyle + ", inventory=" + Arrays.toString(inventory)
-				+ ", currencies=" + currencies + ", classes=" + Arrays.toString(classes) + ", customDefenseAdjustments="
-				+ Arrays.toString(customDefenseAdjustments) + ", customSenses=" + Arrays.toString(customSenses)
-				+ ", customSpeeds=" + Arrays.toString(customSpeeds) + ", customProficiencies="
-				+ Arrays.toString(customProficiencies) + ", spellDefenses=" + spellDefenses + ", customActions="
-				+ Arrays.toString(customActions) + ", characterValues=" + Arrays.toString(characterValues)
-				+ ", conditions=" + Arrays.toString(conditions) + ", deathSaves=" + deathSaves + ", adjustmentXp="
-				+ adjustmentXp + ", spellSlots=" + Arrays.toString(spellSlots) + ", pactMagic="
-				+ Arrays.toString(pactMagic) + ", activeSourceCategories=" + Arrays.toString(activeSourceCategories)
-				+ ", spells=" + spells + ", modifiers=" + modifiers + "]";
+				+ ", temporaryHitPoints=" + temporaryHitPoints + ", removedHitPoints=" + removedHitPoints
+				+ ", currentXp=" + currentXp + ", alignmentId=" + alignmentId + ", lifestyleId=" + lifestyleId
+				+ ", stats=" + Arrays.toString(stats) + ", bonusStats=" + Arrays.toString(bonusStats)
+				+ ", overrideStats=" + Arrays.toString(overrideStats) + ", background=" + background + ", race=" + race
+				+ ", notes=" + notes + ", traits=" + traits + ", preferences=" + preferences + ", lifestyle="
+				+ lifestyle + ", inventory=" + Arrays.toString(inventory) + ", currencies=" + currencies + ", classes="
+				+ Arrays.toString(classes) + ", customDefenseAdjustments=" + Arrays.toString(customDefenseAdjustments)
+				+ ", customSenses=" + Arrays.toString(customSenses) + ", customSpeeds=" + Arrays.toString(customSpeeds)
+				+ ", customProficiencies=" + Arrays.toString(customProficiencies) + ", spellDefenses=" + spellDefenses
+				+ ", customActions=" + Arrays.toString(customActions) + ", characterValues="
+				+ Arrays.toString(characterValues) + ", conditions=" + Arrays.toString(conditions) + ", deathSaves="
+				+ deathSaves + ", adjustmentXp=" + adjustmentXp + ", spellSlots=" + Arrays.toString(spellSlots)
+				+ ", pactMagic=" + Arrays.toString(pactMagic) + ", activeSourceCategories="
+				+ Arrays.toString(activeSourceCategories) + ", spells=" + spells + ", modifiers=" + modifiers + "]";
 	}
 	
 }

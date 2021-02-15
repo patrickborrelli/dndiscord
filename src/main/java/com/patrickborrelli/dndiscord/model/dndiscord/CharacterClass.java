@@ -14,6 +14,8 @@ public class CharacterClass {
 	private boolean startingClass;
 	private int level;
 	private String subclassName;
+	private int hitDieType;
+	private int hitDiceUsed;
 	
 	public CharacterClass() {
 		
@@ -76,46 +78,38 @@ public class CharacterClass {
 		this.subclassName = newStr.trim();
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + level;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + (startingClass ? 1231 : 1237);
-		result = prime * result + ((subclassName == null) ? 0 : subclassName.hashCode());
-		return result;
+	/**
+	 * @return the hitDieType
+	 */
+	public int getHitDieType() {
+		return hitDieType;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		CharacterClass other = (CharacterClass) obj;
-		if (level != other.level)
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (startingClass != other.startingClass)
-			return false;
-		if (subclassName == null) {
-			if (other.subclassName != null)
-				return false;
-		} else if (!subclassName.equals(other.subclassName))
-			return false;
-		return true;
+	/**
+	 * @param hitDieType the hitDieType to set
+	 */
+	public void setHitDieType(int hitDieType) {
+		this.hitDieType = hitDieType;
+	}
+
+	/**
+	 * @return the hitDiceUsed
+	 */
+	public int getHitDiceUsed() {
+		return hitDiceUsed;
+	}
+
+	/**
+	 * @param hitDiceUsed the hitDiceUsed to set
+	 */
+	public void setHitDiceUsed(int hitDiceUsed) {
+		this.hitDiceUsed = hitDiceUsed;
 	}
 
 	@Override
 	public String toString() {
 		return "CharacterClass [name=" + name + ", startingClass=" + startingClass + ", level=" + level
-				+ ", subclassName=" + subclassName + "]";
+				+ ", subclassName=" + subclassName + ", hitDieType=" + hitDieType + ", hitDiceUsed=" + hitDiceUsed
+				+ "]";
 	}
 }
