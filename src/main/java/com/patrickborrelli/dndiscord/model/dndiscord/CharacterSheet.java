@@ -155,6 +155,8 @@ public class CharacterSheet {
 	private int currentHitPoints;
 	private int temporaryHitPoints;
 	
+	private List<Feature> features;
+	
 	//attacks and actions:
 	private int attackCount;
 	private int attacksUsed;
@@ -1982,6 +1984,20 @@ public class CharacterSheet {
 		this.temporaryHitPoints = temporaryHitPoints;
 	}
 	
+	/**
+	 * @return the features
+	 */
+	public List<Feature> getFeatures() {
+		return features;
+	}
+
+	/**
+	 * @param features the features to set
+	 */
+	public void setFeatures(List<Feature> features) {
+		this.features = features;
+	}
+
 	/**
 	 * @return the attackCount
 	 */

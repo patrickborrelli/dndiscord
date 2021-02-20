@@ -75,6 +75,7 @@ public class DndBeyondSheet {
 	private PactMagicSlot[] pactMagic;
 	private int[] activeSourceCategories;
 	private Spellbook spells;
+	private Options options;
 	private ModifierArray modifiers;
 	
 	public DndBeyondSheet() {		
@@ -936,6 +937,20 @@ public class DndBeyondSheet {
 	}
 
 	/**
+	 * @return Options the options
+	 */
+	public Options getOptions() {
+		return options;
+	}
+
+	/**
+	 * @param options Options the options to set
+	 */
+	public void setOptions(Options options) {
+		this.options = options;
+	}
+
+	/**
 	 * @return the modifiers
 	 */
 	public ModifierArray getModifiers() {
@@ -975,7 +990,8 @@ public class DndBeyondSheet {
 				+ Arrays.toString(characterValues) + ", conditions=" + Arrays.toString(conditions) + ", deathSaves="
 				+ deathSaves + ", adjustmentXp=" + adjustmentXp + ", spellSlots=" + Arrays.toString(spellSlots)
 				+ ", pactMagic=" + Arrays.toString(pactMagic) + ", activeSourceCategories="
-				+ Arrays.toString(activeSourceCategories) + ", spells=" + spells + ", modifiers=" + modifiers + "]";
+				+ Arrays.toString(activeSourceCategories) + ", spells=" + spells + ", options=" + options
+				+ ", modifiers=" + modifiers + "]";
 	}
 	
 }

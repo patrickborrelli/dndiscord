@@ -33,7 +33,7 @@ public class ItemDefinition {
 	private String filterType;
 	private int fixedDamage;
 	private int gearTypeId;
-	private String[] grantedModifiers;
+	private Object[] grantedModifiers;
 	private int groupedId;
 	private int id;
 	private boolean isConsumable;
@@ -366,14 +366,14 @@ public class ItemDefinition {
 	/**
 	 * @return the grantedModifiers
 	 */
-	public String[] getGrantedModifiers() {
+	public Object[] getGrantedModifiers() {
 		return grantedModifiers;
 	}
 
 	/**
 	 * @param grantedModifiers the grantedModifiers to set
 	 */
-	public void setGrantedModifiers(String[] grantedModifiers) {
+	public void setGrantedModifiers(Object[] grantedModifiers) {
 		this.grantedModifiers = grantedModifiers;
 	}
 

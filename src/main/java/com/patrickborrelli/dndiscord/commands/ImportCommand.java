@@ -14,6 +14,7 @@ import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageAttachment;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
@@ -24,6 +25,7 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Modifier;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Stat;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
+import com.patrickborrelli.dndiscord.model.dndiscord.Feature;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
 import com.patrickborrelli.dndiscord.utilities.AlignmentType;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
@@ -41,6 +43,7 @@ public class ImportCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(ImportCommand.class);
 	private List<MessageAttachment> attachments;
 	private RulesetUtil ruleset = RulesetUtil.getInstance();
+	private List<Feature> features = new ArrayList<>();
 
 	@Override
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
@@ -64,7 +67,6 @@ public class ImportCommand implements CommandExecutor {
 				} else {
 					ObjectMapper mapper = new ObjectMapper();
 					LOGGER.debug("Received Sheet Command message: " + msg.getContent() + " with " + attachments.size() + " attachments");
-					
 					for(MessageAttachment attach : attachments) {
 						try {
 							stream = attach.downloadAsInputStream();
@@ -79,13 +81,11 @@ public class ImportCommand implements CommandExecutor {
 					//TODO: convert to DnDiscord character format and save to database
 					CharacterSheet converted = convertFormat(SheetSourceType.BEYOND, character, user);
 					buildSheetEmbed(msg, character);
-					buildConvertEmbed(msg, converted);
 				}
 			} 
 		} else {
 			MessageResponse.sendReply(channel, "Unknown argument provided.");
-		}
-		
+		}		
 	}
 	
 	private CharacterSheet convertFormat(SheetSourceType type, DndBeyondSheet character, DiscordUser user) {
@@ -134,8 +134,7 @@ public class ImportCommand implements CommandExecutor {
 			applySkillMods(sheet);
 			sheet.setMaxHitPoints(character.getBaseHitPoints() + (sheet.getTotalLevel() * sheet.getConstitutionMod()));
 			sheet.setCurrentHitPoints(sheet.getMaxHitPoints() - character.getRemovedHitPoints());
-			sheet.setTemporaryHitPoints(character.getTemporaryHitPoints());
-			
+			sheet.setTemporaryHitPoints(character.getTemporaryHitPoints());			
 		}
 		LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
@@ -241,6 +240,8 @@ public class ImportCommand implements CommandExecutor {
 		processBeyondModifierSet(conditionModifiers, sheet, "Condition");				
 	}
 	
+	//TODO: make modification here to add full features when going through modifiers:
+	//i.e., tie modifier to option and then to features for name
 	private void processBeyondModifierSet(List<Modifier> mods, CharacterSheet sheet, String modifierType) {
 		LOGGER.debug("Processing "+ modifierType + " modifiers.");
 		for(Modifier mod : mods) {
@@ -522,15 +523,5 @@ public class ImportCommand implements CommandExecutor {
 		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
 		    .setThumbnail(sheet.getAvatarUrl().toString());
 		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);		
-	}
-	
-	private void buildConvertEmbed(Message msg, CharacterSheet sheet) {
-		EmbedBuilder embed = new EmbedBuilder()
-			.setTitle(sheet.getCharacterName())
-			.setDescription("DnDiscord successfully converted character: " + sheet.getCharacterName() + " for user: " + sheet.getUser().getUsername())
-		    .setColor(Color.GREEN)
-		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
-		    .setThumbnail(sheet.getAvatarUrl().toString());
-		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);		
-	}
+	}	
 }

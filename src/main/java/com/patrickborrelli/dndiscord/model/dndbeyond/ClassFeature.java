@@ -11,4 +11,28 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClassFeature {
 
+	private Definition definition;
+	
+	public ClassFeature() {
+	
+	}
+
+	/**
+	 * @return the definition
+	 */
+	public Definition getDefinition() {
+		return definition;
+	}
+
+	/**
+	 * @param definition the definition to set
+	 */
+	public void setDefinition(Definition definition) {
+		this.definition = definition;
+	}
+
+	@Override
+	public String toString() {
+		return "ClassFeature [definition=" + definition + "]";
+	}
 }
