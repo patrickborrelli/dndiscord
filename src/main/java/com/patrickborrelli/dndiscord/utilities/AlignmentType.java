@@ -9,6 +9,7 @@ import java.util.HashMap;
  */
 public enum AlignmentType {
 	
+	UNKNOWN(0),
 	LAWFUL_GOOD(1),
 	NEUTRAL_GOOD(2),
 	CHAOTIC_GOOD(3),
@@ -27,6 +28,7 @@ public enum AlignmentType {
 	static {
 		valuesMap = 
 			new HashMap<Integer, AlignmentType>(AlignmentType.values().length);
+		valuesMap.put(0,  UNKNOWN);
 		valuesMap.put(1, LAWFUL_GOOD);
 		valuesMap.put(2, NEUTRAL_GOOD);
 		valuesMap.put(3, CHAOTIC_GOOD);
@@ -39,6 +41,7 @@ public enum AlignmentType {
 		
 		stringMap = 
 			new HashMap<AlignmentType, String>(AlignmentType.values().length);
+		stringMap.put(UNKNOWN, "Unknown");
 		stringMap.put(LAWFUL_GOOD, "Lawful good");
 		stringMap.put(NEUTRAL_GOOD, "Neutral good");
 		stringMap.put(CHAOTIC_GOOD, "Chaotic good");

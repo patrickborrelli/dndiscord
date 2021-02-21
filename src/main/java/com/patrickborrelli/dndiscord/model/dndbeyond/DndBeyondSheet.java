@@ -1,6 +1,7 @@
 package com.patrickborrelli.dndiscord.model.dndbeyond;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -60,7 +61,7 @@ public class DndBeyondSheet {
 	private Item[] inventory;
 	private Coinpurse currencies;
 	private DndBeyondCharacterClass[] classes;
-	//private Feat[] feats;
+	private Feat[] feats;
 	private String[] customDefenseAdjustments;
 	private String[] customSenses;
 	private String[] customSpeeds;
@@ -81,7 +82,79 @@ public class DndBeyondSheet {
 	public DndBeyondSheet() {		
 		
 	}
-
+	
+	/**
+	 * Return the class feature with the provided ID
+	 * 
+	 * @param id an int representing the option's id.
+	 * @return a ClassFeature if one exists, or a null if none exists.
+	 */
+	public ClassFeature getClassFeatureById(int id) {
+		ClassFeature result = null;
+		//iterate through each class and see if matching feature exists:
+		for(int i = 0; i < classes.length; i++) {
+			for(ClassFeature myFeat : classes[i].getClassFeatures()) {
+				if(myFeat.getDefinition().getId() == id) {
+					result = myFeat;
+				}
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Return the racial trait with the provided ID
+	 * 
+	 * @param id an int representing the trait's id.
+	 * @return a RacialTrait if one exists, or a null if none exists.
+	 */
+	public RacialTrait getTraitById(int id) {
+		RacialTrait result = null;
+		//iterate through each trait and see if a matching feature exists:
+		for(RacialTrait trait : race.getRacialTraits()) {
+			if(trait.getDefinition().getId() == id) {
+				result = trait;
+			}
+		}
+		race.getRacialTraits();
+		return result;
+	}
+	
+	/**
+	 * Returns the feat matching the provided ID.
+	 * 
+	 * @param id an int representing the feat's ID
+	 * @return a Feat if a match exists, otherwise returns null
+	 */
+	public Feat getFeatById(int id) {
+		Feat result = null;
+		//iterate through each feat and see if match exists:
+		for(Feat feat : feats) {
+			if(feat.getDefinition().getId() == id) {
+				result = feat;
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Return the class option with the provided ID.
+	 * 
+	 * @param id an int representing the option's id.
+	 * @return an Option if one exists, or a null if none exists.
+	 */
+	public Option getClassOption(int id) {
+		List<Option> myOptions = options.getClassOptions();
+		Option result = null;
+		
+		for(Option opt : myOptions) {
+			if(opt.getDefinition().getId() == id) {
+				result = opt;
+			}
+		}
+		return result;
+	}
+		
 	/**
 	 * @return the id
 	 */
@@ -741,6 +814,20 @@ public class DndBeyondSheet {
 	}
 
 	/**
+	 * @return Feat[] the feats
+	 */
+	public Feat[] getFeats() {
+		return feats;
+	}
+
+	/**
+	 * @param feats Feat[] the feats to set
+	 */
+	public void setFeats(Feat[] feats) {
+		this.feats = feats;
+	}
+
+	/**
 	 * @return the customDefenseAdjustments
 	 */
 	public String[] getCustomDefenseAdjustments() {
@@ -983,15 +1070,15 @@ public class DndBeyondSheet {
 				+ ", overrideStats=" + Arrays.toString(overrideStats) + ", background=" + background + ", race=" + race
 				+ ", notes=" + notes + ", traits=" + traits + ", preferences=" + preferences + ", lifestyle="
 				+ lifestyle + ", inventory=" + Arrays.toString(inventory) + ", currencies=" + currencies + ", classes="
-				+ Arrays.toString(classes) + ", customDefenseAdjustments=" + Arrays.toString(customDefenseAdjustments)
-				+ ", customSenses=" + Arrays.toString(customSenses) + ", customSpeeds=" + Arrays.toString(customSpeeds)
-				+ ", customProficiencies=" + Arrays.toString(customProficiencies) + ", spellDefenses=" + spellDefenses
-				+ ", customActions=" + Arrays.toString(customActions) + ", characterValues="
-				+ Arrays.toString(characterValues) + ", conditions=" + Arrays.toString(conditions) + ", deathSaves="
-				+ deathSaves + ", adjustmentXp=" + adjustmentXp + ", spellSlots=" + Arrays.toString(spellSlots)
-				+ ", pactMagic=" + Arrays.toString(pactMagic) + ", activeSourceCategories="
-				+ Arrays.toString(activeSourceCategories) + ", spells=" + spells + ", options=" + options
-				+ ", modifiers=" + modifiers + "]";
+				+ Arrays.toString(classes) + ", feats=" + Arrays.toString(feats) + ", customDefenseAdjustments="
+				+ Arrays.toString(customDefenseAdjustments) + ", customSenses=" + Arrays.toString(customSenses)
+				+ ", customSpeeds=" + Arrays.toString(customSpeeds) + ", customProficiencies="
+				+ Arrays.toString(customProficiencies) + ", spellDefenses=" + spellDefenses + ", customActions="
+				+ Arrays.toString(customActions) + ", characterValues=" + Arrays.toString(characterValues)
+				+ ", conditions=" + Arrays.toString(conditions) + ", deathSaves=" + deathSaves + ", adjustmentXp="
+				+ adjustmentXp + ", spellSlots=" + Arrays.toString(spellSlots) + ", pactMagic="
+				+ Arrays.toString(pactMagic) + ", activeSourceCategories=" + Arrays.toString(activeSourceCategories)
+				+ ", spells=" + spells + ", options=" + options + ", modifiers=" + modifiers + "]";
 	}
 	
 }

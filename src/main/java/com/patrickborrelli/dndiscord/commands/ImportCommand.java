@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,22 +16,30 @@ import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageAttachment;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
+import com.patrickborrelli.dndiscord.model.dndbeyond.Activation;
+import com.patrickborrelli.dndiscord.model.dndbeyond.ClassFeature;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondCharacterClass;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondConstants;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
+import com.patrickborrelli.dndiscord.model.dndbeyond.Feat;
+import com.patrickborrelli.dndiscord.model.dndbeyond.LimitedUse;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Modifier;
+import com.patrickborrelli.dndiscord.model.dndbeyond.Option;
+import com.patrickborrelli.dndiscord.model.dndbeyond.RacialTrait;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Stat;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.dndiscord.Feature;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
+import com.patrickborrelli.dndiscord.utilities.ActivationType;
 import com.patrickborrelli.dndiscord.utilities.AlignmentType;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
+import com.patrickborrelli.dndiscord.utilities.FeatureType;
 import com.patrickborrelli.dndiscord.utilities.LifestyleType;
+import com.patrickborrelli.dndiscord.utilities.ResetType;
 import com.patrickborrelli.dndiscord.utilities.RulesetUtil;
 import com.patrickborrelli.dndiscord.utilities.SheetSourceType;
 
@@ -43,10 +53,11 @@ public class ImportCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(ImportCommand.class);
 	private List<MessageAttachment> attachments;
 	private RulesetUtil ruleset = RulesetUtil.getInstance();
-	private List<Feature> features = new ArrayList<>();
+	private Set<Feature> features = null;
 
 	@Override
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
+		features = new HashSet<>();
 		TextChannel channel = msg.getChannel();
 		String[] args = msg.getContent().split(" ");
 		
@@ -134,7 +145,8 @@ public class ImportCommand implements CommandExecutor {
 			applySkillMods(sheet);
 			sheet.setMaxHitPoints(character.getBaseHitPoints() + (sheet.getTotalLevel() * sheet.getConstitutionMod()));
 			sheet.setCurrentHitPoints(sheet.getMaxHitPoints() - character.getRemovedHitPoints());
-			sheet.setTemporaryHitPoints(character.getTemporaryHitPoints());			
+			sheet.setTemporaryHitPoints(character.getTemporaryHitPoints());	
+			sheet.setFeatures(features);
 		}
 		LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
@@ -232,20 +244,161 @@ public class ImportCommand implements CommandExecutor {
 		List<Modifier> featModifiers = Arrays.asList(character.getModifiers().getFeat());
 		List<Modifier> conditionModifiers = Arrays.asList(character.getModifiers().getCondition());
 		
-		processBeyondModifierSet(racialModifiers, sheet, "Race");
-		processBeyondModifierSet(classModifiers, sheet, "Class");
-		processBeyondModifierSet(backgroundModifiers, sheet, "Background");
-		processBeyondModifierSet(itemModifiers, sheet, "Item");
-		processBeyondModifierSet(featModifiers, sheet, "Feat");
-		processBeyondModifierSet(conditionModifiers, sheet, "Condition");				
+		processBeyondModifierSet(racialModifiers, sheet, "Race", character);
+		processBeyondModifierSet(classModifiers, sheet, "Class", character);
+		processBeyondModifierSet(backgroundModifiers, sheet, "Background", character);
+		processBeyondModifierSet(itemModifiers, sheet, "Item", character);
+		processBeyondModifierSet(featModifiers, sheet, "Feat", character);
+		processBeyondModifierSet(conditionModifiers, sheet, "Condition", character);				
+	}
+	
+	private FeatureType getFeatureType(String mod) {
+		FeatureType type = null;
+		if(mod.contains("class")) {
+			type = FeatureType.getEnum("class");
+		} else if(mod.contains("racial")) {
+			type = FeatureType.getEnum("race");
+		} else if(mod.contains("feat")) {
+			type = FeatureType.getEnum("feat");
+		}
+			
+		return type;
+	}
+	
+	private Feature getFeatureFromModifier(Modifier mod, DndBeyondSheet character) {
+		Feature feat = null;
+		Option opt = null;
+		FeatureType type = getFeatureType(mod.getId());
+		if(type != null) {
+			switch(type) {
+				case CLASS_TYPE:
+					opt = character.getClassOption(mod.getComponentId());
+					if(null != opt) {
+						feat = new Feature();
+						feat.setType(type);
+						feat.setOptionName(opt.getDefinition().getName());
+						feat.setOptionDescription(opt.getDefinition().getDescription());
+						feat.setOptionSnippet(opt.getDefinition().getSnippet());
+						ClassFeature myFeature = character.getClassFeatureById(opt.getComponentId());
+						if(myFeature != null) {
+							Activation act = myFeature.getDefinition().getActivation();
+							if(act != null) {
+								String actType = act.getActivationType();
+								String actTime = act.getActivationTime();
+								if(actType != null) feat.setActivationType(ActivationType.getEnum(Integer.parseInt(actType)));
+								if(actTime != null) feat.setDuration(Integer.parseInt(actTime));
+							}						
+							feat.setDisplayOrder(myFeature.getDefinition().getDisplayOrder());
+							feat.setName(myFeature.getDefinition().getName());
+							feat.setDescription(myFeature.getDefinition().getDescription());
+							feat.setSnippet(myFeature.getDefinition().getSnippet());
+							feat.setRequiredLevel(myFeature.getDefinition().getRequiredLevel());
+							feat.setSubClassFeature(myFeature.getDefinition().isSubClassFeature());
+							LimitedUse[] limUses = myFeature.getDefinition().getLimitedUse();
+							if(limUses != null && limUses.length > 0) {
+								feat.setLimitedUseResetType(ResetType.getEnum(Integer.parseInt(limUses[0].getResetType())));
+								feat.setLimitedUseNumberUsed(limUses[0].getNumberUsed());
+								feat.setLimitedUseMinNumberConsumed(limUses[0].getMinNumberConsumed());
+								feat.setLimitedUseMaxNumberConsumed(limUses[0].getMaxNumberConsumed());
+								feat.setLimitedUseMaxUses(limUses[0].getMaxUses());
+								feat.setLimitedUseOperator(limUses[0].getOperator());
+							}
+							feat.setHideInSheet(myFeature.getDefinition().isHideInSheet());
+							feat.setSource(Integer.toString(myFeature.getDefinition().getSourceId()));
+							feat.setSourcePageNumber(myFeature.getDefinition().getSourcePageNumber());						
+						}
+					}					
+					break;
+					
+				case RACE:
+					RacialTrait trait = character.getTraitById(mod.getComponentId());
+					if(trait != null) {
+						feat = new Feature();
+						feat.setType(type);
+						Activation act = trait.getDefinition().getActivation();
+						if(act != null) {
+							String actType = act.getActivationType();
+							String actTime = act.getActivationTime();
+							if(actType != null) feat.setActivationType(ActivationType.getEnum(Integer.parseInt(actType)));
+							if(actTime != null) feat.setDuration(Integer.parseInt(actTime));
+						}						
+						feat.setDisplayOrder(trait.getDefinition().getDisplayOrder());
+						feat.setName(trait.getDefinition().getName());
+						feat.setDescription(trait.getDefinition().getDescription());
+						feat.setSnippet(trait.getDefinition().getSnippet());
+						feat.setRequiredLevel(trait.getDefinition().getRequiredLevel());
+						feat.setSubClassFeature(trait.getDefinition().isSubClassFeature());
+						LimitedUse[] limUses = trait.getDefinition().getLimitedUse();
+						if(limUses != null && limUses.length > 0) {
+							feat.setLimitedUseResetType(ResetType.getEnum(Integer.parseInt(limUses[0].getResetType())));
+							feat.setLimitedUseNumberUsed(limUses[0].getNumberUsed());
+							feat.setLimitedUseMinNumberConsumed(limUses[0].getMinNumberConsumed());
+							feat.setLimitedUseMaxNumberConsumed(limUses[0].getMaxNumberConsumed());
+							feat.setLimitedUseMaxUses(limUses[0].getMaxUses());
+							feat.setLimitedUseOperator(limUses[0].getOperator());
+						}
+						feat.setHideInSheet(trait.getDefinition().isHideInSheet());
+						feat.setSource(Integer.toString(trait.getDefinition().getSourceId()));
+						feat.setSourcePageNumber(trait.getDefinition().getSourcePageNumber());						
+					}			
+					break;
+					
+				case FEAT:
+					Feat dndbFeat = character.getFeatById(mod.getComponentId());
+					if(dndbFeat != null) {
+						feat = new Feature();
+						feat.setType(type);
+						Activation act = dndbFeat.getDefinition().getActivation();
+						if(act != null) {
+							String actType = act.getActivationType();
+							String actTime = act.getActivationTime();
+							if(actType != null) feat.setActivationType(ActivationType.getEnum(Integer.parseInt(actType)));
+							if(actTime != null) feat.setDuration(Integer.parseInt(actTime));
+						}						
+						feat.setDisplayOrder(dndbFeat.getDefinition().getDisplayOrder());
+						feat.setName(dndbFeat.getDefinition().getName());
+						feat.setDescription(dndbFeat.getDefinition().getDescription());
+						feat.setSnippet(dndbFeat.getDefinition().getSnippet());
+						feat.setRequiredLevel(dndbFeat.getDefinition().getRequiredLevel());
+						feat.setSubClassFeature(dndbFeat.getDefinition().isSubClassFeature());
+						LimitedUse[] limUses = dndbFeat.getDefinition().getLimitedUse();
+						if(limUses != null && limUses.length > 0) {
+							feat.setLimitedUseResetType(ResetType.getEnum(Integer.parseInt(limUses[0].getResetType())));
+							feat.setLimitedUseNumberUsed(limUses[0].getNumberUsed());
+							feat.setLimitedUseMinNumberConsumed(limUses[0].getMinNumberConsumed());
+							feat.setLimitedUseMaxNumberConsumed(limUses[0].getMaxNumberConsumed());
+							feat.setLimitedUseMaxUses(limUses[0].getMaxUses());
+							feat.setLimitedUseOperator(limUses[0].getOperator());
+						}
+						feat.setHideInSheet(dndbFeat.getDefinition().isHideInSheet());
+						feat.setSource(Integer.toString(dndbFeat.getDefinition().getSourceId()));
+						feat.setSourcePageNumber(dndbFeat.getDefinition().getSourcePageNumber());						
+					}			
+					break;
+					
+				default:
+					break;
+						
+			}
+		}		
+		return feat;
 	}
 	
 	//TODO: make modification here to add full features when going through modifiers:
 	//i.e., tie modifier to option and then to features for name
-	private void processBeyondModifierSet(List<Modifier> mods, CharacterSheet sheet, String modifierType) {
+	private void processBeyondModifierSet(List<Modifier> mods, CharacterSheet sheet, String modifierType, DndBeyondSheet character) {
 		LOGGER.debug("Processing "+ modifierType + " modifiers.");
 		for(Modifier mod : mods) {
 			LOGGER.debug("Modifier: " + mod.toString());
+			
+			if(modifierType.equalsIgnoreCase("Race") || 
+			   modifierType.equalsIgnoreCase("Class") || 
+			   modifierType.equalsIgnoreCase("Feat")) {
+				
+				Feature feat = getFeatureFromModifier(mod, character);
+				if(feat != null) features.add(feat);
+			}
+			
 			if(mod.getType().equalsIgnoreCase(DndBeyondConstants.BONUS)) {
 				switch(mod.getSubType()) {
 					case DndBeyondConstants.STRENGTH_SCORE:

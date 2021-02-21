@@ -13,6 +13,7 @@ import com.patrickborrelli.dndiscord.utilities.ResetType;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Feature {
 
+	
 	private FeatureType type;
 	private int displayOrder;
 	private String name;
@@ -32,6 +33,9 @@ public class Feature {
 	private boolean hideInSheet;
 	private String source;
 	private int sourcePageNumber;
+	private String optionName;
+	private String optionDescription;
+	private String optionSnippet;
 	
 	public Feature() {
 		
@@ -303,9 +307,160 @@ public class Feature {
 		this.sourcePageNumber = sourcePageNumber;
 	}
 
+	/**
+	 * @return String the optionName
+	 */
+	public String getOptionName() {
+		return optionName;
+	}
+
+	/**
+	 * @param optionName String the optionName to set
+	 */
+	public void setOptionName(String optionName) {
+		this.optionName = optionName;
+	}
+
+	/**
+	 * @return String the optionDescription
+	 */
+	public String getOptionDescription() {
+		return optionDescription;
+	}
+
+	/**
+	 * @param optionDescription String the optionDescription to set
+	 */
+	public void setOptionDescription(String optionDescription) {
+		this.optionDescription = optionDescription;
+	}
+
+	/**
+	 * @return String the optionSnippet
+	 */
+	public String getOptionSnippet() {
+		return optionSnippet;
+	}
+
+	/**
+	 * @param optionSnippet String the optionSnippet to set
+	 */
+	public void setOptionSnippet(String optionSnippet) {
+		this.optionSnippet = optionSnippet;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((activationType == null) ? 0 : activationType.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + displayOrder;
+		result = prime * result + duration;
+		result = prime * result + (hideInSheet ? 1231 : 1237);
+		result = prime * result + (isSubClassFeature ? 1231 : 1237);
+		result = prime * result + limitedUseMaxNumberConsumed;
+		result = prime * result + limitedUseMaxUses;
+		result = prime * result + limitedUseMinNumberConsumed;
+		result = prime * result + limitedUseNumberUsed;
+		result = prime * result + limitedUseOperator;
+		result = prime * result + ((limitedUseResetType == null) ? 0 : limitedUseResetType.hashCode());
+		result = prime * result + ((multiClassDescription == null) ? 0 : multiClassDescription.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((optionDescription == null) ? 0 : optionDescription.hashCode());
+		result = prime * result + ((optionName == null) ? 0 : optionName.hashCode());
+		result = prime * result + ((optionSnippet == null) ? 0 : optionSnippet.hashCode());
+		result = prime * result + requiredLevel;
+		result = prime * result + ((snippet == null) ? 0 : snippet.hashCode());
+		result = prime * result + ((source == null) ? 0 : source.hashCode());
+		result = prime * result + sourcePageNumber;
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Feature other = (Feature) obj;
+		if (activationType != other.activationType)
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (displayOrder != other.displayOrder)
+			return false;
+		if (duration != other.duration)
+			return false;
+		if (hideInSheet != other.hideInSheet)
+			return false;
+		if (isSubClassFeature != other.isSubClassFeature)
+			return false;
+		if (limitedUseMaxNumberConsumed != other.limitedUseMaxNumberConsumed)
+			return false;
+		if (limitedUseMaxUses != other.limitedUseMaxUses)
+			return false;
+		if (limitedUseMinNumberConsumed != other.limitedUseMinNumberConsumed)
+			return false;
+		if (limitedUseNumberUsed != other.limitedUseNumberUsed)
+			return false;
+		if (limitedUseOperator != other.limitedUseOperator)
+			return false;
+		if (limitedUseResetType != other.limitedUseResetType)
+			return false;
+		if (multiClassDescription == null) {
+			if (other.multiClassDescription != null)
+				return false;
+		} else if (!multiClassDescription.equals(other.multiClassDescription))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (optionDescription == null) {
+			if (other.optionDescription != null)
+				return false;
+		} else if (!optionDescription.equals(other.optionDescription))
+			return false;
+		if (optionName == null) {
+			if (other.optionName != null)
+				return false;
+		} else if (!optionName.equals(other.optionName))
+			return false;
+		if (optionSnippet == null) {
+			if (other.optionSnippet != null)
+				return false;
+		} else if (!optionSnippet.equals(other.optionSnippet))
+			return false;
+		if (requiredLevel != other.requiredLevel)
+			return false;
+		if (snippet == null) {
+			if (other.snippet != null)
+				return false;
+		} else if (!snippet.equals(other.snippet))
+			return false;
+		if (source == null) {
+			if (other.source != null)
+				return false;
+		} else if (!source.equals(other.source))
+			return false;
+		if (sourcePageNumber != other.sourcePageNumber)
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
+	}
+
 	@Override
 	public String toString() {
-		return "Feature [type=" + type.toString() + ", displayOrder=" + displayOrder + ", name=" + name + ", description="
+		return "Feature [type=" + type + ", displayOrder=" + displayOrder + ", name=" + name + ", description="
 				+ description + ", snippet=" + snippet + ", activationType=" + activationType + ", duration=" + duration
 				+ ", multiClassDescription=" + multiClassDescription + ", requiredLevel=" + requiredLevel
 				+ ", isSubClassFeature=" + isSubClassFeature + ", limitedUseResetType=" + limitedUseResetType
@@ -313,6 +468,7 @@ public class Feature {
 				+ limitedUseMinNumberConsumed + ", limitedUseMaxNumberConsumed=" + limitedUseMaxNumberConsumed
 				+ ", limitedUseMaxUses=" + limitedUseMaxUses + ", limitedUseOperator=" + limitedUseOperator
 				+ ", hideInSheet=" + hideInSheet + ", source=" + source + ", sourcePageNumber=" + sourcePageNumber
-				+ "]";
+				+ ", optionName=" + optionName + ", optionDescription=" + optionDescription + ", optionSnippet="
+				+ optionSnippet + "]";
 	}
 }

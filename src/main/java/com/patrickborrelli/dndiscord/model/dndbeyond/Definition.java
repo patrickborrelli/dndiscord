@@ -26,6 +26,7 @@ public 	class Definition {
     private int sourceId;
     private int sourcePageNumber;
     private String[] creatureRules;
+    private LimitedUse[] limitedUse;
     
     public Definition() {
     	
@@ -227,12 +228,28 @@ public 	class Definition {
 		this.creatureRules = creatureRules;
 	}
 
+	/**
+	 * @return LimitedUse[] the limitedUse
+	 */
+	public LimitedUse[] getLimitedUse() {
+		return limitedUse;
+	}
+
+	/**
+	 * @param limitedUse LimitedUse[] the limitedUse to set
+	 */
+	public void setLimitedUse(LimitedUse[] limitedUse) {
+		this.limitedUse = limitedUse;
+	}
+
 	@Override
 	public String toString() {
 		return "Definition [id=" + id + ", entityTypeId=" + entityTypeId + ", displayOrder=" + displayOrder + ", name="
 				+ name + ", description=" + description + ", snippet=" + snippet + ", activation=" + activation
 				+ ", requiredLevel=" + requiredLevel + ", isSubClassFeature=" + isSubClassFeature + ", hideInBuilder="
 				+ hideInBuilder + ", hideInSheet=" + hideInSheet + ", sourceId=" + sourceId + ", sourcePageNumber="
-				+ sourcePageNumber + ", creatureRules=" + Arrays.toString(creatureRules) + "]";
+				+ sourcePageNumber + ", creatureRules=" + Arrays.toString(creatureRules) + ", limitedUse="
+				+ Arrays.toString(limitedUse) + "]";
 	}
+
 }

@@ -9,7 +9,7 @@ import java.util.HashMap;
  */
 public enum FeatureType {
 	
-	CLASS("Class"),
+	CLASS_TYPE("Class"),
 	RACE("Race"),
 	SUBCLASS("Subclass"),
 	BACKGROUND("Background"),
@@ -21,11 +21,11 @@ public enum FeatureType {
 	static {
 		valuesMap = 
 			new HashMap<String, FeatureType>(FeatureType.values().length);
-		valuesMap.put("Class", CLASS);
-		valuesMap.put("Race", RACE);
-		valuesMap.put("Subclass", SUBCLASS);
-		valuesMap.put("Background", BACKGROUND);
-		valuesMap.put("Feat", FEAT);
+		valuesMap.put("class", CLASS_TYPE);
+		valuesMap.put("race", RACE);
+		valuesMap.put("subclass", SUBCLASS);
+		valuesMap.put("background", BACKGROUND);
+		valuesMap.put("feat", FEAT);
 	}
 	
 	private FeatureType(String theValue) {

@@ -24,6 +24,7 @@ public class Modifier {
 	private String friendlySubtypeName;
 	private boolean isGranted;
 	private int value;
+	private int componentId;
 	
 	public Modifier() {
 		
@@ -225,6 +226,20 @@ public class Modifier {
 		this.value = value;
 	}
 
+	/**
+	 * @return int the componentId
+	 */
+	public int getComponentId() {
+		return componentId;
+	}
+
+	/**
+	 * @param componentId int the componentId to set
+	 */
+	public void setComponentId(int componentId) {
+		this.componentId = componentId;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -325,7 +340,7 @@ public class Modifier {
 				+ ", subType=" + subType + ", dice=" + dice + ", restriction=" + restriction + ", statId=" + statId
 				+ ", requiresAttunement=" + requiresAttunement + ", duration=" + duration + ", friendlyTypeName="
 				+ friendlyTypeName + ", friendlySubtypeName=" + friendlySubtypeName + ", isGranted=" + isGranted
-				+ ", value=" + value + "]";
+				+ ", value=" + value + ", componentId=" + componentId + "]";
 	}
 	
 }

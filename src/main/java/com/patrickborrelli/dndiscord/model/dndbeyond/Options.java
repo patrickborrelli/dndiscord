@@ -1,6 +1,6 @@
 package com.patrickborrelli.dndiscord.model.dndbeyond;
 
-import java.util.Arrays;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,60 +14,60 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Options {
 
-	private Option[] race;
+	private List<Option> race;
 	@JsonProperty("class")
-	private Option[] classOptions;
-	private Option[] feat;
+	private List<Option> classOptions;
+	private List<Option> feat;
 	
 	public Options() {
 		
 	}
 
 	/**
-	 * @return Option[] the race
+	 * @return List<Option> the race
 	 */
-	public Option[] getRace() {
+	public List<Option> getRace() {
 		return race;
 	}
 
 	/**
-	 * @param race Option[] the race to set
+	 * @param race List<Option> the race to set
 	 */
-	public void setRace(Option[] race) {
+	public void setRace(List<Option> race) {
 		this.race = race;
 	}
 
 	/**
-	 * @return Option[] the classOptions
+	 * @return List<Option> the classOptions
 	 */
-	public Option[] getClassOptions() {
+	public List<Option> getClassOptions() {
 		return classOptions;
 	}
 
 	/**
-	 * @param classOptions Option[] the classOptions to set
+	 * @param classOptions List<Option> the classOptions to set
 	 */
-	public void setClassOptions(Option[] classOptions) {
+	public void setClassOptions(List<Option> classOptions) {
 		this.classOptions = classOptions;
 	}
 
 	/**
-	 * @return Option[] the feat
+	 * @return List<Option> the feat
 	 */
-	public Option[] getFeat() {
+	public List<Option> getFeat() {
 		return feat;
 	}
 
 	/**
-	 * @param feat Option[] the feat to set
+	 * @param feat List<Option> the feat to set
 	 */
-	public void setFeat(Option[] feat) {
+	public void setFeat(List<Option> feat) {
 		this.feat = feat;
 	}
 
 	@Override
 	public String toString() {
-		return "Options [race=" + Arrays.toString(race) + ", classOptions=" + Arrays.toString(classOptions) + ", feat="
-				+ Arrays.toString(feat) + "]";
+		return "Options [race=" + race + ", classOptions=" + classOptions + ", feat=" + feat + "]";
 	}
+	
 }

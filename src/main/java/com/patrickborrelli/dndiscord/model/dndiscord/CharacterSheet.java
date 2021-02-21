@@ -1,6 +1,7 @@
 package com.patrickborrelli.dndiscord.model.dndiscord;
 
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
@@ -155,7 +156,7 @@ public class CharacterSheet {
 	private int currentHitPoints;
 	private int temporaryHitPoints;
 	
-	private List<Feature> features;
+	private Set<Feature> features;
 	
 	//attacks and actions:
 	private int attackCount;
@@ -1987,14 +1988,14 @@ public class CharacterSheet {
 	/**
 	 * @return the features
 	 */
-	public List<Feature> getFeatures() {
+	public Set<Feature> getFeatures() {
 		return features;
 	}
 
 	/**
 	 * @param features the features to set
 	 */
-	public void setFeatures(List<Feature> features) {
+	public void setFeatures(Set<Feature> features) {
 		this.features = features;
 	}
 
@@ -2095,7 +2096,8 @@ public class CharacterSheet {
 				+ ", flySpeed=" + flySpeed + ", burrowSpeed=" + burrowSpeed + ", swimSpeed=" + swimSpeed
 				+ ", climbSpeed=" + climbSpeed + ", characterClasses=" + characterClasses + ", totalLevel=" + totalLevel
 				+ ", maxHitPoints=" + maxHitPoints + ", currentHitPoints=" + currentHitPoints + ", temporaryHitPoints="
-				+ temporaryHitPoints + ", attackCount=" + attackCount + ", attacksUsed=" + attacksUsed + ", attacks=" + attacks + "]";
+				+ temporaryHitPoints + ", features=" + features + ", attackCount=" + attackCount + ", attacksUsed="
+				+ attacksUsed + ", attacks=" + attacks + "]";
 	}
 
 }
