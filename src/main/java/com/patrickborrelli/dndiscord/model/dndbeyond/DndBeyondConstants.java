@@ -45,6 +45,9 @@ public class DndBeyondConstants {
 	public static final String STEALTH = "stealth";
 	public static final String SURVIVAL = "survival";
 	
+	//TODO: to be implemented when attack model is in place:
+	public static final String RANGED_WEAPON_ATTACKS = "ranged-weapon-attacks";
+	
 	
 	public DndBeyondConstants() {
 		
