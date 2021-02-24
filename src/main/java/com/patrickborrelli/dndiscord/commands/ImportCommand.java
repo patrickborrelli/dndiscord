@@ -21,6 +21,7 @@ import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Activation;
+import com.patrickborrelli.dndiscord.model.dndbeyond.Background;
 import com.patrickborrelli.dndiscord.model.dndbeyond.ClassFeature;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondCharacterClass;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondConstants;
@@ -254,12 +255,18 @@ public class ImportCommand implements CommandExecutor {
 	
 	private FeatureType getFeatureType(String mod) {
 		FeatureType type = null;
-		if(mod.contains("class")) {
-			type = FeatureType.getEnum("class");
-		} else if(mod.contains("racial")) {
-			type = FeatureType.getEnum("race");
-		} else if(mod.contains("feat")) {
-			type = FeatureType.getEnum("feat");
+		if(mod.contains(DndBeyondConstants.CLASS_OPTION)) {
+			type = FeatureType.CLASS_OPTION;
+		} else if(mod.contains(DndBeyondConstants.RACIAL_TRAIT)) {
+			type = FeatureType.RACE;
+		} else if(mod.contains(DndBeyondConstants.FEAT)) {
+			type = FeatureType.FEAT;
+		} else if(mod.contains(DndBeyondConstants.CLASS_FEATURE)) {
+			type = FeatureType.CLASS_FEATURE;
+		} else if(mod.contains(DndBeyondConstants.BACKGROUND_FEATURE)) {
+			type = FeatureType.BACKGROUND;
+		} else if(mod.contains(DndBeyondConstants.ITEM_FEATURE)) {
+			type = FeatureType.ITEM;
 		}
 			
 		return type;
@@ -267,12 +274,12 @@ public class ImportCommand implements CommandExecutor {
 	
 	private Feature getFeatureFromModifier(Modifier mod, DndBeyondSheet character) {
 		Feature feat = null;
-		Option opt = null;
 		FeatureType type = getFeatureType(mod.getId());
 		if(type != null) {
 			switch(type) {
-				case CLASS_TYPE:
-					opt = character.getClassOption(mod.getComponentId());
+			
+				case CLASS_OPTION:
+					Option opt = character.getClassOption(mod.getComponentId());
 					if(null != opt) {
 						feat = new Feature();
 						feat.setType(type);
@@ -308,6 +315,39 @@ public class ImportCommand implements CommandExecutor {
 							feat.setSourcePageNumber(myFeature.getDefinition().getSourcePageNumber());						
 						}
 					}					
+					break;
+					
+				case CLASS_FEATURE:
+					ClassFeature myFeature = character.getClassFeatureById(mod.getComponentId());						
+					if(myFeature != null) {
+						feat = new Feature();
+						feat.setType(type);
+						Activation act = myFeature.getDefinition().getActivation();
+						if(act != null) {
+							String actType = act.getActivationType();
+							String actTime = act.getActivationTime();
+							if(actType != null) feat.setActivationType(ActivationType.getEnum(Integer.parseInt(actType)));
+							if(actTime != null) feat.setDuration(Integer.parseInt(actTime));
+						}						
+						feat.setDisplayOrder(myFeature.getDefinition().getDisplayOrder());
+						feat.setName(myFeature.getDefinition().getName());
+						feat.setDescription(myFeature.getDefinition().getDescription());
+						feat.setSnippet(myFeature.getDefinition().getSnippet());
+						feat.setRequiredLevel(myFeature.getDefinition().getRequiredLevel());
+						feat.setSubClassFeature(myFeature.getDefinition().isSubClassFeature());
+						LimitedUse[] limUses = myFeature.getDefinition().getLimitedUse();
+						if(limUses != null && limUses.length > 0) {
+							feat.setLimitedUseResetType(ResetType.getEnum(Integer.parseInt(limUses[0].getResetType())));
+							feat.setLimitedUseNumberUsed(limUses[0].getNumberUsed());
+							feat.setLimitedUseMinNumberConsumed(limUses[0].getMinNumberConsumed());
+							feat.setLimitedUseMaxNumberConsumed(limUses[0].getMaxNumberConsumed());
+							feat.setLimitedUseMaxUses(limUses[0].getMaxUses());
+							feat.setLimitedUseOperator(limUses[0].getOperator());
+						}
+						feat.setHideInSheet(myFeature.getDefinition().isHideInSheet());
+						feat.setSource(Integer.toString(myFeature.getDefinition().getSourceId()));
+						feat.setSourcePageNumber(myFeature.getDefinition().getSourcePageNumber());						
+					}
 					break;
 					
 				case RACE:
@@ -376,6 +416,23 @@ public class ImportCommand implements CommandExecutor {
 					}			
 					break;
 					
+				case BACKGROUND:
+					Background background = character.getBackground();
+					if(background != null) {
+						feat = new Feature();
+						feat.setType(type);
+						feat.setDisplayOrder(1);
+						feat.setName(background.getDefinition().getName());
+						feat.setDescription(background.getDefinition().getDescription());
+						feat.setSnippet(background.getDefinition().getSnippet());
+						feat.setHideInSheet(false);
+						feat.setFeatureDescription(background.getDefinition().getFeatureDescription());
+						feat.setFeatureName(background.getDefinition().getFeatureName());
+						feat.setShortDescription(background.getDefinition().getShortDescription());
+						feat.setSuggestedCharacteristicsDescription(background.getDefinition().getSuggestedCharacteristicsDescription());
+					}
+					break;
+					
 				default:
 					break;
 						
@@ -384,20 +441,13 @@ public class ImportCommand implements CommandExecutor {
 		return feat;
 	}
 	
-	//TODO: make modification here to add full features when going through modifiers:
-	//i.e., tie modifier to option and then to features for name
 	private void processBeyondModifierSet(List<Modifier> mods, CharacterSheet sheet, String modifierType, DndBeyondSheet character) {
 		LOGGER.debug("Processing "+ modifierType + " modifiers.");
 		for(Modifier mod : mods) {
 			LOGGER.debug("Modifier: " + mod.toString());
 			
-			if(modifierType.equalsIgnoreCase("Race") || 
-			   modifierType.equalsIgnoreCase("Class") || 
-			   modifierType.equalsIgnoreCase("Feat")) {
-				
-				Feature feat = getFeatureFromModifier(mod, character);
-				if(feat != null) features.add(feat);
-			}
+			Feature feat = getFeatureFromModifier(mod, character);
+			if(feat != null) features.add(feat);
 			
 			if(mod.getType().equalsIgnoreCase(DndBeyondConstants.BONUS)) {
 				switch(mod.getSubType()) {

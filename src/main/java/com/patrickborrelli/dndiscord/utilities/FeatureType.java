@@ -3,16 +3,18 @@ package com.patrickborrelli.dndiscord.utilities;
 import java.util.HashMap;
 
 /**
- * Enumerated type used to indicate character sheet source.
+ * Enumerated type used to indicate specific type of a feature.
  * 
  * @author Patrick Borrelli
  */
 public enum FeatureType {
 	
-	CLASS_TYPE("Class"),
+	CLASS_FEATURE("Class"),
+	CLASS_OPTION("Option"),
 	RACE("Race"),
 	SUBCLASS("Subclass"),
 	BACKGROUND("Background"),
+	ITEM("Item"),
 	FEAT("Feat");	
 	
 	private String value;
@@ -21,10 +23,12 @@ public enum FeatureType {
 	static {
 		valuesMap = 
 			new HashMap<String, FeatureType>(FeatureType.values().length);
-		valuesMap.put("class", CLASS_TYPE);
+		valuesMap.put("class", CLASS_FEATURE);
+		valuesMap.put("option", CLASS_OPTION);
 		valuesMap.put("race", RACE);
 		valuesMap.put("subclass", SUBCLASS);
 		valuesMap.put("background", BACKGROUND);
+		valuesMap.put("item", ITEM);
 		valuesMap.put("feat", FEAT);
 	}
 	

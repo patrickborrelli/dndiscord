@@ -12,7 +12,6 @@ import com.patrickborrelli.dndiscord.utilities.ResetType;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Feature {
-
 	
 	private FeatureType type;
 	private int displayOrder;
@@ -36,6 +35,10 @@ public class Feature {
 	private String optionName;
 	private String optionDescription;
 	private String optionSnippet;
+	private String featureName;
+	private String featureDescription;
+	private String shortDescription;
+	private String suggestedCharacteristicsDescription;
 	
 	public Feature() {
 		
@@ -349,6 +352,62 @@ public class Feature {
 		this.optionSnippet = optionSnippet;
 	}
 	
+	/**
+	 * @return the featureName
+	 */
+	public String getFeatureName() {
+		return featureName;
+	}
+
+	/**
+	 * @param featureName the featureName to set
+	 */
+	public void setFeatureName(String featureName) {
+		this.featureName = featureName;
+	}
+
+	/**
+	 * @return the featureDescription
+	 */
+	public String getFeatureDescription() {
+		return featureDescription;
+	}
+
+	/**
+	 * @param featureDescription the featureDescription to set
+	 */
+	public void setFeatureDescription(String featureDescription) {
+		this.featureDescription = featureDescription;
+	}
+
+	/**
+	 * @return the shortDescription
+	 */
+	public String getShortDescription() {
+		return shortDescription;
+	}
+
+	/**
+	 * @param shortDescription the shortDescription to set
+	 */
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
+	}
+
+	/**
+	 * @return the suggestedCharacteristicsDescription
+	 */
+	public String getSuggestedCharacteristicsDescription() {
+		return suggestedCharacteristicsDescription;
+	}
+
+	/**
+	 * @param suggestedCharacteristicsDescription the suggestedCharacteristicsDescription to set
+	 */
+	public void setSuggestedCharacteristicsDescription(String suggestedCharacteristicsDescription) {
+		this.suggestedCharacteristicsDescription = suggestedCharacteristicsDescription;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -357,6 +416,8 @@ public class Feature {
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + displayOrder;
 		result = prime * result + duration;
+		result = prime * result + ((featureDescription == null) ? 0 : featureDescription.hashCode());
+		result = prime * result + ((featureName == null) ? 0 : featureName.hashCode());
 		result = prime * result + (hideInSheet ? 1231 : 1237);
 		result = prime * result + (isSubClassFeature ? 1231 : 1237);
 		result = prime * result + limitedUseMaxNumberConsumed;
@@ -371,9 +432,12 @@ public class Feature {
 		result = prime * result + ((optionName == null) ? 0 : optionName.hashCode());
 		result = prime * result + ((optionSnippet == null) ? 0 : optionSnippet.hashCode());
 		result = prime * result + requiredLevel;
+		result = prime * result + ((shortDescription == null) ? 0 : shortDescription.hashCode());
 		result = prime * result + ((snippet == null) ? 0 : snippet.hashCode());
 		result = prime * result + ((source == null) ? 0 : source.hashCode());
 		result = prime * result + sourcePageNumber;
+		result = prime * result
+				+ ((suggestedCharacteristicsDescription == null) ? 0 : suggestedCharacteristicsDescription.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
@@ -397,6 +461,16 @@ public class Feature {
 		if (displayOrder != other.displayOrder)
 			return false;
 		if (duration != other.duration)
+			return false;
+		if (featureDescription == null) {
+			if (other.featureDescription != null)
+				return false;
+		} else if (!featureDescription.equals(other.featureDescription))
+			return false;
+		if (featureName == null) {
+			if (other.featureName != null)
+				return false;
+		} else if (!featureName.equals(other.featureName))
 			return false;
 		if (hideInSheet != other.hideInSheet)
 			return false;
@@ -441,6 +515,11 @@ public class Feature {
 			return false;
 		if (requiredLevel != other.requiredLevel)
 			return false;
+		if (shortDescription == null) {
+			if (other.shortDescription != null)
+				return false;
+		} else if (!shortDescription.equals(other.shortDescription))
+			return false;
 		if (snippet == null) {
 			if (other.snippet != null)
 				return false;
@@ -452,6 +531,11 @@ public class Feature {
 		} else if (!source.equals(other.source))
 			return false;
 		if (sourcePageNumber != other.sourcePageNumber)
+			return false;
+		if (suggestedCharacteristicsDescription == null) {
+			if (other.suggestedCharacteristicsDescription != null)
+				return false;
+		} else if (!suggestedCharacteristicsDescription.equals(other.suggestedCharacteristicsDescription))
 			return false;
 		if (type != other.type)
 			return false;
@@ -469,6 +553,8 @@ public class Feature {
 				+ ", limitedUseMaxUses=" + limitedUseMaxUses + ", limitedUseOperator=" + limitedUseOperator
 				+ ", hideInSheet=" + hideInSheet + ", source=" + source + ", sourcePageNumber=" + sourcePageNumber
 				+ ", optionName=" + optionName + ", optionDescription=" + optionDescription + ", optionSnippet="
-				+ optionSnippet + "]";
+				+ optionSnippet + ", featureName=" + featureName + ", featureDescription=" + featureDescription
+				+ ", shortDescription=" + shortDescription + ", suggestedCharacteristicsDescription="
+				+ suggestedCharacteristicsDescription + "]";
 	}
 }

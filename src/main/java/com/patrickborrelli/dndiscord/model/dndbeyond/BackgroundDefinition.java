@@ -36,6 +36,7 @@ public class BackgroundDefinition {
 	private Ideal[] ideals;
 	private Bond[] bonds;
 	private Flaw[] flaws;
+	private String suggestedCharacteristicsDescription;
 	
 	public BackgroundDefinition() {
 		
@@ -377,6 +378,20 @@ public class BackgroundDefinition {
 		this.flaws = flaws;
 	}
 
+	/**
+	 * @return the suggestedCharacteristicsDescription
+	 */
+	public String getSuggestedCharacteristicsDescription() {
+		return suggestedCharacteristicsDescription;
+	}
+
+	/**
+	 * @param suggestedCharacteristicsDescription the suggestedCharacteristicsDescription to set
+	 */
+	public void setSuggestedCharacteristicsDescription(String suggestedCharacteristicsDescription) {
+		this.suggestedCharacteristicsDescription = suggestedCharacteristicsDescription;
+	}
+
 	@Override
 	public String toString() {
 		return "BackgroundDefinition [id=" + id + ", entityType=" + entityType + ", name=" + name + ", description="
@@ -390,6 +405,7 @@ public class BackgroundDefinition {
 				+ ", contractsDescription=" + contractsDescription + ", spellsPreDescription=" + spellsPreDescription
 				+ ", spellsPostDescription=" + spellsPostDescription + ", personalityTraits="
 				+ Arrays.toString(personalityTraits) + ", ideals=" + Arrays.toString(ideals) + ", bonds="
-				+ Arrays.toString(bonds) + ", flaws=" + Arrays.toString(flaws) + "]";
+				+ Arrays.toString(bonds) + ", flaws=" + Arrays.toString(flaws)
+				+ ", suggestedCharacteristicsDescription=" + suggestedCharacteristicsDescription + "]";
 	}
 }

@@ -2,6 +2,15 @@ package com.patrickborrelli.dndiscord.model.dndbeyond;
 
 public class DndBeyondConstants {
 
+	//feature classes:
+	public static final String CLASS_FEATURE = "classFeature_";
+	public static final String CLASS_OPTION = "classFeatureOption_";
+	public static final String BACKGROUND_FEATURE = "background_";
+	public static final String RACIAL_TRAIT = "racialTrait_";
+	public static final String ITEM_FEATURE = "gear_";
+	public static final String FEAT = "feat_";
+	
+	//types:
 	public static final String DARKVISION = "darkvision";
 	public static final String PROFICIENCY = "proficiency";
 	public static final String EXPERTISE = "expertise";
