@@ -27,6 +27,7 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondCharacterClass;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondConstants;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Feat;
+import com.patrickborrelli.dndiscord.model.dndbeyond.Item;
 import com.patrickborrelli.dndiscord.model.dndbeyond.LimitedUse;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Modifier;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Option;
@@ -144,6 +145,7 @@ public class ImportCommand implements CommandExecutor {
 			applyAbilityScoreMods(sheet);
 			applySavingThrowMods(sheet);
 			applySkillMods(sheet);
+			processInventory(sheet, character);
 			sheet.setMaxHitPoints(character.getBaseHitPoints() + (sheet.getTotalLevel() * sheet.getConstitutionMod()));
 			sheet.setCurrentHitPoints(sheet.getMaxHitPoints() - character.getRemovedHitPoints());
 			sheet.setTemporaryHitPoints(character.getTemporaryHitPoints());	
@@ -151,6 +153,11 @@ public class ImportCommand implements CommandExecutor {
 		}
 		LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
+	}
+	
+	private void processInventory(CharacterSheet sheet, DndBeyondSheet character) {
+		Item[] currentInv = character.getInventory();
+		LOGGER.debug("INVENTORY: "+ Arrays.toString(currentInv));
 	}
 	
 	private void applySkillMods(CharacterSheet sheet) {

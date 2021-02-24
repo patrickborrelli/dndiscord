@@ -39,8 +39,10 @@ public class CharacterSheet {
 	private int electrumPieces;
 	private int goldPieces;
 	private int platinumPieces;
+	private int proficiencyBonus;
+	private int effectiveArmorClass;
 	
-	//Ability Scores:
+	//Ability Scores and modifiers:
 	private int baseStrength;
 	private int baseDexterity;
 	private int baseConstitution;
@@ -66,7 +68,7 @@ public class CharacterSheet {
 	private int wisdomMod;
 	private int charismaMod;	
 	
-	//saving throws:
+	//saving throws and proficiencies:
 	private int strengthSave;
 	private int dexteritySave;
 	private int constitutionSave;
@@ -156,6 +158,7 @@ public class CharacterSheet {
 	private int currentHitPoints;
 	private int temporaryHitPoints;
 	
+	//Documented features:
 	private Set<Feature> features;
 	
 	//attacks and actions:
@@ -515,6 +518,34 @@ public class CharacterSheet {
 	 */
 	public void setPlatinumPieces(int platinumPieces) {
 		this.platinumPieces = platinumPieces;
+	}
+
+	/**
+	 * @return the proficiencyBonus
+	 */
+	public int getProficiencyBonus() {
+		return proficiencyBonus;
+	}
+
+	/**
+	 * @param proficiencyBonus the proficiencyBonus to set
+	 */
+	public void setProficiencyBonus(int proficiencyBonus) {
+		this.proficiencyBonus = proficiencyBonus;
+	}
+
+	/**
+	 * @return the effectiveArmorClass
+	 */
+	public int getEffectiveArmorClass() {
+		return effectiveArmorClass;
+	}
+
+	/**
+	 * @param effectiveArmorClass the effectiveArmorClass to set
+	 */
+	public void setEffectiveArmorClass(int effectiveArmorClass) {
+		this.effectiveArmorClass = effectiveArmorClass;
 	}
 
 	/**
@@ -2050,7 +2081,8 @@ public class CharacterSheet {
 				+ ", personalityTraits=" + personalityTraits + ", ideals=" + ideals + ", bonds=" + bonds + ", flaws="
 				+ flaws + ", appearance=" + appearance + ", copperPieces=" + copperPieces + ", silverPieces="
 				+ silverPieces + ", electrumPieces=" + electrumPieces + ", goldPieces=" + goldPieces
-				+ ", platinumPieces=" + platinumPieces + ", baseStrength=" + baseStrength + ", baseDexterity="
+				+ ", platinumPieces=" + platinumPieces + ", proficiencyBonus=" + proficiencyBonus
+				+ ", effectiveArmorClass=" + effectiveArmorClass + ", baseStrength=" + baseStrength + ", baseDexterity="
 				+ baseDexterity + ", baseConstitution=" + baseConstitution + ", baseIntelligence=" + baseIntelligence
 				+ ", baseWisdom=" + baseWisdom + ", baseCharisma=" + baseCharisma + ", strengthBonus=" + strengthBonus
 				+ ", dexterityBonus=" + dexterityBonus + ", constitutionBonus=" + constitutionBonus
