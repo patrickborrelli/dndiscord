@@ -27,7 +27,8 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondCharacterClass;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondConstants;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Feat;
-import com.patrickborrelli.dndiscord.model.dndbeyond.Item;
+import com.patrickborrelli.dndiscord.model.dndbeyond.ItemDefinition;
+import com.patrickborrelli.dndiscord.model.dndbeyond.ItemProperty;
 import com.patrickborrelli.dndiscord.model.dndbeyond.LimitedUse;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Modifier;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Option;
@@ -35,15 +36,20 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.RacialTrait;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Stat;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.dndiscord.Feature;
+import com.patrickborrelli.dndiscord.model.dndiscord.Item;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
 import com.patrickborrelli.dndiscord.utilities.ActivationType;
 import com.patrickborrelli.dndiscord.utilities.AlignmentType;
+import com.patrickborrelli.dndiscord.utilities.ArmorType;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
+import com.patrickborrelli.dndiscord.utilities.DamageType;
 import com.patrickborrelli.dndiscord.utilities.FeatureType;
+import com.patrickborrelli.dndiscord.utilities.FilterType;
 import com.patrickborrelli.dndiscord.utilities.LifestyleType;
 import com.patrickborrelli.dndiscord.utilities.ResetType;
 import com.patrickborrelli.dndiscord.utilities.RulesetUtil;
 import com.patrickborrelli.dndiscord.utilities.SheetSourceType;
+import com.patrickborrelli.dndiscord.utilities.WeaponPropertyType;
 
 /**
  * Command class provided to process all sheet import related
@@ -142,22 +148,113 @@ public class ImportCommand implements CommandExecutor {
 			setClasses(sheet, character);
 			convertBeyondStats(sheet, character);
 			processBeyondModifiers(sheet, character);	
-			applyAbilityScoreMods(sheet);
-			applySavingThrowMods(sheet);
-			applySkillMods(sheet);
 			processInventory(sheet, character);
 			sheet.setMaxHitPoints(character.getBaseHitPoints() + (sheet.getTotalLevel() * sheet.getConstitutionMod()));
 			sheet.setCurrentHitPoints(sheet.getMaxHitPoints() - character.getRemovedHitPoints());
 			sheet.setTemporaryHitPoints(character.getTemporaryHitPoints());	
 			sheet.setFeatures(features);
+			applyAbilityScoreMods(sheet);
+			applySavingThrowMods(sheet);
+			applySkillMods(sheet);
 		}
 		LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
 	}
 	
 	private void processInventory(CharacterSheet sheet, DndBeyondSheet character) {
-		Item[] currentInv = character.getInventory();
-		LOGGER.debug("INVENTORY: "+ Arrays.toString(currentInv));
+		List<Item> charInventory = new ArrayList<>();
+		Item charItem = null;
+		com.patrickborrelli.dndiscord.model.dndbeyond.Item[] currentInv = character.getInventory();
+		
+		//iterate through the inventory to be converted, converting each Item:
+		for(com.patrickborrelli.dndiscord.model.dndbeyond.Item item : Arrays.asList(currentInv)) {
+			charItem = new Item();
+			convertItem(item, charItem);
+			charInventory.add(charItem);
+		}
+		sheet.setInventory(charInventory);
+	}
+	
+	private void convertItem(com.patrickborrelli.dndiscord.model.dndbeyond.Item sourceItem, Item convertedItem) {
+		LOGGER.debug("Original Item: " + sourceItem.toString());
+		
+		ItemDefinition sourceDetail = sourceItem.getDefinition();
+		convertedItem.setName(sourceDetail.getName());
+		convertedItem.setDescription(sourceDetail.getDescription());
+		convertedItem.setSnippet(sourceDetail.getSnippet());
+		convertedItem.setQuantity(sourceItem.getQuantity());
+		convertedItem.setImageUrl(sourceDetail.getAvatarUrl());
+		convertedItem.setLargeImageUrl(sourceDetail.getLargeAvatarUrl());
+		convertedItem.setCost(sourceDetail.getCost());
+		convertedItem.setWeight(sourceDetail.getWeight());
+		convertedItem.setType(sourceDetail.getType());
+		convertedItem.setSubType(sourceDetail.getSubType());
+		convertedItem.setTags(sourceDetail.getTags());
+		convertedItem.setConsumable(sourceDetail.isConsumable());
+		convertedItem.setMonkWeapon(sourceDetail.isMonkWeapon());
+		convertedItem.setRequiresAttunement(sourceDetail.isCanAttune());
+		convertedItem.setAttuned(sourceItem.isAttuned());
+		convertedItem.setEquipped(sourceItem.isEquipped());
+		convertedItem.setAttack(sourceItem.isDisplayAsAttack());
+		convertedItem.setStealthDisadvantage(sourceDetail.getStealthCheck() > 1);
+		convertedItem.setStrengthRequirement(sourceDetail.getStrengthRequirement() > 0);
+		convertedItem.setMagic(sourceDetail.isMagic());
+		convertedItem.setArmorClass(sourceDetail.getArmorClass());
+		convertedItem.setArmorType(ArmorType.getEnum(sourceDetail.getArmorTypeId()));
+		if(convertedItem.isStrengthRequirement()) {
+			convertedItem.setStrengthRequired(sourceDetail.getStrengthRequirement());
+		}
+		convertedItem.setDamageType(DamageType.getEnum(sourceDetail.getDamageType()));
+		if(sourceDetail.getDamage() != null) {
+			convertedItem.setDieCount(sourceDetail.getDamage().getDiceCount());
+			convertedItem.setDieValue(sourceDetail.getDamage().getDiceValue());
+			convertedItem.setDieMultiplier(sourceDetail.getDamage().getDiceMultiplier());
+			convertedItem.setDiceString(sourceDetail.getDamage().getDiceString());
+			convertedItem.setFixedDamage(sourceDetail.getDamage().getFixedValue());
+		}
+		convertedItem.setFilterType(FilterType.getEnum(sourceDetail.getFilterType()));
+		convertedItem.setRange(sourceDetail.getRange());
+		convertedItem.setLongRange(sourceDetail.getLongRange());
+		if(sourceDetail.getProperties() != null) {
+			convertedItem.setProperties(convertWeaponProperties(sourceDetail.getProperties()));
+			if(convertedItem.getProperties().contains(WeaponPropertyType.VERSATILE)) {
+				ItemProperty[] props = sourceDetail.getProperties();
+				for(int i = 0; i < props.length; i++) {
+					if(props[i].getId() == WeaponPropertyType.VERSATILE.getValue()) {
+						convertedItem.setVersatileDiceString(props[i].getNotes());
+					}
+				}
+			}
+		}
+		if(sourceItem.getLimitedUse() != null) {
+			convertedItem.setMaxUses(sourceItem.getLimitedUse().getMaxUses());
+			convertedItem.setNumberUsed(sourceItem.getLimitedUse().getNumberUsed());
+			convertedItem.setResetType(ResetType.getEnum(sourceItem.getLimitedUse().getResetType()));
+			convertedItem.setResetTypeDescription(sourceItem.getLimitedUse().getResetTypeDescription());
+		}		
+		if(sourceDetail.getWeaponBehaviors() != null && sourceDetail.getWeaponBehaviors().length > 0) {
+			convertedItem.setAttack(true);
+			convertedItem.setProperties(convertWeaponProperties(sourceDetail.getWeaponBehaviors()[0].getProperties()));
+			convertedItem.setDieCount(sourceDetail.getWeaponBehaviors()[0].getDamage().getDiceCount());
+			convertedItem.setDieValue(sourceDetail.getWeaponBehaviors()[0].getDamage().getDiceValue());
+			convertedItem.setDieMultiplier(sourceDetail.getWeaponBehaviors()[0].getDamage().getDiceMultiplier());
+			convertedItem.setDiceString(sourceDetail.getWeaponBehaviors()[0].getDamage().getDiceString());
+			convertedItem.setFixedDamage(sourceDetail.getWeaponBehaviors()[0].getDamage().getFixedValue());
+			convertedItem.setDamageType(DamageType.getEnum(sourceDetail.getWeaponBehaviors()[0].getDamageType()));
+			convertedItem.setRange(sourceDetail.getWeaponBehaviors()[0].getRange());
+			convertedItem.setLongRange(sourceDetail.getWeaponBehaviors()[0].getLongRange());
+			convertedItem.setMonkWeapon(sourceDetail.getWeaponBehaviors()[0].isMonkWeapon());
+		}
+		LOGGER.debug("Converted Item: " + convertedItem.toString());
+	}
+	
+	private Set<WeaponPropertyType> convertWeaponProperties(ItemProperty[] props) {
+		Set<WeaponPropertyType> types = new HashSet<>();
+		
+		for(int i = 0; i < props.length; i++) {
+			types.add(WeaponPropertyType.getEnum(props[i].getId()));
+		}
+		return types;
 	}
 	
 	private void applySkillMods(CharacterSheet sheet) {
@@ -441,8 +538,7 @@ public class ImportCommand implements CommandExecutor {
 					break;
 					
 				default:
-					break;
-						
+					break;						
 			}
 		}		
 		return feat;

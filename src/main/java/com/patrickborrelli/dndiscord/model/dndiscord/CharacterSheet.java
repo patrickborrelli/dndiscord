@@ -161,6 +161,8 @@ public class CharacterSheet {
 	//Documented features:
 	private Set<Feature> features;
 	
+	private List<Item> inventory;
+	
 	//attacks and actions:
 	private int attackCount;
 	private int attacksUsed;
@@ -2031,6 +2033,20 @@ public class CharacterSheet {
 	}
 
 	/**
+	 * @return List<Item> the inventory
+	 */
+	public List<Item> getInventory() {
+		return inventory;
+	}
+
+	/**
+	 * @param inventory List<Item> the inventory to set
+	 */
+	public void setInventory(List<Item> inventory) {
+		this.inventory = inventory;
+	}
+
+	/**
 	 * @return the attackCount
 	 */
 	public int getAttackCount() {
@@ -2128,8 +2144,8 @@ public class CharacterSheet {
 				+ ", flySpeed=" + flySpeed + ", burrowSpeed=" + burrowSpeed + ", swimSpeed=" + swimSpeed
 				+ ", climbSpeed=" + climbSpeed + ", characterClasses=" + characterClasses + ", totalLevel=" + totalLevel
 				+ ", maxHitPoints=" + maxHitPoints + ", currentHitPoints=" + currentHitPoints + ", temporaryHitPoints="
-				+ temporaryHitPoints + ", features=" + features + ", attackCount=" + attackCount + ", attacksUsed="
-				+ attacksUsed + ", attacks=" + attacks + "]";
+				+ temporaryHitPoints + ", features=" + features + ", inventory=" + inventory + ", attackCount="
+				+ attackCount + ", attacksUsed=" + attacksUsed + ", attacks=" + attacks + "]";
 	}
 
 }

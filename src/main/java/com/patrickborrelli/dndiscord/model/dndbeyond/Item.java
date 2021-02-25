@@ -63,6 +63,9 @@ public class Item {
 	 */
 	public void setDefinition(ItemDefinition definition) {
 		this.definition = definition;
+		if(definition.getDamage() != null) {
+			displayAsAttack = true;
+		}
 	}
 
 	/**
