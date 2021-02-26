@@ -6,6 +6,8 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.patrickborrelli.dndiscord.utilities.ArmorType;
+import com.patrickborrelli.dndiscord.utilities.AttackType;
+import com.patrickborrelli.dndiscord.utilities.CategoryType;
 import com.patrickborrelli.dndiscord.utilities.DamageType;
 import com.patrickborrelli.dndiscord.utilities.FilterType;
 import com.patrickborrelli.dndiscord.utilities.ResetType;
@@ -58,7 +60,8 @@ public class Item {
 	private int versatileDieMultiplier;
 	private String versatileDiceString;
 	private int versatileFixedDamage;
-	private AttackType attackType
+	private AttackType attackType;
+	private CategoryType categoryType;
 
 	private FilterType filterType;
 	private List<Feature> grantedModifiers;
@@ -560,6 +563,34 @@ public class Item {
 	}
 
 	/**
+	 * @return the attackType
+	 */
+	public AttackType getAttackType() {
+		return attackType;
+	}
+
+	/**
+	 * @param attackType the attackType to set
+	 */
+	public void setAttackType(AttackType attackType) {
+		this.attackType = attackType;
+	}
+
+	/**
+	 * @return the categoryType
+	 */
+	public CategoryType getCategoryType() {
+		return categoryType;
+	}
+
+	/**
+	 * @param categoryType the categoryType to set
+	 */
+	public void setCategoryType(CategoryType categoryType) {
+		this.categoryType = categoryType;
+	}
+
+	/**
 	 * @return FilterType the filterType
 	 */
 	public FilterType getFilterType() {
@@ -692,7 +723,9 @@ public class Item {
 		result = prime * result + armorClass;
 		result = prime * result + ((armorType == null) ? 0 : armorType.hashCode());
 		result = prime * result + (attack ? 1231 : 1237);
+		result = prime * result + ((attackType == null) ? 0 : attackType.hashCode());
 		result = prime * result + (attuned ? 1231 : 1237);
+		result = prime * result + ((categoryType == null) ? 0 : categoryType.hashCode());
 		result = prime * result + Float.floatToIntBits(cost);
 		result = prime * result + ((damageType == null) ? 0 : damageType.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
@@ -750,7 +783,11 @@ public class Item {
 			return false;
 		if (attack != other.attack)
 			return false;
+		if (attackType != other.attackType)
+			return false;
 		if (attuned != other.attuned)
+			return false;
+		if (categoryType != other.categoryType)
 			return false;
 		if (Float.floatToIntBits(cost) != Float.floatToIntBits(other.cost))
 			return false;
@@ -882,9 +919,10 @@ public class Item {
 				+ ", dieMultiplier=" + dieMultiplier + ", diceString=" + diceString + ", fixedDamage=" + fixedDamage
 				+ ", versatileDieCount=" + versatileDieCount + ", versatileDieValue=" + versatileDieValue
 				+ ", versatileDieMultiplier=" + versatileDieMultiplier + ", versatileDiceString=" + versatileDiceString
-				+ ", versatileFixedDamage=" + versatileFixedDamage + ", filterType=" + filterType
-				+ ", grantedModifiers=" + grantedModifiers + ", range=" + range + ", longRange=" + longRange
-				+ ", properties=" + properties + ", maxUses=" + maxUses + ", numberUsed=" + numberUsed + ", resetType="
-				+ resetType + ", resetTypeDescription=" + resetTypeDescription + "]";
+				+ ", versatileFixedDamage=" + versatileFixedDamage + ", attackType=" + attackType + ", categoryType="
+				+ categoryType + ", filterType=" + filterType + ", grantedModifiers=" + grantedModifiers + ", range="
+				+ range + ", longRange=" + longRange + ", properties=" + properties + ", maxUses=" + maxUses
+				+ ", numberUsed=" + numberUsed + ", resetType=" + resetType + ", resetTypeDescription="
+				+ resetTypeDescription + "]";
 	}
 }

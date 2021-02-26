@@ -165,8 +165,7 @@ public class CharacterSheet {
 	
 	//attacks and actions:
 	private int attackCount;
-	private int attacksUsed;
-	private List<Attack> attacks;		
+	private int attacksUsed;	
 	
 	public CharacterSheet() {
 		
@@ -2074,20 +2073,6 @@ public class CharacterSheet {
 		this.attacksUsed = attacksUsed;
 	}
 
-	/**
-	 * @return the attacks
-	 */
-	public List<Attack> getAttacks() {
-		return attacks;
-	}
-
-	/**
-	 * @param attacks the attacks to set
-	 */
-	public void setAttacks(List<Attack> attacks) {
-		this.attacks = attacks;
-	}
-
 	@Override
 	public String toString() {
 		return "CharacterSheet [sheetSource=" + sheetSource + ", user=" + user + ", characterName=" + characterName
@@ -2145,7 +2130,7 @@ public class CharacterSheet {
 				+ ", climbSpeed=" + climbSpeed + ", characterClasses=" + characterClasses + ", totalLevel=" + totalLevel
 				+ ", maxHitPoints=" + maxHitPoints + ", currentHitPoints=" + currentHitPoints + ", temporaryHitPoints="
 				+ temporaryHitPoints + ", features=" + features + ", inventory=" + inventory + ", attackCount="
-				+ attackCount + ", attacksUsed=" + attacksUsed + ", attacks=" + attacks + "]";
+				+ attackCount + ", attacksUsed=" + attacksUsed + "]";
 	}
 
 }

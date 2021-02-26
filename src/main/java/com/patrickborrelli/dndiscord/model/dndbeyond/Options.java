@@ -12,56 +12,56 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Patrick Borrelli
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Options {
+public class Options<T> {
 
-	private List<Option> race;
+	private List<T> race;
 	@JsonProperty("class")
-	private List<Option> classOptions;
-	private List<Option> feat;
+	private List<T> classOptions;
+	private List<T> feat;
 	
 	public Options() {
 		
 	}
 
 	/**
-	 * @return List<Option> the race
+	 * @return List<T> the race
 	 */
-	public List<Option> getRace() {
+	public List<T> getRace() {
 		return race;
 	}
 
 	/**
-	 * @param race List<Option> the race to set
+	 * @param race List<T> the race to set
 	 */
-	public void setRace(List<Option> race) {
+	public void setRace(List<T> race) {
 		this.race = race;
 	}
 
 	/**
-	 * @return List<Option> the classOptions
+	 * @return List<T> the classOptions
 	 */
-	public List<Option> getClassOptions() {
+	public List<T> getClassOptions() {
 		return classOptions;
 	}
 
 	/**
-	 * @param classOptions List<Option> the classOptions to set
+	 * @param classOptions List<T> the classOptions to set
 	 */
-	public void setClassOptions(List<Option> classOptions) {
+	public void setClassOptions(List<T> classOptions) {
 		this.classOptions = classOptions;
 	}
 
 	/**
-	 * @return List<Option> the feat
+	 * @return List<T> the feat
 	 */
-	public List<Option> getFeat() {
+	public List<T> getFeat() {
 		return feat;
 	}
 
 	/**
-	 * @param feat List<Option> the feat to set
+	 * @param feat List<T> the feat to set
 	 */
-	public void setFeat(List<Option> feat) {
+	public void setFeat(List<T> feat) {
 		this.feat = feat;
 	}
 
