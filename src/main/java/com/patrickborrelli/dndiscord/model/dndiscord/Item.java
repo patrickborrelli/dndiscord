@@ -58,6 +58,7 @@ public class Item {
 	private int versatileDieMultiplier;
 	private String versatileDiceString;
 	private int versatileFixedDamage;
+	private AttackType attackType
 
 	private FilterType filterType;
 	private List<Feature> grantedModifiers;

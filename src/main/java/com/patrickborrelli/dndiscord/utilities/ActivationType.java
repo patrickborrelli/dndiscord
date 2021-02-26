@@ -9,8 +9,13 @@ import java.util.HashMap;
  */
 public enum ActivationType {
 	ACTION(1),
-	BONUS_ACTION(2),
-	REACTION(3);
+	NO_ACTION(2),
+	BONUS_ACTION(3),
+	REACTION(4),
+	MINUTE(6),
+	HOUR(7),
+	SPECIAL(8)
+	;
 	
 	
 	private Integer value;
@@ -21,14 +26,22 @@ public enum ActivationType {
 		valuesMap = 
 			new HashMap<Integer, ActivationType>(ActivationType.values().length);
 		valuesMap.put(1, ACTION);
-		valuesMap.put(2, BONUS_ACTION);
-		valuesMap.put(3, REACTION);
+		valuesMap.put(2, NO_ACTION);
+		valuesMap.put(3, BONUS_ACTION);
+		valuesMap.put(4, REACTION);
+		valuesMap.put(6, MINUTE);
+		valuesMap.put(7, HOUR);
+		valuesMap.put(8, SPECIAL);
 		
 		stringMap = 
 			new HashMap<ActivationType, String>(ActivationType.values().length);
 		stringMap.put(ACTION, "Action");
+		stringMap.put(NO_ACTION, "No action");
 		stringMap.put(BONUS_ACTION, "Bonus action");
 		stringMap.put(REACTION, "Reaction");
+		stringMap.put(MINUTE, "Minute");
+		stringMap.put(HOUR, "Hour");
+		stringMap.put(SPECIAL, "Special");
 	}
 	
 	private ActivationType(Integer theValue) {
