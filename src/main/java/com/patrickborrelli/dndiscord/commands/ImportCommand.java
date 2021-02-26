@@ -32,15 +32,19 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.ItemProperty;
 import com.patrickborrelli.dndiscord.model.dndbeyond.LimitedUse;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Modifier;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Option;
+import com.patrickborrelli.dndiscord.model.dndbeyond.Options;
 import com.patrickborrelli.dndiscord.model.dndbeyond.RacialTrait;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Stat;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.dndiscord.Feature;
 import com.patrickborrelli.dndiscord.model.dndiscord.Item;
+import com.patrickborrelli.dndiscord.model.dndiscord.Action;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
+import com.patrickborrelli.dndiscord.utilities.ActionType;
 import com.patrickborrelli.dndiscord.utilities.ActivationType;
 import com.patrickborrelli.dndiscord.utilities.AlignmentType;
 import com.patrickborrelli.dndiscord.utilities.ArmorType;
+import com.patrickborrelli.dndiscord.utilities.AttackSubtype;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 import com.patrickborrelli.dndiscord.utilities.DamageType;
 import com.patrickborrelli.dndiscord.utilities.FeatureType;
@@ -49,6 +53,7 @@ import com.patrickborrelli.dndiscord.utilities.LifestyleType;
 import com.patrickborrelli.dndiscord.utilities.ResetType;
 import com.patrickborrelli.dndiscord.utilities.RulesetUtil;
 import com.patrickborrelli.dndiscord.utilities.SheetSourceType;
+import com.patrickborrelli.dndiscord.utilities.StatType;
 import com.patrickborrelli.dndiscord.utilities.WeaponPropertyType;
 
 /**
@@ -116,8 +121,10 @@ public class ImportCommand implements CommandExecutor {
 			sheet.setCharacterName(character.getName());
 			sheet.setAvatarUrl(character.getAvatarUrl());
 			sheet.setAge(character.getAge());
-			sheet.setAlignment(AlignmentType.getEnum(character.getAlignmentId()).getStringValue());
-			sheet.setLifestyle(LifestyleType.getEnum(character.getLifestyleId()).getStringValue());
+			AlignmentType align = AlignmentType.getEnum(character.getAlignmentId());
+			LifestyleType life = LifestyleType.getEnum(character.getLifestyleId());
+			if(align != null) sheet.setAlignment(align.getStringValue());
+			if(life != null) sheet.setLifestyle(life.getStringValue());
 			sheet.setBackground(character.getBackground().getDefinition().getName());
 			sheet.setFaith(character.getFaith());
 			sheet.setBonds(character.getTraits().getBonds());
@@ -153,12 +160,91 @@ public class ImportCommand implements CommandExecutor {
 			sheet.setCurrentHitPoints(sheet.getMaxHitPoints() - character.getRemovedHitPoints());
 			sheet.setTemporaryHitPoints(character.getTemporaryHitPoints());	
 			sheet.setFeatures(features);
+			sheet.setActions(generateActions(sheet, character));
+			
 			applyAbilityScoreMods(sheet);
 			applySavingThrowMods(sheet);
 			applySkillMods(sheet);
 		}
 		LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
+	}
+	
+	private Set<Action> generateActions(CharacterSheet sheet, DndBeyondSheet character) {
+		Set<Action> actions = new HashSet<>();
+		
+		//retrieve dndBeyond sheet data:
+		Options<com.patrickborrelli.dndiscord.model.dndbeyond.Action> importActions = character.getActions();
+		List<com.patrickborrelli.dndiscord.model.dndbeyond.Action> racialImports = importActions.getRace();
+		List<com.patrickborrelli.dndiscord.model.dndbeyond.Action> classImports = importActions.getClassOptions();
+		List<com.patrickborrelli.dndiscord.model.dndbeyond.Action> featImports = importActions.getFeat();
+		
+		//iterate through:
+		for(com.patrickborrelli.dndiscord.model.dndbeyond.Action raceIn : racialImports) {
+			actions.add(convertAction(raceIn, FeatureType.RACE));
+		}	
+		
+		for(com.patrickborrelli.dndiscord.model.dndbeyond.Action classIn : classImports) {
+			actions.add(convertAction(classIn, FeatureType.CLASS_FEATURE));
+		}
+		
+		for(com.patrickborrelli.dndiscord.model.dndbeyond.Action featIn : featImports) {
+			actions.add(convertAction(featIn, FeatureType.FEAT));
+		}
+		
+		return actions;
+	}
+	
+	private Action convertAction(com.patrickborrelli.dndiscord.model.dndbeyond.Action actIn, FeatureType type) {
+		Action action = new Action();
+		action.setName(actIn.getName());
+		action.setDescription(actIn.getDescription());
+		action.setSnippet(actIn.getSnippet());
+		action.setType(FeatureType.RACE);
+		action.setAbilityModifierStat(StatType.getEnum(actIn.getAbilityModifierStatId()));
+		action.setAttackTypeRange(actIn.getAttackTypeRange());
+		action.setActionType(ActionType.getEnum(actIn.getActionType()));
+		action.setValue(actIn.getValue());
+		action.setSpellRangeType(actIn.getSpellRangeType());
+		if(actIn.getDice() != null) {
+			action.setDieCount(actIn.getDice().getDiceCount());
+			action.setDieValue(actIn.getDice().getDiceValue());
+			action.setDiceMultiplier(actIn.getDice().getDiceMultiplier());
+			action.setFixedValue(actIn.getDice().getFixedValue());
+			action.setDiceString(actIn.getDice().getDiceString());
+		}
+		action.setAttackSubtype(AttackSubtype.getEnum(actIn.getAttackSubtype()));
+		action.setOnMissDescription(actIn.getOnMissDescription());
+		action.setDamageType(DamageType.getEnum(actIn.getDamageTypeId()));
+		action.setMartialArt(actIn.isMartialArts());
+		action.setProficient(actIn.isProficient());
+		action.setDisplayAsAttack(actIn.isDisplayAsAttack());
+		if(actIn.getRange() != null) {
+			action.setOrigin(actIn.getRange().getOrigin());
+			action.setRangeValue(actIn.getRange().getRangeValue());
+			action.setAoeSize(actIn.getRange().getAoeSize());
+			action.setAoeType(actIn.getRange().getAoeType());
+			action.setAoeValue(actIn.getRange().getAoeValue());
+			action.setAoeSpecialDescription(actIn.getRange().isHasAoeSpecialDescription());
+			action.setRange(actIn.getRange().getRange());
+			action.setLongRange(actIn.getRange().getLongRange());
+		}
+		action.setSaveFailDescription(actIn.getSaveFailDescription());
+		action.setSaveSuccessDescription(actIn.getSaveSuccessDescription());
+		action.setSaveStat(StatType.getEnum(actIn.getSaveStatId()));
+		action.setFixedSaveDc(actIn.getFixedSaveDc());
+		if(actIn.getLimitedUse() != null) {
+			action.setResetType(ResetType.getEnum(actIn.getLimitedUse().getResetType()));
+			action.setNumberUsed(actIn.getLimitedUse().getNumberUsed());
+			action.setMaxUses(actIn.getLimitedUse().getMaxUses());
+		}
+		if(actIn.getActivation() != null) {
+			action.setActivationType(ActivationType.getEnum(actIn.getActivation().getActivationType()));
+			String actTime = actIn.getActivation().getActivationTime();
+			if(actTime != null && !actTime.isEmpty()) action.setDuration(Integer.valueOf(actIn.getActivation().getActivationTime()));
+		}		
+		
+		return action;
 	}
 	
 	private void processInventory(CharacterSheet sheet, DndBeyondSheet character) {
@@ -795,24 +881,25 @@ public class ImportCommand implements CommandExecutor {
 	private void convertBeyondStats(CharacterSheet sheet, DndBeyondSheet character) {
 		Stat[] stats = character.getStats();
 		for(int i = 0; i < stats.length; i++) {
+			StatType stat = StatType.getEnum(stats[i].getId());
 			int value = stats[i].getValue();
-			switch(stats[i].getId()) {
-				case 1:
+			switch(stat) {
+				case STRENGTH:
 					sheet.setBaseStrength(value);
 					break;
-				case 2:
+				case DEXTERITY:
 					sheet.setBaseDexterity(value);
 					break;
-				case 3:
+				case CONSTITUTION:
 					sheet.setBaseConstitution(value);
 					break;
-				case 4:
+				case INTELLIGENCE:
 					sheet.setBaseIntelligence(value);
 					break;
-				case 5:
+				case WISDOM:
 					sheet.setBaseWisdom(value);
 					break;
-				case 6:
+				case CHARISMA:
 					sheet.setBaseCharisma(value);
 					break;
 				default:

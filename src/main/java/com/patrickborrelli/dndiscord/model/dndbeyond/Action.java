@@ -19,6 +19,7 @@ public class Action {
 	private LimitedUse limitedUse;
 	private String name;
 	private String description;
+	private String snippet;
 	private int abilityModifierStatId;
 	private String onMissDescription;
 	private String saveFailDescription;
@@ -112,6 +113,20 @@ public class Action {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * @return String the snippet
+	 */
+	public String getSnippet() {
+		return snippet;
+	}
+
+	/**
+	 * @param snippet String the snippet to set
+	 */
+	public void setSnippet(String snippet) {
+		this.snippet = snippet;
 	}
 
 	/**
@@ -397,15 +412,15 @@ public class Action {
 	@Override
 	public String toString() {
 		return "Action [id=" + id + ", entityTypeId=" + entityTypeId + ", limitedUse=" + limitedUse + ", name=" + name
-				+ ", description=" + description + ", abilityModifierStatId=" + abilityModifierStatId
-				+ ", onMissDescription=" + onMissDescription + ", saveFailDescription=" + saveFailDescription
-				+ ", saveSuccessDescription=" + saveSuccessDescription + ", saveStatId=" + saveStatId + ", fixedSaveDc="
-				+ fixedSaveDc + ", attackTypeRange=" + attackTypeRange + ", actionType=" + actionType
-				+ ", attackSubtype=" + attackSubtype + ", dice=" + dice + ", value=" + value + ", damageTypeId="
-				+ damageTypeId + ", isMartialArts=" + isMartialArts + ", isProficient=" + isProficient
-				+ ", spellRangeType=" + spellRangeType + ", displayAsAttack=" + displayAsAttack + ", range=" + range
-				+ ", activation=" + activation + ", componentId=" + componentId + ", componentTypeId=" + componentTypeId
-				+ "]";
+				+ ", description=" + description + ", snippet=" + snippet + ", abilityModifierStatId="
+				+ abilityModifierStatId + ", onMissDescription=" + onMissDescription + ", saveFailDescription="
+				+ saveFailDescription + ", saveSuccessDescription=" + saveSuccessDescription + ", saveStatId="
+				+ saveStatId + ", fixedSaveDc=" + fixedSaveDc + ", attackTypeRange=" + attackTypeRange + ", actionType="
+				+ actionType + ", attackSubtype=" + attackSubtype + ", dice=" + dice + ", value=" + value
+				+ ", damageTypeId=" + damageTypeId + ", isMartialArts=" + isMartialArts + ", isProficient="
+				+ isProficient + ", spellRangeType=" + spellRangeType + ", displayAsAttack=" + displayAsAttack
+				+ ", range=" + range + ", activation=" + activation + ", componentId=" + componentId
+				+ ", componentTypeId=" + componentTypeId + "]";
 	}
 	
 }

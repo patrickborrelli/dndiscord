@@ -21,6 +21,7 @@ public enum ActivationType {
 	private Integer value;
 	private static HashMap<Integer, ActivationType> valuesMap;
 	private static HashMap<ActivationType, String> stringMap;
+	private static HashMap<String, ActivationType> inverseMap;
 	
 	static {
 		valuesMap = 
@@ -42,6 +43,16 @@ public enum ActivationType {
 		stringMap.put(MINUTE, "Minute");
 		stringMap.put(HOUR, "Hour");
 		stringMap.put(SPECIAL, "Special");
+		
+		inverseMap = 
+				new HashMap<String, ActivationType>(ActivationType.values().length);
+		inverseMap.put("Action", ACTION);
+		inverseMap.put("No action", NO_ACTION);
+		inverseMap.put("Bonus action", BONUS_ACTION);
+		inverseMap.put("Reaction", REACTION);
+		inverseMap.put("Minute", MINUTE);
+		inverseMap.put("Hour", HOUR);
+		inverseMap.put("Special", SPECIAL);
 	}
 	
 	private ActivationType(Integer theValue) {
@@ -67,6 +78,18 @@ public enum ActivationType {
 	}
 	
 	/**
+	 * Returns the enumeration for the provided Integer
+	 * value for this enumeration
+	 * 
+	 * @param theValue the Integer value of this enumeration.
+	 * @return an ActivationType containing the enumeration 
+	 * 			represented by the provided String.
+	 */
+	public static ActivationType getEnum(Integer theValue) {
+		return valuesMap.get(theValue);
+	}
+	
+	/**
 	 * Returns the enumeration for the provided String
 	 * value for this enumeration
 	 * 
@@ -74,8 +97,8 @@ public enum ActivationType {
 	 * @return an ActivationType containing the enumeration 
 	 * 			represented by the provided String.
 	 */
-	public static ActivationType getEnum(Integer theValue) {
-		return valuesMap.get(theValue);
+	public static ActivationType getEnum(String theValue) {
+		return inverseMap.get(theValue);
 	}
 	
 	/**

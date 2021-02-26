@@ -165,7 +165,8 @@ public class CharacterSheet {
 	
 	//attacks and actions:
 	private int attackCount;
-	private int attacksUsed;	
+	private int attacksUsed;
+	private Set<Action> actions;
 	
 	public CharacterSheet() {
 		
@@ -2073,6 +2074,522 @@ public class CharacterSheet {
 		this.attacksUsed = attacksUsed;
 	}
 
+	/**
+	 * @return Set<Action> the actions
+	 */
+	public Set<Action> getActions() {
+		return actions;
+	}
+
+	/**
+	 * @param actions Set<Action> the actions to set
+	 */
+	public void setActions(Set<Action> actions) {
+		this.actions = actions;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (acrobaticsExpertise ? 1231 : 1237);
+		result = prime * result + acrobaticsMod;
+		result = prime * result + (acrobaticsProficiency ? 1231 : 1237);
+		result = prime * result + ((actions == null) ? 0 : actions.hashCode());
+		result = prime * result + age;
+		result = prime * result + ((alignment == null) ? 0 : alignment.hashCode());
+		result = prime * result + (animalHandlingExpertise ? 1231 : 1237);
+		result = prime * result + animalHandlingMod;
+		result = prime * result + (animalHandlingProficiency ? 1231 : 1237);
+		result = prime * result + ((appearance == null) ? 0 : appearance.hashCode());
+		result = prime * result + (arcanaExpertise ? 1231 : 1237);
+		result = prime * result + arcanaMod;
+		result = prime * result + (arcanaProficiency ? 1231 : 1237);
+		result = prime * result + (athleticsExpertise ? 1231 : 1237);
+		result = prime * result + athleticsMod;
+		result = prime * result + (athleticsProficiency ? 1231 : 1237);
+		result = prime * result + attackCount;
+		result = prime * result + attacksUsed;
+		result = prime * result + ((avatarUrl == null) ? 0 : avatarUrl.hashCode());
+		result = prime * result + ((background == null) ? 0 : background.hashCode());
+		result = prime * result + baseCharisma;
+		result = prime * result + baseConstitution;
+		result = prime * result + baseDexterity;
+		result = prime * result + baseIntelligence;
+		result = prime * result + ((baseRace == null) ? 0 : baseRace.hashCode());
+		result = prime * result + baseStrength;
+		result = prime * result + baseWisdom;
+		result = prime * result + ((bonds == null) ? 0 : bonds.hashCode());
+		result = prime * result + burrowSpeed;
+		result = prime * result + ((characterClasses == null) ? 0 : characterClasses.hashCode());
+		result = prime * result + ((characterName == null) ? 0 : characterName.hashCode());
+		result = prime * result + charismaBonus;
+		result = prime * result + charismaMod;
+		result = prime * result + charismaSave;
+		result = prime * result + (charismaSaveProficiency ? 1231 : 1237);
+		result = prime * result + climbSpeed;
+		result = prime * result + constitutionBonus;
+		result = prime * result + constitutionMod;
+		result = prime * result + constitutionSave;
+		result = prime * result + (constitutionSaveProficiency ? 1231 : 1237);
+		result = prime * result + copperPieces;
+		result = prime * result + currentHitPoints;
+		result = prime * result + (deceptionExpertise ? 1231 : 1237);
+		result = prime * result + deceptionMod;
+		result = prime * result + (deceptionProficiency ? 1231 : 1237);
+		result = prime * result + dexterityBonus;
+		result = prime * result + dexterityMod;
+		result = prime * result + dexteritySave;
+		result = prime * result + (dexteritySaveProficiency ? 1231 : 1237);
+		result = prime * result + effectiveArmorClass;
+		result = prime * result + electrumPieces;
+		result = prime * result + experiencePoints;
+		result = prime * result + ((faith == null) ? 0 : faith.hashCode());
+		result = prime * result + ((features == null) ? 0 : features.hashCode());
+		result = prime * result + ((flaws == null) ? 0 : flaws.hashCode());
+		result = prime * result + flySpeed;
+		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+		result = prime * result + goldPieces;
+		result = prime * result + ((hair == null) ? 0 : hair.hashCode());
+		result = prime * result + ((height == null) ? 0 : height.hashCode());
+		result = prime * result + (historyExpertise ? 1231 : 1237);
+		result = prime * result + historyMod;
+		result = prime * result + (historyProficiency ? 1231 : 1237);
+		result = prime * result + ((ideals == null) ? 0 : ideals.hashCode());
+		result = prime * result + (insightExpertise ? 1231 : 1237);
+		result = prime * result + insightMod;
+		result = prime * result + (insightProficiency ? 1231 : 1237);
+		result = prime * result + (inspiration ? 1231 : 1237);
+		result = prime * result + intelligenceBonus;
+		result = prime * result + intelligenceMod;
+		result = prime * result + intelligenceSave;
+		result = prime * result + (intelligenceSaveProficiency ? 1231 : 1237);
+		result = prime * result + (intimidationExpertise ? 1231 : 1237);
+		result = prime * result + intimidationMod;
+		result = prime * result + (intimidationProficiency ? 1231 : 1237);
+		result = prime * result + ((inventory == null) ? 0 : inventory.hashCode());
+		result = prime * result + (investigationExpertise ? 1231 : 1237);
+		result = prime * result + investigationMod;
+		result = prime * result + (investigationProficiency ? 1231 : 1237);
+		result = prime * result + ((lifestyle == null) ? 0 : lifestyle.hashCode());
+		result = prime * result + maxHitPoints;
+		result = prime * result + (medicineExpertise ? 1231 : 1237);
+		result = prime * result + medicineMod;
+		result = prime * result + (medicineProficiency ? 1231 : 1237);
+		result = prime * result + (natureExpertise ? 1231 : 1237);
+		result = prime * result + natureMod;
+		result = prime * result + (natureProficiency ? 1231 : 1237);
+		result = prime * result + (perceptionExpertise ? 1231 : 1237);
+		result = prime * result + perceptionMod;
+		result = prime * result + (perceptionProficiency ? 1231 : 1237);
+		result = prime * result + (performanceExpertise ? 1231 : 1237);
+		result = prime * result + performanceMod;
+		result = prime * result + (performanceProficiency ? 1231 : 1237);
+		result = prime * result + ((personalityTraits == null) ? 0 : personalityTraits.hashCode());
+		result = prime * result + (persuasionExpertise ? 1231 : 1237);
+		result = prime * result + persuasionMod;
+		result = prime * result + (persuasionProficiency ? 1231 : 1237);
+		result = prime * result + platinumPieces;
+		result = prime * result + proficiencyBonus;
+		result = prime * result + ((race == null) ? 0 : race.hashCode());
+		result = prime * result + (religionExpertise ? 1231 : 1237);
+		result = prime * result + religionMod;
+		result = prime * result + (religionProficiency ? 1231 : 1237);
+		result = prime * result + ((sheetSource == null) ? 0 : sheetSource.hashCode());
+		result = prime * result + silverPieces;
+		result = prime * result + ((size == null) ? 0 : size.hashCode());
+		result = prime * result + ((skin == null) ? 0 : skin.hashCode());
+		result = prime * result + (sleightOfHandExpertise ? 1231 : 1237);
+		result = prime * result + sleightOfHandMod;
+		result = prime * result + (sleightOfHandProficiency ? 1231 : 1237);
+		result = prime * result + (stealthExpertise ? 1231 : 1237);
+		result = prime * result + stealthMod;
+		result = prime * result + (stealthProficiency ? 1231 : 1237);
+		result = prime * result + strengthBonus;
+		result = prime * result + strengthMod;
+		result = prime * result + strengthSave;
+		result = prime * result + (strengthSaveProficiency ? 1231 : 1237);
+		result = prime * result + (survivalExpertise ? 1231 : 1237);
+		result = prime * result + survivalMod;
+		result = prime * result + (survivalProficiency ? 1231 : 1237);
+		result = prime * result + swimSpeed;
+		result = prime * result + temporaryHitPoints;
+		result = prime * result + totalCharisma;
+		result = prime * result + totalConstitution;
+		result = prime * result + totalDexterity;
+		result = prime * result + totalIntelligence;
+		result = prime * result + totalLevel;
+		result = prime * result + totalStrength;
+		result = prime * result + totalWisdom;
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		result = prime * result + walkSpeed;
+		result = prime * result + ((weight == null) ? 0 : weight.hashCode());
+		result = prime * result + wisdomBonus;
+		result = prime * result + wisdomMod;
+		result = prime * result + wisdomSave;
+		result = prime * result + (wisdomSaveProficiency ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CharacterSheet other = (CharacterSheet) obj;
+		if (acrobaticsExpertise != other.acrobaticsExpertise)
+			return false;
+		if (acrobaticsMod != other.acrobaticsMod)
+			return false;
+		if (acrobaticsProficiency != other.acrobaticsProficiency)
+			return false;
+		if (actions == null) {
+			if (other.actions != null)
+				return false;
+		} else if (!actions.equals(other.actions))
+			return false;
+		if (age != other.age)
+			return false;
+		if (alignment == null) {
+			if (other.alignment != null)
+				return false;
+		} else if (!alignment.equals(other.alignment))
+			return false;
+		if (animalHandlingExpertise != other.animalHandlingExpertise)
+			return false;
+		if (animalHandlingMod != other.animalHandlingMod)
+			return false;
+		if (animalHandlingProficiency != other.animalHandlingProficiency)
+			return false;
+		if (appearance == null) {
+			if (other.appearance != null)
+				return false;
+		} else if (!appearance.equals(other.appearance))
+			return false;
+		if (arcanaExpertise != other.arcanaExpertise)
+			return false;
+		if (arcanaMod != other.arcanaMod)
+			return false;
+		if (arcanaProficiency != other.arcanaProficiency)
+			return false;
+		if (athleticsExpertise != other.athleticsExpertise)
+			return false;
+		if (athleticsMod != other.athleticsMod)
+			return false;
+		if (athleticsProficiency != other.athleticsProficiency)
+			return false;
+		if (attackCount != other.attackCount)
+			return false;
+		if (attacksUsed != other.attacksUsed)
+			return false;
+		if (avatarUrl == null) {
+			if (other.avatarUrl != null)
+				return false;
+		} else if (!avatarUrl.equals(other.avatarUrl))
+			return false;
+		if (background == null) {
+			if (other.background != null)
+				return false;
+		} else if (!background.equals(other.background))
+			return false;
+		if (baseCharisma != other.baseCharisma)
+			return false;
+		if (baseConstitution != other.baseConstitution)
+			return false;
+		if (baseDexterity != other.baseDexterity)
+			return false;
+		if (baseIntelligence != other.baseIntelligence)
+			return false;
+		if (baseRace == null) {
+			if (other.baseRace != null)
+				return false;
+		} else if (!baseRace.equals(other.baseRace))
+			return false;
+		if (baseStrength != other.baseStrength)
+			return false;
+		if (baseWisdom != other.baseWisdom)
+			return false;
+		if (bonds == null) {
+			if (other.bonds != null)
+				return false;
+		} else if (!bonds.equals(other.bonds))
+			return false;
+		if (burrowSpeed != other.burrowSpeed)
+			return false;
+		if (characterClasses == null) {
+			if (other.characterClasses != null)
+				return false;
+		} else if (!characterClasses.equals(other.characterClasses))
+			return false;
+		if (characterName == null) {
+			if (other.characterName != null)
+				return false;
+		} else if (!characterName.equals(other.characterName))
+			return false;
+		if (charismaBonus != other.charismaBonus)
+			return false;
+		if (charismaMod != other.charismaMod)
+			return false;
+		if (charismaSave != other.charismaSave)
+			return false;
+		if (charismaSaveProficiency != other.charismaSaveProficiency)
+			return false;
+		if (climbSpeed != other.climbSpeed)
+			return false;
+		if (constitutionBonus != other.constitutionBonus)
+			return false;
+		if (constitutionMod != other.constitutionMod)
+			return false;
+		if (constitutionSave != other.constitutionSave)
+			return false;
+		if (constitutionSaveProficiency != other.constitutionSaveProficiency)
+			return false;
+		if (copperPieces != other.copperPieces)
+			return false;
+		if (currentHitPoints != other.currentHitPoints)
+			return false;
+		if (deceptionExpertise != other.deceptionExpertise)
+			return false;
+		if (deceptionMod != other.deceptionMod)
+			return false;
+		if (deceptionProficiency != other.deceptionProficiency)
+			return false;
+		if (dexterityBonus != other.dexterityBonus)
+			return false;
+		if (dexterityMod != other.dexterityMod)
+			return false;
+		if (dexteritySave != other.dexteritySave)
+			return false;
+		if (dexteritySaveProficiency != other.dexteritySaveProficiency)
+			return false;
+		if (effectiveArmorClass != other.effectiveArmorClass)
+			return false;
+		if (electrumPieces != other.electrumPieces)
+			return false;
+		if (experiencePoints != other.experiencePoints)
+			return false;
+		if (faith == null) {
+			if (other.faith != null)
+				return false;
+		} else if (!faith.equals(other.faith))
+			return false;
+		if (features == null) {
+			if (other.features != null)
+				return false;
+		} else if (!features.equals(other.features))
+			return false;
+		if (flaws == null) {
+			if (other.flaws != null)
+				return false;
+		} else if (!flaws.equals(other.flaws))
+			return false;
+		if (flySpeed != other.flySpeed)
+			return false;
+		if (gender == null) {
+			if (other.gender != null)
+				return false;
+		} else if (!gender.equals(other.gender))
+			return false;
+		if (goldPieces != other.goldPieces)
+			return false;
+		if (hair == null) {
+			if (other.hair != null)
+				return false;
+		} else if (!hair.equals(other.hair))
+			return false;
+		if (height == null) {
+			if (other.height != null)
+				return false;
+		} else if (!height.equals(other.height))
+			return false;
+		if (historyExpertise != other.historyExpertise)
+			return false;
+		if (historyMod != other.historyMod)
+			return false;
+		if (historyProficiency != other.historyProficiency)
+			return false;
+		if (ideals == null) {
+			if (other.ideals != null)
+				return false;
+		} else if (!ideals.equals(other.ideals))
+			return false;
+		if (insightExpertise != other.insightExpertise)
+			return false;
+		if (insightMod != other.insightMod)
+			return false;
+		if (insightProficiency != other.insightProficiency)
+			return false;
+		if (inspiration != other.inspiration)
+			return false;
+		if (intelligenceBonus != other.intelligenceBonus)
+			return false;
+		if (intelligenceMod != other.intelligenceMod)
+			return false;
+		if (intelligenceSave != other.intelligenceSave)
+			return false;
+		if (intelligenceSaveProficiency != other.intelligenceSaveProficiency)
+			return false;
+		if (intimidationExpertise != other.intimidationExpertise)
+			return false;
+		if (intimidationMod != other.intimidationMod)
+			return false;
+		if (intimidationProficiency != other.intimidationProficiency)
+			return false;
+		if (inventory == null) {
+			if (other.inventory != null)
+				return false;
+		} else if (!inventory.equals(other.inventory))
+			return false;
+		if (investigationExpertise != other.investigationExpertise)
+			return false;
+		if (investigationMod != other.investigationMod)
+			return false;
+		if (investigationProficiency != other.investigationProficiency)
+			return false;
+		if (lifestyle == null) {
+			if (other.lifestyle != null)
+				return false;
+		} else if (!lifestyle.equals(other.lifestyle))
+			return false;
+		if (maxHitPoints != other.maxHitPoints)
+			return false;
+		if (medicineExpertise != other.medicineExpertise)
+			return false;
+		if (medicineMod != other.medicineMod)
+			return false;
+		if (medicineProficiency != other.medicineProficiency)
+			return false;
+		if (natureExpertise != other.natureExpertise)
+			return false;
+		if (natureMod != other.natureMod)
+			return false;
+		if (natureProficiency != other.natureProficiency)
+			return false;
+		if (perceptionExpertise != other.perceptionExpertise)
+			return false;
+		if (perceptionMod != other.perceptionMod)
+			return false;
+		if (perceptionProficiency != other.perceptionProficiency)
+			return false;
+		if (performanceExpertise != other.performanceExpertise)
+			return false;
+		if (performanceMod != other.performanceMod)
+			return false;
+		if (performanceProficiency != other.performanceProficiency)
+			return false;
+		if (personalityTraits == null) {
+			if (other.personalityTraits != null)
+				return false;
+		} else if (!personalityTraits.equals(other.personalityTraits))
+			return false;
+		if (persuasionExpertise != other.persuasionExpertise)
+			return false;
+		if (persuasionMod != other.persuasionMod)
+			return false;
+		if (persuasionProficiency != other.persuasionProficiency)
+			return false;
+		if (platinumPieces != other.platinumPieces)
+			return false;
+		if (proficiencyBonus != other.proficiencyBonus)
+			return false;
+		if (race == null) {
+			if (other.race != null)
+				return false;
+		} else if (!race.equals(other.race))
+			return false;
+		if (religionExpertise != other.religionExpertise)
+			return false;
+		if (religionMod != other.religionMod)
+			return false;
+		if (religionProficiency != other.religionProficiency)
+			return false;
+		if (sheetSource == null) {
+			if (other.sheetSource != null)
+				return false;
+		} else if (!sheetSource.equals(other.sheetSource))
+			return false;
+		if (silverPieces != other.silverPieces)
+			return false;
+		if (size == null) {
+			if (other.size != null)
+				return false;
+		} else if (!size.equals(other.size))
+			return false;
+		if (skin == null) {
+			if (other.skin != null)
+				return false;
+		} else if (!skin.equals(other.skin))
+			return false;
+		if (sleightOfHandExpertise != other.sleightOfHandExpertise)
+			return false;
+		if (sleightOfHandMod != other.sleightOfHandMod)
+			return false;
+		if (sleightOfHandProficiency != other.sleightOfHandProficiency)
+			return false;
+		if (stealthExpertise != other.stealthExpertise)
+			return false;
+		if (stealthMod != other.stealthMod)
+			return false;
+		if (stealthProficiency != other.stealthProficiency)
+			return false;
+		if (strengthBonus != other.strengthBonus)
+			return false;
+		if (strengthMod != other.strengthMod)
+			return false;
+		if (strengthSave != other.strengthSave)
+			return false;
+		if (strengthSaveProficiency != other.strengthSaveProficiency)
+			return false;
+		if (survivalExpertise != other.survivalExpertise)
+			return false;
+		if (survivalMod != other.survivalMod)
+			return false;
+		if (survivalProficiency != other.survivalProficiency)
+			return false;
+		if (swimSpeed != other.swimSpeed)
+			return false;
+		if (temporaryHitPoints != other.temporaryHitPoints)
+			return false;
+		if (totalCharisma != other.totalCharisma)
+			return false;
+		if (totalConstitution != other.totalConstitution)
+			return false;
+		if (totalDexterity != other.totalDexterity)
+			return false;
+		if (totalIntelligence != other.totalIntelligence)
+			return false;
+		if (totalLevel != other.totalLevel)
+			return false;
+		if (totalStrength != other.totalStrength)
+			return false;
+		if (totalWisdom != other.totalWisdom)
+			return false;
+		if (user == null) {
+			if (other.user != null)
+				return false;
+		} else if (!user.equals(other.user))
+			return false;
+		if (walkSpeed != other.walkSpeed)
+			return false;
+		if (weight == null) {
+			if (other.weight != null)
+				return false;
+		} else if (!weight.equals(other.weight))
+			return false;
+		if (wisdomBonus != other.wisdomBonus)
+			return false;
+		if (wisdomMod != other.wisdomMod)
+			return false;
+		if (wisdomSave != other.wisdomSave)
+			return false;
+		if (wisdomSaveProficiency != other.wisdomSaveProficiency)
+			return false;
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		return "CharacterSheet [sheetSource=" + sheetSource + ", user=" + user + ", characterName=" + characterName
@@ -2130,7 +2647,7 @@ public class CharacterSheet {
 				+ ", climbSpeed=" + climbSpeed + ", characterClasses=" + characterClasses + ", totalLevel=" + totalLevel
 				+ ", maxHitPoints=" + maxHitPoints + ", currentHitPoints=" + currentHitPoints + ", temporaryHitPoints="
 				+ temporaryHitPoints + ", features=" + features + ", inventory=" + inventory + ", attackCount="
-				+ attackCount + ", attacksUsed=" + attacksUsed + "]";
+				+ attackCount + ", attacksUsed=" + attacksUsed + ", actions=" + actions + "]";
 	}
 
 }
