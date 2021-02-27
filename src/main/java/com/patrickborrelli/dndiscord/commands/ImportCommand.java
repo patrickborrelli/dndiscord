@@ -175,7 +175,7 @@ public class ImportCommand implements CommandExecutor {
 	private Set<Action> generateActions(CharacterSheet sheet, DndBeyondSheet character) {
 		Set<Action> actions = new HashSet<>();
 		
-		//retrieve dndBeyond sheet data:
+		//retrieve dndBeyond sheet Action data:
 		Options<com.patrickborrelli.dndiscord.model.dndbeyond.Action> importActions = character.getActions();
 		List<com.patrickborrelli.dndiscord.model.dndbeyond.Action> racialImports = importActions.getRace();
 		List<com.patrickborrelli.dndiscord.model.dndbeyond.Action> classImports = importActions.getClassOptions();
@@ -194,7 +194,31 @@ public class ImportCommand implements CommandExecutor {
 			actions.add(convertAction(featIn, FeatureType.FEAT));
 		}
 		
+		//next create actions from inventory items that are displayed as attacks:
+		for(Item item : sheet.getInventory()) {
+			if(item.isAttack()) {
+				actions.add(convertItemToAction(item));
+			}
+		}
+		
 		return actions;
+	}
+	
+	private Action convertItemToAction(Item item) {
+		Action action = new Action();
+		action.setName(item.getName());
+		action.setDescription(item.getDescription());
+		action.setSnippet(item.getSnippet());
+		action.setType(FeatureType.ITEM);
+		action.setDieCount(item.getDieCount());
+		action.setDieValue(item.getDieValue());
+		action.setDiceMultiplier(item.getDieMultiplier());
+		action.setFixedValue(item.getFixedDamage());
+		action.setDiceString(item.getDiceString());
+		action.setDamageType(item.getDamageType());
+		action.setMartialArt(item.isMonkWeapon());
+		
+		return action;
 	}
 	
 	private Action convertAction(com.patrickborrelli.dndiscord.model.dndbeyond.Action actIn, FeatureType type) {
