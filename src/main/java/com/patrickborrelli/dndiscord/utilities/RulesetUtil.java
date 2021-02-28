@@ -14,6 +14,8 @@ public class RulesetUtil {
 	private static volatile RulesetUtil instance;
 	private static HashMap<Integer, Integer> modMap;
 	private static HashMap<Integer, Integer> proficiencyMap;
+	public static final String VERSATILE = "versatile";
+	public static final String NOT_VERSATILE = "not_versatile";
 	
 	static {
 		modMap = new HashMap<Integer, Integer>();

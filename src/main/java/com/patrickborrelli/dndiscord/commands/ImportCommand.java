@@ -196,25 +196,38 @@ public class ImportCommand implements CommandExecutor {
 		
 		//next create actions from inventory items that are displayed as attacks:
 		for(Item item : sheet.getInventory()) {
+			Action attackAction = null;
 			if(item.isAttack()) {
-				actions.add(convertItemToAction(item));
+				attackAction = convertItemToAction(RulesetUtil.NOT_VERSATILE, item);
+				actions.add(attackAction);
 			}
-		}
-		
+			if(item.getProperties() != null && item.getProperties().contains(WeaponPropertyType.VERSATILE)) {
+				actions.add(convertItemToAction(RulesetUtil.VERSATILE, item));
+			}
+		}		
 		return actions;
 	}
 	
-	private Action convertItemToAction(Item item) {
+	private Action convertItemToAction(String attackType, Item item) {
 		Action action = new Action();
-		action.setName(item.getName());
+		if(attackType == RulesetUtil.NOT_VERSATILE) {
+			action.setName(item.getName());
+			action.setDieCount(item.getDieCount());
+			action.setDieValue(item.getDieValue());
+			action.setDiceMultiplier(item.getDieMultiplier());
+			action.setFixedValue(item.getFixedDamage());
+			action.setDiceString(item.getDiceString());
+		} else if(attackType == RulesetUtil.VERSATILE) {
+			action.setName(item.getName() + " - two-handed");
+			action.setDieCount(item.getVersatileDieCount());
+			action.setDieValue(item.getVersatileDieValue());
+			action.setDiceMultiplier(item.getVersatileDieMultiplier());
+			action.setFixedValue(item.getVersatileFixedDamage());
+			action.setDiceString(item.getVersatileDiceString());
+		}		
 		action.setDescription(item.getDescription());
 		action.setSnippet(item.getSnippet());
-		action.setType(FeatureType.ITEM);
-		action.setDieCount(item.getDieCount());
-		action.setDieValue(item.getDieValue());
-		action.setDiceMultiplier(item.getDieMultiplier());
-		action.setFixedValue(item.getFixedDamage());
-		action.setDiceString(item.getDiceString());
+		action.setType(FeatureType.ITEM);		
 		action.setDamageType(item.getDamageType());
 		action.setMartialArt(item.isMonkWeapon());
 		
