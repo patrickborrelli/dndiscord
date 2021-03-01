@@ -225,7 +225,7 @@ public class ImportCommand implements CommandExecutor {
 			action.setFixedValue(item.getVersatileFixedDamage());
 			action.setDiceString(item.getVersatileDiceString());
 		}		
-		action.setDescription(item.getDescription());
+		action.setDescription(cleanString(item.getDescription()));
 		action.setSnippet(item.getSnippet());
 		action.setType(FeatureType.ITEM);		
 		action.setDamageType(item.getDamageType());
@@ -237,7 +237,7 @@ public class ImportCommand implements CommandExecutor {
 	private Action convertAction(com.patrickborrelli.dndiscord.model.dndbeyond.Action actIn, FeatureType type) {
 		Action action = new Action();
 		action.setName(actIn.getName());
-		action.setDescription(actIn.getDescription());
+		action.setDescription(cleanString(actIn.getDescription()));
 		action.setSnippet(actIn.getSnippet());
 		action.setType(FeatureType.RACE);
 		action.setAbilityModifierStat(StatType.getEnum(actIn.getAbilityModifierStatId()));
@@ -305,7 +305,7 @@ public class ImportCommand implements CommandExecutor {
 		
 		ItemDefinition sourceDetail = sourceItem.getDefinition();
 		convertedItem.setName(sourceDetail.getName());
-		convertedItem.setDescription(sourceDetail.getDescription());
+		convertedItem.setDescription(cleanString(sourceDetail.getDescription()));
 		convertedItem.setSnippet(sourceDetail.getSnippet());
 		convertedItem.setQuantity(sourceItem.getQuantity());
 		convertedItem.setImageUrl(sourceDetail.getAvatarUrl());
@@ -513,7 +513,7 @@ public class ImportCommand implements CommandExecutor {
 						feat = new Feature();
 						feat.setType(type);
 						feat.setOptionName(opt.getDefinition().getName());
-						feat.setOptionDescription(opt.getDefinition().getDescription());
+						feat.setOptionDescription(cleanString(opt.getDefinition().getDescription()));
 						feat.setOptionSnippet(opt.getDefinition().getSnippet());
 						ClassFeature myFeature = character.getClassFeatureById(opt.getComponentId());
 						if(myFeature != null) {
@@ -526,7 +526,7 @@ public class ImportCommand implements CommandExecutor {
 							}						
 							feat.setDisplayOrder(myFeature.getDefinition().getDisplayOrder());
 							feat.setName(myFeature.getDefinition().getName());
-							feat.setDescription(myFeature.getDefinition().getDescription());
+							feat.setDescription(cleanString(myFeature.getDefinition().getDescription()));
 							feat.setSnippet(myFeature.getDefinition().getSnippet());
 							feat.setRequiredLevel(myFeature.getDefinition().getRequiredLevel());
 							feat.setSubClassFeature(myFeature.getDefinition().isSubClassFeature());
@@ -560,7 +560,7 @@ public class ImportCommand implements CommandExecutor {
 						}						
 						feat.setDisplayOrder(myFeature.getDefinition().getDisplayOrder());
 						feat.setName(myFeature.getDefinition().getName());
-						feat.setDescription(myFeature.getDefinition().getDescription());
+						feat.setDescription(cleanString(myFeature.getDefinition().getDescription()));
 						feat.setSnippet(myFeature.getDefinition().getSnippet());
 						feat.setRequiredLevel(myFeature.getDefinition().getRequiredLevel());
 						feat.setSubClassFeature(myFeature.getDefinition().isSubClassFeature());
@@ -593,7 +593,7 @@ public class ImportCommand implements CommandExecutor {
 						}						
 						feat.setDisplayOrder(trait.getDefinition().getDisplayOrder());
 						feat.setName(trait.getDefinition().getName());
-						feat.setDescription(trait.getDefinition().getDescription());
+						feat.setDescription(cleanString(trait.getDefinition().getDescription()));
 						feat.setSnippet(trait.getDefinition().getSnippet());
 						feat.setRequiredLevel(trait.getDefinition().getRequiredLevel());
 						feat.setSubClassFeature(trait.getDefinition().isSubClassFeature());
@@ -626,7 +626,7 @@ public class ImportCommand implements CommandExecutor {
 						}						
 						feat.setDisplayOrder(dndbFeat.getDefinition().getDisplayOrder());
 						feat.setName(dndbFeat.getDefinition().getName());
-						feat.setDescription(dndbFeat.getDefinition().getDescription());
+						feat.setDescription(cleanString(dndbFeat.getDefinition().getDescription()));
 						feat.setSnippet(dndbFeat.getDefinition().getSnippet());
 						feat.setRequiredLevel(dndbFeat.getDefinition().getRequiredLevel());
 						feat.setSubClassFeature(dndbFeat.getDefinition().isSubClassFeature());
@@ -652,10 +652,10 @@ public class ImportCommand implements CommandExecutor {
 						feat.setType(type);
 						feat.setDisplayOrder(1);
 						feat.setName(background.getDefinition().getName());
-						feat.setDescription(background.getDefinition().getDescription());
+						feat.setDescription(cleanString(background.getDefinition().getDescription()));
 						feat.setSnippet(background.getDefinition().getSnippet());
 						feat.setHideInSheet(false);
-						feat.setFeatureDescription(background.getDefinition().getFeatureDescription());
+						feat.setFeatureDescription(cleanString(background.getDefinition().getFeatureDescription()));
 						feat.setFeatureName(background.getDefinition().getFeatureName());
 						feat.setShortDescription(background.getDefinition().getShortDescription());
 						feat.setSuggestedCharacteristicsDescription(background.getDefinition().getSuggestedCharacteristicsDescription());
@@ -945,6 +945,29 @@ public class ImportCommand implements CommandExecutor {
 					LOGGER.error("Unidentified stat id discovered during conversion of DNDBeyond sheet: " + value);			
 			}
 		}
+	}
+	
+	private String cleanString(String input) {
+		StringBuilder builder = new StringBuilder();
+		char tagstart = '<';
+		char tagstop = '>';
+		boolean tagstarted = false;
+		
+		char[] ary = input.toCharArray();
+		
+		for(int i = 0; i < ary.length; i++) {
+			if(!tagstarted && ary[i] != tagstart) {
+				builder.append(ary[i]);
+			} else if(!tagstarted && ary[i] == tagstart) {
+				tagstarted = true;
+			} else if(tagstarted && ary[i] == tagstop) {
+				tagstarted = false;
+			}
+		}
+		
+		input = builder.toString();
+		input = input.replaceAll("\\s{2,}", " ").trim();
+		return input;
 	}
 	
 	private void buildSheetEmbed(Message msg, DndBeyondSheet sheet) {
