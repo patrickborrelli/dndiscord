@@ -161,12 +161,15 @@ public class CharacterSheet {
 	//Documented features:
 	private Set<Feature> features;
 	
+	private Set<String> proficiencies;
+	
 	private List<Item> inventory;
 	
 	//attacks and actions:
 	private int attackCount;
 	private int attacksUsed;
 	private Set<Action> actions;
+	private Set<Attack> attacks;
 	
 	public CharacterSheet() {
 		
