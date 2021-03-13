@@ -16,7 +16,6 @@ public class Flaw extends TableLookup {
 
 	public Flaw() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

@@ -45,7 +45,6 @@ public class SheetCommand implements CommandExecutor {
 				sheet = mapper.readValue(stream, DndBeyondSheet.class);
 				characters.add(sheet);				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

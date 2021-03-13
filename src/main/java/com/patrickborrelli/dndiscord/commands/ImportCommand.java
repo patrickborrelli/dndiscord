@@ -160,10 +160,7 @@ public class ImportCommand implements CommandExecutor {
 			sheet.setCurrentHitPoints(sheet.getMaxHitPoints() - character.getRemovedHitPoints());
 			sheet.setTemporaryHitPoints(character.getTemporaryHitPoints());	
 			sheet.setFeatures(features);
-			sheet.setActions(generateActions(sheet, character));
-			//TODO: convert any inventory items to actions as necessary
-			//TODO: on any import, convert any strings to strip out any HTML formatting, extra spaces, etc
-			
+			sheet.setActions(generateActions(sheet, character));			
 			applyAbilityScoreMods(sheet);
 			applySavingThrowMods(sheet);
 			applySkillMods(sheet);

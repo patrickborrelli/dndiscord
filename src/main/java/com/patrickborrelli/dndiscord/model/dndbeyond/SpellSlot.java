@@ -16,7 +16,6 @@ public class SpellSlot extends SpellLevel{
 	 */
 	public SpellSlot() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

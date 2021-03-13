@@ -18,7 +18,6 @@ public class Ideal extends TableLookup {
 	 */
 	public Ideal() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override

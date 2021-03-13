@@ -15,7 +15,7 @@ public class PactMagicSlot extends SpellLevel {
 	 * 
 	 */
 	public PactMagicSlot() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override

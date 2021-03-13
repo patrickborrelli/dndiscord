@@ -19,7 +19,6 @@ public class Bond extends TableLookup {
 	 */
 	public Bond() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

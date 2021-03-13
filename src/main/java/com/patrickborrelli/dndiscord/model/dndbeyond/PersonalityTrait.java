@@ -18,7 +18,6 @@ public class PersonalityTrait extends TableLookup {
 	 */
 	public PersonalityTrait() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	@Override
 	public String toString() {
