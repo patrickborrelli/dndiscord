@@ -2043,6 +2043,34 @@ public class CharacterSheet {
 	}
 
 	/**
+	 * @return Set<String> the proficiencies
+	 */
+	public Set<String> getProficiencies() {
+		return proficiencies;
+	}
+
+	/**
+	 * @param proficiencies Set<String> the proficiencies to set
+	 */
+	public void setProficiencies(Set<String> proficiencies) {
+		this.proficiencies = proficiencies;
+	}
+
+	/**
+	 * @return Set<Attack> the attacks
+	 */
+	public Set<Attack> getAttacks() {
+		return attacks;
+	}
+
+	/**
+	 * @param attacks Set<Attack> the attacks to set
+	 */
+	public void setAttacks(Set<Attack> attacks) {
+		this.attacks = attacks;
+	}
+
+	/**
 	 * @param inventory List<Item> the inventory to set
 	 */
 	public void setInventory(List<Item> inventory) {
@@ -2112,6 +2140,7 @@ public class CharacterSheet {
 		result = prime * result + athleticsMod;
 		result = prime * result + (athleticsProficiency ? 1231 : 1237);
 		result = prime * result + attackCount;
+		result = prime * result + ((attacks == null) ? 0 : attacks.hashCode());
 		result = prime * result + attacksUsed;
 		result = prime * result + ((avatarUrl == null) ? 0 : avatarUrl.hashCode());
 		result = prime * result + ((background == null) ? 0 : background.hashCode());
@@ -2193,6 +2222,7 @@ public class CharacterSheet {
 		result = prime * result + persuasionMod;
 		result = prime * result + (persuasionProficiency ? 1231 : 1237);
 		result = prime * result + platinumPieces;
+		result = prime * result + ((proficiencies == null) ? 0 : proficiencies.hashCode());
 		result = prime * result + proficiencyBonus;
 		result = prime * result + ((race == null) ? 0 : race.hashCode());
 		result = prime * result + (religionExpertise ? 1231 : 1237);
@@ -2285,6 +2315,11 @@ public class CharacterSheet {
 		if (athleticsProficiency != other.athleticsProficiency)
 			return false;
 		if (attackCount != other.attackCount)
+			return false;
+		if (attacks == null) {
+			if (other.attacks != null)
+				return false;
+		} else if (!attacks.equals(other.attacks))
 			return false;
 		if (attacksUsed != other.attacksUsed)
 			return false;
@@ -2496,6 +2531,11 @@ public class CharacterSheet {
 			return false;
 		if (platinumPieces != other.platinumPieces)
 			return false;
+		if (proficiencies == null) {
+			if (other.proficiencies != null)
+				return false;
+		} else if (!proficiencies.equals(other.proficiencies))
+			return false;
 		if (proficiencyBonus != other.proficiencyBonus)
 			return false;
 		if (race == null) {
@@ -2649,8 +2689,9 @@ public class CharacterSheet {
 				+ ", flySpeed=" + flySpeed + ", burrowSpeed=" + burrowSpeed + ", swimSpeed=" + swimSpeed
 				+ ", climbSpeed=" + climbSpeed + ", characterClasses=" + characterClasses + ", totalLevel=" + totalLevel
 				+ ", maxHitPoints=" + maxHitPoints + ", currentHitPoints=" + currentHitPoints + ", temporaryHitPoints="
-				+ temporaryHitPoints + ", features=" + features + ", inventory=" + inventory + ", attackCount="
-				+ attackCount + ", attacksUsed=" + attacksUsed + ", actions=" + actions + "]";
+				+ temporaryHitPoints + ", features=" + features + ", proficiencies=" + proficiencies + ", inventory="
+				+ inventory + ", attackCount=" + attackCount + ", attacksUsed=" + attacksUsed + ", actions=" + actions
+				+ ", attacks=" + attacks + "]";
 	}
 
 }
