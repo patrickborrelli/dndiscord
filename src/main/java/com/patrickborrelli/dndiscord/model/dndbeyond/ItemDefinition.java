@@ -33,7 +33,7 @@ public class ItemDefinition {
 	private String filterType;
 	private int fixedDamage;
 	private int gearTypeId;
-	private String[] grantedModifiers;
+	private Modifier[] grantedModifiers;
 	private int groupedId;
 	private int id;
 	private boolean isConsumable;
@@ -62,7 +62,7 @@ public class ItemDefinition {
 	private String[] tags;
 	private String type;
 	private int version;
-	private String[] weaponBehaviors;
+	private ItemDefinition[] weaponBehaviors;
 	private float weight;
 
 	public ItemDefinition() {
@@ -366,14 +366,14 @@ public class ItemDefinition {
 	/**
 	 * @return the grantedModifiers
 	 */
-	public String[] getGrantedModifiers() {
+	public Modifier[] getGrantedModifiers() {
 		return grantedModifiers;
 	}
 
 	/**
 	 * @param grantedModifiers the grantedModifiers to set
 	 */
-	public void setGrantedModifiers(String[] grantedModifiers) {
+	public void setGrantedModifiers(Modifier[] grantedModifiers) {
 		this.grantedModifiers = grantedModifiers;
 	}
 
@@ -768,18 +768,18 @@ public class ItemDefinition {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-
+	
 	/**
-	 * @return the weaponBehaviors
+	 * @return ItemDefinition[] the weaponBehaviors
 	 */
-	public String[] getWeaponBehaviors() {
+	public ItemDefinition[] getWeaponBehaviors() {
 		return weaponBehaviors;
 	}
 
 	/**
-	 * @param weaponBehaviors the weaponBehaviors to set
+	 * @param weaponBehaviors ItemDefinition[] the weaponBehaviors to set
 	 */
-	public void setWeaponBehaviors(String[] weaponBehaviors) {
+	public void setWeaponBehaviors(ItemDefinition[] weaponBehaviors) {
 		this.weaponBehaviors = weaponBehaviors;
 	}
 

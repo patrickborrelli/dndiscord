@@ -19,8 +19,6 @@ import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
 import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
 
-//TODO: will need to implement a database system so that user/server prefix can be stored in case app goes down
-
 /**
  * Command class to handle all types of prefix commands
  * issued from Discord to the DnDiscord bot.

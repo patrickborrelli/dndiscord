@@ -1,6 +1,6 @@
 package com.patrickborrelli.dndiscord.model.dndbeyond;
 
-import java.util.Arrays;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @author Patrick Borrelli
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CharacterClass {
+public class DndBeyondCharacterClass {
 
 	private long id;
 	private long entityTypeId;
@@ -20,18 +20,10 @@ public class CharacterClass {
 	private int hitDiceUsed;
 	private ClassDefinition definition;
 	private ClassDefinition subclassDefinition;
-	private ClassFeature[] classFeatures;
+	private List<ClassFeature> classFeatures;
 	
-	public CharacterClass() {
+	public DndBeyondCharacterClass() {
 		
-	}
-
-	@Override
-	public String toString() {
-		return "CharacterClass [id=" + id + ", entityTypeId=" + entityTypeId + ", level=" + level + ", isStartingClass="
-				+ isStartingClass + ", hitDiceUsed=" + hitDiceUsed + ", definition=" + definition
-				+ ", subclassDefinition=" + subclassDefinition + ", classFeatures=" + Arrays.toString(classFeatures)
-				+ "]";
 	}
 
 	/**
@@ -133,16 +125,23 @@ public class CharacterClass {
 	}
 
 	/**
-	 * @return the classFeatures
+	 * @return List<ClassFeature> the classFeatures
 	 */
-	public ClassFeature[] getClassFeatures() {
+	public List<ClassFeature> getClassFeatures() {
 		return classFeatures;
 	}
 
 	/**
-	 * @param classFeatures the classFeatures to set
+	 * @param classFeatures List<ClassFeature> the classFeatures to set
 	 */
-	public void setClassFeatures(ClassFeature[] classFeatures) {
+	public void setClassFeatures(List<ClassFeature> classFeatures) {
 		this.classFeatures = classFeatures;
+	}
+
+	@Override
+	public String toString() {
+		return "DndBeyondCharacterClass [id=" + id + ", entityTypeId=" + entityTypeId + ", level=" + level
+				+ ", isStartingClass=" + isStartingClass + ", hitDiceUsed=" + hitDiceUsed + ", definition=" + definition
+				+ ", subclassDefinition=" + subclassDefinition + ", classFeatures=" + classFeatures + "]";
 	}
 }

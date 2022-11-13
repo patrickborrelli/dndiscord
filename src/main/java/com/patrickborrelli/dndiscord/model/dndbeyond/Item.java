@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Item {
 	private long id;
 	private long entityTypeId;
-	//private ItemDefinition definition;
+	private ItemDefinition definition;
 	private int quantity;
 	private boolean isAttuned;
 	private boolean equipped;
@@ -49,6 +49,23 @@ public class Item {
 	 */
 	public void setEntityTypeId(long entityTypeId) {
 		this.entityTypeId = entityTypeId;
+	}
+
+	/**
+	 * @return the definition
+	 */
+	public ItemDefinition getDefinition() {
+		return definition;
+	}
+
+	/**
+	 * @param definition the definition to set
+	 */
+	public void setDefinition(ItemDefinition definition) {
+		this.definition = definition;
+		if(definition.getDamage() != null) {
+			displayAsAttack = true;
+		}
 	}
 
 	/**
@@ -122,52 +139,9 @@ public class Item {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (displayAsAttack ? 1231 : 1237);
-		result = prime * result + (int) (entityTypeId ^ (entityTypeId >>> 32));
-		result = prime * result + (equipped ? 1231 : 1237);
-		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + (isAttuned ? 1231 : 1237);
-		result = prime * result + ((limitedUse == null) ? 0 : limitedUse.hashCode());
-		result = prime * result + quantity;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Item other = (Item) obj;
-		if (displayAsAttack != other.displayAsAttack)
-			return false;
-		if (entityTypeId != other.entityTypeId)
-			return false;
-		if (equipped != other.equipped)
-			return false;
-		if (id != other.id)
-			return false;
-		if (isAttuned != other.isAttuned)
-			return false;
-		if (limitedUse == null) {
-			if (other.limitedUse != null)
-				return false;
-		} else if (!limitedUse.equals(other.limitedUse))
-			return false;
-		if (quantity != other.quantity)
-			return false;
-		return true;
-	}
-
-	@Override
 	public String toString() {
-		return "Item [id=" + id + ", entityTypeId=" + entityTypeId + ", quantity=" + quantity + ", isAttuned="
-				+ isAttuned + ", equipped=" + equipped + ", limitedUse=" + limitedUse + ", displayAsAttack="
-				+ displayAsAttack + "]";
+		return "Item [id=" + id + ", entityTypeId=" + entityTypeId + ", definition=" + definition + ", quantity="
+				+ quantity + ", isAttuned=" + isAttuned + ", equipped=" + equipped + ", limitedUse=" + limitedUse
+				+ ", displayAsAttack=" + displayAsAttack + "]";
 	}
 }
