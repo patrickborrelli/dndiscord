@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
+import org.javacord.api.entity.intent.Intent;
 
 import com.patrickborrelli.dndiscord.exceptions.MissingEnvironmentVarException;
 import com.patrickborrelli.dndiscord.listeners.DNDiscordMessageCreateListener;
@@ -33,7 +34,7 @@ public class DNDiscordMain {
 			instance = ConfigurationUtil.getInstance();
 			
 			token = instance.getBotToken();
-			DiscordApi api = new DiscordApiBuilder().setToken(token).login().join();
+			DiscordApi api = new DiscordApiBuilder().setToken(token).addIntents(Intent.MESSAGE_CONTENT).login().join();
 			appUtilInstance.setApi(api);
 			
 	        api.addMessageCreateListener(new DNDiscordMessageCreateListener());
