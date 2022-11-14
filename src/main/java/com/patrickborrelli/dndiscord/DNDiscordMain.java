@@ -34,7 +34,7 @@ public class DNDiscordMain {
 			instance = ConfigurationUtil.getInstance();
 			
 			token = instance.getBotToken();
-			DiscordApi api = new DiscordApiBuilder().setToken(token).setIntents(Intent.MESSAGE_CONTENT).login().join();
+			DiscordApi api = new DiscordApiBuilder().setToken(token).addIntents(Intent.MESSAGE_CONTENT).login().join();
 			appUtilInstance.setApi(api);
 			
 	        api.addMessageCreateListener(new DNDiscordMessageCreateListener());
