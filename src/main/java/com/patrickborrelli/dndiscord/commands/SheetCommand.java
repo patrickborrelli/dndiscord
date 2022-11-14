@@ -41,7 +41,7 @@ public class SheetCommand implements CommandExecutor {
 		for(MessageAttachment attach : attachments) {
 			//for now, assume it is a json file representing a character.
 			try {
-				stream = attach.downloadAsInputStream();
+				stream = attach.asInputStream();
 				sheet = mapper.readValue(stream, DndBeyondSheet.class);
 				characters.add(sheet);				
 			} catch (IOException e) {

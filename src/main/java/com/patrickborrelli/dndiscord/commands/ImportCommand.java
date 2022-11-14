@@ -93,7 +93,7 @@ public class ImportCommand implements CommandExecutor {
 					LOGGER.debug("Received Sheet Command message: " + msg.getContent() + " with " + attachments.size() + " attachments");
 					for(MessageAttachment attach : attachments) {
 						try {
-							stream = attach.downloadAsInputStream();
+							stream = attach.asInputStream();
 							sheet = mapper.readValue(stream, DndBeyondSheet.class);
 							character = sheet;				
 						} catch (IOException e) {
