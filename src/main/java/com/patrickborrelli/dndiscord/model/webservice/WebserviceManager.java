@@ -429,7 +429,7 @@ public class WebserviceManager {
 	 */
 	public DiscordUser createUser(
 			String id, String username, String discriminator, 
-			String avatar, boolean bot, boolean system) {
+			String avatar, boolean bot) {
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
@@ -440,8 +440,7 @@ public class WebserviceManager {
 				   "\t" + "\"discriminator\": \"" + discriminator + "\",\n" + 
 				   "\t" + "\"avatar_hash\": \"" + avatar + "\",\n" + 
 				   "\t" + "\"bot\": \"" + bot + "\",\n" + 
-				   "\t" + "\"password\": \"" + "nonsense" + "\",\n" + 
-				   "\t" + "\"system_user\": \"" + system + "\"\n}";
+				   "\t" + "\"password\": \"" + "nonsense" + "\"\n}";
 		
 		LOGGER.debug("Using parameters: " + POST_PARAMS);
 		
