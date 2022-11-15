@@ -82,8 +82,7 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 							currentUser.getName(), 
 							currentUser.getDiscriminator(), 
 							String.valueOf(currentUser.getAvatar().hashCode()), 
-							currentUser.isBot(), 
-							false);
+							currentUser.isBot());
 					LOGGER.debug("Created user: " + user.toString());
 				} else {
 					LOGGER.debug("Retrieved existing user: " + user.toString());

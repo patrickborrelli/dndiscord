@@ -1,5 +1,7 @@
 package com.patrickborrelli.dndiscord.model;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -21,8 +23,6 @@ public class DiscordUser {
 	@JsonProperty("avatar_hash")
 	private String avatar;
 	private boolean bot;
-	@JsonProperty("system_user")
-	private boolean system;
 	
 	//default constructor:
 	public DiscordUser() {
@@ -113,78 +113,26 @@ public class DiscordUser {
 		this.bot = bot;
 	}
 
-	/**
-	 * @return boolean the system
-	 */
-	public boolean isSystem() {
-		return system;
-	}
-
-	/**
-	 * @param boolean the system to set
-	 */
-	public void setSystem(boolean system) {
-		this.system = system;
-	}
-
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((avatar == null) ? 0 : avatar.hashCode());
-		result = prime * result + (bot ? 1231 : 1237);
-		result = prime * result + ((discord_id == null) ? 0 : discord_id.hashCode());
-		result = prime * result + ((discriminator == null) ? 0 : discriminator.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + (system ? 1231 : 1237);
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
-		return result;
+		return Objects.hash(avatar, bot, discord_id, discriminator, id, username);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof DiscordUser))
 			return false;
 		DiscordUser other = (DiscordUser) obj;
-		if (avatar == null) {
-			if (other.avatar != null)
-				return false;
-		} else if (!avatar.equals(other.avatar))
-			return false;
-		if (bot != other.bot)
-			return false;
-		if (discord_id == null) {
-			if (other.discord_id != null)
-				return false;
-		} else if (!discord_id.equals(other.discord_id))
-			return false;
-		if (discriminator == null) {
-			if (other.discriminator != null)
-				return false;
-		} else if (!discriminator.equals(other.discriminator))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (system != other.system)
-			return false;
-		if (username == null) {
-			if (other.username != null)
-				return false;
-		} else if (!username.equals(other.username))
-			return false;
-		return true;
+		return Objects.equals(avatar, other.avatar) && bot == other.bot && Objects.equals(discord_id, other.discord_id)
+				&& Objects.equals(discriminator, other.discriminator) && Objects.equals(id, other.id)
+				&& Objects.equals(username, other.username);
 	}
 
 	@Override
 	public String toString() {
 		return "DiscordUser [id=" + id + ", discord_id=" + discord_id + ", username=" + username + ", discriminator="
-				+ discriminator + ", avatar=" + avatar + ", bot=" + bot + ", system=" + system + "]";
-	}
+				+ discriminator + ", avatar=" + avatar + ", bot=" + bot + "]";
+	}	
 }
