@@ -17,6 +17,7 @@ import com.patrickborrelli.dndiscord.exceptions.MissingEnvironmentVarException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
+import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
 
 /**
@@ -26,7 +27,8 @@ import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
  * @author Patrick Borrelli
  */
 public class PrefixCommand implements CommandExecutor {
-	private static final Logger LOGGER = LogManager.getLogger(DNDiscordMain.class);
+	
+	private static final Logger LOGGER = LogManager.getLogger(PrefixCommand.class);
 	private static ConfigurationUtil configUtil;
 	private AppUtil appUtil;
 	
@@ -47,10 +49,10 @@ public class PrefixCommand implements CommandExecutor {
 		String[] args = msg.getContent().split(" ");
 		String currentPrefix = configUtil.getBotPrefix();
 		
-		if(args.length > 2) {
-			buildFormatEmbed(msg);
-		} else if(args.length == 1) {
-			buildFormatEmbed(msg);
+		if(args.length > 2 || args.length == 1) {
+			LOGGER.warn("Incorrect arguments provided to Prefix command: " + msg.getContent());
+			MessageResponse.sendReply(channel, "Incorrect arguments provided to Prefix command: " + msg.getContent());
+			new HelpCommand().onCommand(msg, CommandUtil.PREFIX, user, messageReceiptTime);
 		} else if(args.length == 2) {
 			if(args[1].equalsIgnoreCase("list")) {
 				MessageResponse.sendReply(channel, "Current prefix is: " + configUtil.getBotPrefix());

@@ -21,6 +21,7 @@ import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.Formula;
 import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
+import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 
 /**
  * Command class to handle all types of dice rolling
@@ -49,6 +50,8 @@ public class RollCommand implements CommandExecutor {
 	private boolean sendEmbed = false;
 	private boolean sendBoth = false;
 	
+	private HelpCommand helpCommand = new HelpCommand();
+	
 	WebserviceManager wsManager = WebserviceManager.getInstance();
 
 	/**
@@ -63,6 +66,7 @@ public class RollCommand implements CommandExecutor {
 		if(args.length < 2) {
 			LOGGER.warn("Too few arguments provided to Roll command: " + msg.getContent());
 			MessageResponse.sendReply(channel, "Not enough arguments provided");
+			helpCommand.onCommand(msg, CommandUtil.ROLL, user, messageReceiptTime);
 		} else {
 			StringBuilder buf = new StringBuilder();
 			buf.append("<@" + msg.getAuthor().getId() + ">: " + rollString.toString() + " --> ");

@@ -62,9 +62,14 @@ public class HelpCommand implements CommandExecutor {
 			"**repeat(4d6k3, 6)** - generate 6 results, perhaps for character creation.\n" +
 			"**save(4d6kh3, statroll)** - saves function 4d6kh3 which can now be run using [roll $statroll].\n";
 	
-	private static final String PREFIX_TEXT = 
+	private static final String PREFIX_HELP_TEXT = 
 			"**prefix** <<new prefix characters>>\n" +
 		    "*example:* **prefix !!** \n";
+	
+	private static final String PING_HELP_TEXT = 
+			"**ping** - returns round trip message latency to the server\n" +
+			"**ping author** - returns information about the bot author\n" +
+			"**ping time** - returns the current date and time at the server.";	
 			
 	
 	public HelpCommand() {
@@ -91,18 +96,36 @@ public class HelpCommand implements CommandExecutor {
 			} else if(argument.equalsIgnoreCase(CommandUtil.PREFIX)) {
 				LOGGER.debug("Building dialog for PREFIX help.");
 				buildPrefixHelpEmbed(msg);
+			} else if(argument.equalsIgnoreCase(CommandUtil.PING)) {
+				LOGGER.debug("Building dialog for PING help.");
+				buildPingHelpEmbed(msg);
+			} else {
+				MessageResponse.sendReply(channel, "Invalid help command: " + msg.getContent());
 			}
 		} else {
 			MessageResponse.sendReply(channel, "Unknown argument provided.");
 		}
 	}
 	
+	public void onCommand(Message msg, String command, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
+		if(command == CommandUtil.ROLL) {
+			LOGGER.debug("Building dialog for ROLL help.");
+			buildRollHelpEmbed(msg);
+		} else if(command == CommandUtil.PREFIX) {
+			LOGGER.debug("Building dialog for PREFIX help.");
+			buildPrefixHelpEmbed(msg);
+		} else if(command == CommandUtil.PING) {
+			LOGGER.debug("Building dialog for PING help.");
+			buildPingHelpEmbed(msg);
+		}
+	}
+	
 	private void buildPrefixHelpEmbed(Message msg) {
 		EmbedBuilder embed = new EmbedBuilder()
-				.setTitle("DnDiscord Help - prefix")
+				.setTitle("DnDiscord Help -prefix")
 				.setDescription("Changes the server prefix for DnDiscord.")
 			    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", appUtil.getBotAvatarUrl().toString())
-			    .addField("Format", PREFIX_TEXT)
+			    .addField("Format", PREFIX_HELP_TEXT)
 			    .setColor(Color.GREEN)
 			    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
 			    .setThumbnail(appUtil.getBotAvatarUrl().toString());
@@ -124,12 +147,24 @@ public class HelpCommand implements CommandExecutor {
 	
 	private void buildRollHelpEmbed(Message msg) {
 		EmbedBuilder embed = new EmbedBuilder()
-			.setTitle("DnDiscord Help - roll, r")
+			.setTitle("DnDiscord Help -roll, r")
 			.setDescription("Rolls dice in an XdY format.")
 		    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", appUtil.getBotAvatarUrl().toString())
 		    .addField("Formatting", ROLL_HELP_TEXT)
 		    .addField("Examples", ROLL_EXAMPLE_TEXT)
 		    .addField("Additional Help", MORE_HELP)
+		    .setColor(Color.GREEN)
+		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
+		    .setThumbnail(appUtil.getBotAvatarUrl().toString());
+		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);
+	}
+	
+	private void buildPingHelpEmbed(Message msg) {
+		EmbedBuilder embed = new EmbedBuilder()
+			.setTitle("DnDiscord Help -ping")
+			.setDescription("Retrieves information from server.")
+		    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", appUtil.getBotAvatarUrl().toString())
+		    .addField("Formatting", PING_HELP_TEXT)
 		    .setColor(Color.GREEN)
 		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
 		    .setThumbnail(appUtil.getBotAvatarUrl().toString());
