@@ -23,6 +23,7 @@ public class HelpCommand implements CommandExecutor {
 	private AppUtil appUtil;
 	private static final String HELP_TEXT = 
 			"**help** - shows this message.\n" +
+			"__**import**__ - imports third-party characters for DnDiscord use.\n" +
 			"__**ping**__ - tests the bot's connection.\n" +
 			"__**prefix**__ - sets the bot's prefix for this server.\n" +
 			"__**roll, r**__ - generates dice roll results.\n";
@@ -70,6 +71,16 @@ public class HelpCommand implements CommandExecutor {
 			"**ping** - returns round trip message latency to the server\n" +
 			"**ping author** - returns information about the bot author\n" +
 			"**ping time** - returns the current date and time at the server.";	
+	
+	private static final String IMPORT_HELP_TEXT = 
+			"**import beyond <<dnd beyond share url>>** - imports the selected "
+			+ "character and makes them your primary character.\n" 
+			+ "**import beyond <<dnd beyond character id number>>** - imports the selected "
+			+ "character and makes them your primary character.";
+	
+	private static final String IMPORT_DEV_LIST_TEXT = 
+			"Future functionality will include ability to import Roll20 characters.";
+			
 			
 	
 	public HelpCommand() {
@@ -99,6 +110,9 @@ public class HelpCommand implements CommandExecutor {
 			} else if(argument.equalsIgnoreCase(CommandUtil.PING)) {
 				LOGGER.debug("Building dialog for PING help.");
 				buildPingHelpEmbed(msg);
+			} else if(argument.equalsIgnoreCase(CommandUtil.IMPORT)) {
+				LOGGER.debug("Building dialog for IMPORT help.");
+				buildImportHelpEmbed(msg);
 			} else {
 				MessageResponse.sendReply(channel, "Invalid help command: " + msg.getContent());
 			}
@@ -117,7 +131,23 @@ public class HelpCommand implements CommandExecutor {
 		} else if(command == CommandUtil.PING) {
 			LOGGER.debug("Building dialog for PING help.");
 			buildPingHelpEmbed(msg);
+		} else if(command == CommandUtil.IMPORT){
+			LOGGER.debug("Building dialog for IMPORT help.");
+			buildImportHelpEmbed(msg);
 		}
+	}
+	
+	private void buildImportHelpEmbed(Message msg) {
+		EmbedBuilder embed = new EmbedBuilder()
+				.setTitle("DnDiscord Help -import")
+				.setDescription("Imports third-party characters for DnDiscord use.")
+			    .setAuthor("DnDiscord", "http://github.com/patrickborrelli", appUtil.getBotAvatarUrl().toString())
+			    .addField("Format", IMPORT_HELP_TEXT)
+			    .addField("Future Developments", IMPORT_DEV_LIST_TEXT)
+			    .setColor(Color.GREEN)
+			    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
+			    .setThumbnail(appUtil.getBotAvatarUrl().toString());
+			MessageResponse.sendEmbedMessage(msg.getChannel(), embed);	
 	}
 	
 	private void buildPrefixHelpEmbed(Message msg) {

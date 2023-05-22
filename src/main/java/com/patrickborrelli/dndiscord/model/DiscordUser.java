@@ -1,9 +1,14 @@
 package com.patrickborrelli.dndiscord.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 
 /**
  * Representational data encapsulating a
@@ -23,6 +28,8 @@ public class DiscordUser {
 	@JsonProperty("avatar_hash")
 	private String avatar;
 	private boolean bot;
+	@JsonIgnore
+	private List<CharacterSheet> characters = new ArrayList<>();
 	
 	//default constructor:
 	public DiscordUser() {
@@ -111,6 +118,14 @@ public class DiscordUser {
 	 */
 	public void setBot(boolean bot) {
 		this.bot = bot;
+	}
+	
+	public void addCharacter(CharacterSheet sheet) {
+		characters.add(sheet);
+	}
+	
+	public List<CharacterSheet> getCharacters() {
+		return characters;
 	}
 
 	@Override

@@ -1,8 +1,9 @@
 package com.patrickborrelli.dndiscord.commands;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,7 +14,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
-import org.javacord.api.entity.message.MessageAttachment;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,7 +64,6 @@ import com.patrickborrelli.dndiscord.utilities.WeaponPropertyType;
  */
 public class ImportCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(ImportCommand.class);
-	private List<MessageAttachment> attachments;
 	private RulesetUtil ruleset = RulesetUtil.getInstance();
 	private Set<Feature> features = null;
 
@@ -73,44 +72,36 @@ public class ImportCommand implements CommandExecutor {
 		features = new HashSet<>();
 		TextChannel channel = msg.getChannel();
 		String[] args = msg.getContent().split(" ");
+		StringBuilder lBuff = new StringBuilder().append("https://www.dndbeyond.com/character/");
+		InputStream inputStream;
+		URLConnection connection;
+		DndBeyondSheet sheet = null;	
+		ObjectMapper mapper;
 		
-		if(args.length != 2) {
-			MessageResponse.sendReply(channel, "Inappropriate arguments provided: IMPORT BEYOND|JSON|ROLL20");
-		} else if(args.length == 2) {
-			String argument = args[1];
-			if(argument.equalsIgnoreCase(CommandUtil.BEYOND)) {
-				LOGGER.debug("Processing DnDBeyond Json import");
-				InputStream stream = null;
-				DndBeyondSheet sheet = null;
-				//TODO: need to store currently loaded characters in a CharacterModel, along with indication of currently active character:
-				DndBeyondSheet character = new DndBeyondSheet();
-				attachments = msg.getAttachments();
-				if(attachments.size() < 1) {
-					LOGGER.debug("User attempted to import dndbeyond character without an attachment.");
-					MessageResponse.sendReply(channel, "DndBeyond JSON must be attached.");
-				} else {
-					ObjectMapper mapper = new ObjectMapper();
-					LOGGER.debug("Received Sheet Command message: " + msg.getContent() + " with " + attachments.size() + " attachments");
-					for(MessageAttachment attach : attachments) {
-						try {
-							stream = attach.asInputStream();
-							sheet = mapper.readValue(stream, DndBeyondSheet.class);
-							character = sheet;				
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					LOGGER.debug("Retrieved the following character:");
-					LOGGER.debug(character.toString());
-					//TODO: convert to DnDiscord character format and save to database
-					CharacterSheet converted = convertFormat(SheetSourceType.BEYOND, character, user);
-					buildSheetEmbed(msg, character);
-				}
-			} 
-		} else {
-			MessageResponse.sendReply(channel, "Unknown argument provided.");
+		if(args.length != 3) {
+			LOGGER.debug("Inappropriate arguments provided to import command: {}", msg.getContent());
+			MessageResponse.sendReply(channel, "Inappropriate arguments provided: IMPORT BEYOND <<characterIDnumber>> || <<dndbeyond character share url>>");
+			new HelpCommand().onCommand(msg, CommandUtil.IMPORT, user, messageReceiptTime);
+		} else if(args.length == 3) {
+			URL url;
+			try {
+				url = new URL(lBuff.append(args[2]).append("/json").toString());
+				connection = url.openConnection();
+				connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36");
+				inputStream = connection.getInputStream();				
+				
+				mapper = new ObjectMapper();
+				sheet = mapper.readValue(inputStream, DndBeyondSheet.class);		
+					
+				//TODO: save to database
+				CharacterSheet converted = convertFormat(SheetSourceType.BEYOND, sheet, user);
+				buildSheetEmbed(msg, converted);
+				user.addCharacter(converted);
+			} catch (Exception e) {
+				LOGGER.error("We broke something: {}", e);
+			}
 		}		
-	}
+	}	
 	
 	private CharacterSheet convertFormat(SheetSourceType type, DndBeyondSheet character, DiscordUser user) {
 		CharacterSheet sheet = new CharacterSheet();
@@ -945,35 +936,37 @@ public class ImportCommand implements CommandExecutor {
 	}
 	
 	private String cleanString(String input) {
-		StringBuilder builder = new StringBuilder();
-		char tagstart = '<';
-		char tagstop = '>';
-		boolean tagstarted = false;
-		
-		char[] ary = input.toCharArray();
-		
-		for(int i = 0; i < ary.length; i++) {
-			if(!tagstarted && ary[i] != tagstart) {
-				builder.append(ary[i]);
-			} else if(!tagstarted && ary[i] == tagstart) {
-				tagstarted = true;
-			} else if(tagstarted && ary[i] == tagstop) {
-				tagstarted = false;
+		if(input != null) {
+			StringBuilder builder = new StringBuilder();
+			char tagstart = '<';
+			char tagstop = '>';
+			boolean tagstarted = false;
+			
+			char[] ary = input.toCharArray();
+			
+			for(int i = 0; i < ary.length; i++) {
+				if(!tagstarted && ary[i] != tagstart) {
+					builder.append(ary[i]);
+				} else if(!tagstarted && ary[i] == tagstart) {
+					tagstarted = true;
+				} else if(tagstarted && ary[i] == tagstop) {
+					tagstarted = false;
+				}
 			}
+			
+			input = builder.toString();
+			input = input.replaceAll("\\s{2,}", " ").trim();
 		}
-		
-		input = builder.toString();
-		input = input.replaceAll("\\s{2,}", " ").trim();
 		return input;
 	}
 	
-	private void buildSheetEmbed(Message msg, DndBeyondSheet sheet) {
+	private void buildSheetEmbed(Message msg, CharacterSheet sheet) {
 		EmbedBuilder embed = new EmbedBuilder()
-			.setTitle(sheet.getName())
-			.setDescription("DnDiscord successfully imported character: " + sheet.getName())
+			.setTitle(sheet.getCharacterName())
+			.setDescription("DnDiscord successfully imported character: " + sheet.getCharacterName())
 		    .setColor(Color.GREEN)
 		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
-		    .setThumbnail(sheet.getAvatarUrl().toString());
+		    .setThumbnail(sheet.getAvatarUrl());
 		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);		
 	}	
 }
