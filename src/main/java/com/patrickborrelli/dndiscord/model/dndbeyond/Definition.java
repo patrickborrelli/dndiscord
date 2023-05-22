@@ -3,6 +3,7 @@ package com.patrickborrelli.dndiscord.model.dndbeyond;
 import java.util.Arrays;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Simple model for a definition json element, placeholder for minimal functionality until
@@ -25,7 +26,7 @@ public 	class Definition {
     private boolean hideInSheet;
     private int sourceId;
     private int sourcePageNumber;
-    private String[] creatureRules;
+    private JsonNode creatureRules;
     private LimitedUse[] limitedUse;
     
     public Definition() {
@@ -215,16 +216,16 @@ public 	class Definition {
 	}
 
 	/**
-	 * @return String[] the creatureRules
+	 * @return a JsonNode the creatureRules
 	 */
-	public String[] getCreatureRules() {
+	public JsonNode getCreatureRules() {
 		return creatureRules;
 	}
 
 	/**
 	 * @param creatureRules String[] the creatureRules to set
 	 */
-	public void setCreatureRules(String[] creatureRules) {
+	public void setCreatureRules(JsonNode creatureRules) {
 		this.creatureRules = creatureRules;
 	}
 
@@ -248,7 +249,7 @@ public 	class Definition {
 				+ name + ", description=" + description + ", snippet=" + snippet + ", activation=" + activation
 				+ ", requiredLevel=" + requiredLevel + ", isSubClassFeature=" + isSubClassFeature + ", hideInBuilder="
 				+ hideInBuilder + ", hideInSheet=" + hideInSheet + ", sourceId=" + sourceId + ", sourcePageNumber="
-				+ sourcePageNumber + ", creatureRules=" + Arrays.toString(creatureRules) + ", limitedUse="
+				+ sourcePageNumber + ", creatureRules=" + creatureRules + ", limitedUse="
 				+ Arrays.toString(limitedUse) + "]";
 	}
 
