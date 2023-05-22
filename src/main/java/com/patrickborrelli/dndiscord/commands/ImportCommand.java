@@ -46,6 +46,7 @@ import com.patrickborrelli.dndiscord.utilities.AlignmentType;
 import com.patrickborrelli.dndiscord.utilities.ArmorType;
 import com.patrickborrelli.dndiscord.utilities.AttackSubtype;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
+import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
 import com.patrickborrelli.dndiscord.utilities.DamageType;
 import com.patrickborrelli.dndiscord.utilities.FeatureType;
 import com.patrickborrelli.dndiscord.utilities.FilterType;
@@ -69,29 +70,41 @@ public class ImportCommand implements CommandExecutor {
 
 	@Override
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
-		features = new HashSet<>();
+		
 		TextChannel channel = msg.getChannel();
+		
 		String[] args = msg.getContent().split(" ");
-		StringBuilder lBuff = new StringBuilder().append("https://www.dndbeyond.com/character/");
-		InputStream inputStream;
-		URLConnection connection;
-		DndBeyondSheet sheet = null;	
-		ObjectMapper mapper;
+		StringBuilder urlStringBuffer = new StringBuilder().append("https://www.dndbeyond.com/character/");
+		String terminator = "/json";
+
 		
 		if(args.length != 3) {
 			LOGGER.debug("Inappropriate arguments provided to import command: {}", msg.getContent());
 			MessageResponse.sendReply(channel, "Inappropriate arguments provided: IMPORT BEYOND <<characterIDnumber>> || <<dndbeyond character share url>>");
 			new HelpCommand().onCommand(msg, CommandUtil.IMPORT, user, messageReceiptTime);
 		} else if(args.length == 3) {
-			URL url;
+			features = new HashSet<>();
+			
+			//determine which case we have and process accordingly:
+			if(args[2].contains("http")) {
+				//dndbeyond share url, format is 'https://ddb.ac/characters/28158645/grJ15Y' 
+				//if this changes, logic will need to be updated here:
+				String[] parsedStrings = args[2].split("/");
+				urlStringBuffer.append(parsedStrings[4]);				
+			} else {
+				urlStringBuffer.append(args[2]);
+			}
+			
+			urlStringBuffer.append(terminator);
+			
 			try {
-				url = new URL(lBuff.append(args[2]).append("/json").toString());
-				connection = url.openConnection();
-				connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36");
-				inputStream = connection.getInputStream();				
+				URL url = new URL(urlStringBuffer.toString());
+				URLConnection connection = url.openConnection();
+				connection.setRequestProperty("User-Agent", ConfigurationUtil.HTTP_USER_AGENT);
+				InputStream inputStream = connection.getInputStream();				
 				
-				mapper = new ObjectMapper();
-				sheet = mapper.readValue(inputStream, DndBeyondSheet.class);		
+				ObjectMapper mapper = new ObjectMapper();
+				DndBeyondSheet sheet = mapper.readValue(inputStream, DndBeyondSheet.class);		
 					
 				//TODO: save to database
 				CharacterSheet converted = convertFormat(SheetSourceType.BEYOND, sheet, user);
