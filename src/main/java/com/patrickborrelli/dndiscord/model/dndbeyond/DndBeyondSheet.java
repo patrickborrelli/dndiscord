@@ -64,7 +64,7 @@ public class DndBeyondSheet {
 	private Feat[] feats;
 	private String[] customDefenseAdjustments;
 	private String[] customSenses;
-	private String[] customSpeeds;
+	private Speed[] customSpeeds;
 	private String[] customProficiencies;
 	private String spellDefenses;
 	private CustomAction[] customActions;
@@ -859,14 +859,14 @@ public class DndBeyondSheet {
 	/**
 	 * @return the customSpeeds
 	 */
-	public String[] getCustomSpeeds() {
+	public Speed[] getCustomSpeeds() {
 		return customSpeeds;
 	}
 
 	/**
 	 * @param customSpeeds the customSpeeds to set
 	 */
-	public void setCustomSpeeds(String[] customSpeeds) {
+	public void setCustomSpeeds(Speed[] customSpeeds) {
 		this.customSpeeds = customSpeeds;
 	}
 

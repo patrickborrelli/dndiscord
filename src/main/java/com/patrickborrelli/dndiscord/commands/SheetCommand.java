@@ -1,8 +1,11 @@
 package com.patrickborrelli.dndiscord.commands;
 
 import java.awt.Color;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,8 @@ import org.javacord.api.entity.message.MessageAttachment;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
@@ -31,7 +36,11 @@ public class SheetCommand implements CommandExecutor {
 	@Override
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
 		InputStream stream = null;
+		InputStreamReader reader = null;
 		DndBeyondSheet sheet = null;
+		CharsetDetector detector = new CharsetDetector();
+		CharsetMatch match;
+		
 		//TODO: need to store currently loaded characters in a CharacterModel, along with indication of currently active character:
 		List<DndBeyondSheet> characters = new ArrayList<>();
 		attachments = msg.getAttachments();
@@ -42,7 +51,19 @@ public class SheetCommand implements CommandExecutor {
 			//for now, assume it is a json file representing a character.
 			try {
 				stream = attach.asInputStream();
-				sheet = mapper.readValue(stream, DndBeyondSheet.class);
+				
+				//determine correct encoding:
+				detector.setText(new BufferedInputStream(stream));
+				LOGGER.debug("Determining encoding for stream {}", stream);
+				match = detector.detect();
+				LOGGER.debug("Determined encoding for stream is {}", match.getName());
+				
+				Charset charset = Charset.forName(match.getName());
+				LOGGER.debug("Using charset {}", charset.displayName());
+				
+				reader = new InputStreamReader(attach.asInputStream(), charset);
+				
+				sheet = mapper.readValue(reader, DndBeyondSheet.class);
 				characters.add(sheet);				
 			} catch (IOException e) {
 				e.printStackTrace();

@@ -1,9 +1,16 @@
 package com.patrickborrelli.dndiscord.commands;
 
 import java.awt.Color;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -17,6 +24,8 @@ import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
@@ -25,6 +34,7 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.Background;
 import com.patrickborrelli.dndiscord.model.dndbeyond.ClassFeature;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondCharacterClass;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondConstants;
+import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondResponse;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Feat;
 import com.patrickborrelli.dndiscord.model.dndbeyond.ItemDefinition;
@@ -72,49 +82,75 @@ public class ImportCommand implements CommandExecutor {
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
 		
 		TextChannel channel = msg.getChannel();
+		InputStreamReader reader = null;
+		DndBeyondResponse response = null;
+		CharsetDetector detector = new CharsetDetector();
+		CharsetMatch match;		
+		ObjectMapper mapper = new ObjectMapper();
 		
 		String[] args = msg.getContent().split(" ");
-		StringBuilder urlStringBuffer = new StringBuilder().append("https://www.dndbeyond.com/character/");
-		String terminator = "/json";
+		StringBuilder urlStringBuffer = new StringBuilder().append("https://character-service.dndbeyond.com/character/v3/character/");
+		String terminator = "/";
 
 		
 		if(args.length != 3) {
 			LOGGER.debug("Inappropriate arguments provided to import command: {}", msg.getContent());
-			MessageResponse.sendReply(channel, "Inappropriate arguments provided: IMPORT BEYOND <<characterIDnumber>> || <<dndbeyond character share url>>");
+			MessageResponse.sendReply(channel, "Inappropriate arguments provided: IMPORT BEYOND <<characterIDnumber>>");
 			new HelpCommand().onCommand(msg, CommandUtil.IMPORT, user, messageReceiptTime);
 		} else if(args.length == 3) {
 			features = new HashSet<>();
 			
-			//determine which case we have and process accordingly:
-			if(args[2].contains("http")) {
-				//dndbeyond share url, format is 'https://ddb.ac/characters/28158645/grJ15Y' 
-				//if this changes, logic will need to be updated here:
-				String[] parsedStrings = args[2].split("/");
-				urlStringBuffer.append(parsedStrings[4]);				
-			} else {
-				urlStringBuffer.append(args[2]);
-			}
-			
+			urlStringBuffer.append(args[2]);			
 			urlStringBuffer.append(terminator);
+			
+			HttpURLConnection connection = null;
 			
 			try {
 				URL url = new URL(urlStringBuffer.toString());
-				URLConnection connection = url.openConnection();
+				connection = (HttpURLConnection) url.openConnection();
 				connection.setRequestProperty("User-Agent", ConfigurationUtil.HTTP_USER_AGENT);
-				InputStream inputStream = connection.getInputStream();				
+				BufferedReader in = new BufferedReader(
+						  new InputStreamReader(connection.getInputStream()));	
 				
-				ObjectMapper mapper = new ObjectMapper();
-				DndBeyondSheet sheet = mapper.readValue(inputStream, DndBeyondSheet.class);		
+				String inputLine;
+				StringBuffer content = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+				    content.append(inputLine);
+				    LOGGER.debug("READ LINE: {}", inputLine);
+				}
+				in.close();
+				
+				response = mapper.readValue(content.toString(), DndBeyondResponse.class);		
 					
 				//TODO: save to database
-				CharacterSheet converted = convertFormat(SheetSourceType.BEYOND, sheet, user);
+				CharacterSheet converted = convertFormat(SheetSourceType.BEYOND, response.getData(), user);
 				buildSheetEmbed(msg, converted);
 				user.addCharacter(converted);
 			} catch (Exception e) {
 				LOGGER.error("We broke something: {}", e);
+			} finally {
+				connection.disconnect();
 			}
 		}		
 	}	
+	
+	private String jsonToString(InputStream stream) {
+		StringBuilder buf = new StringBuilder();
+		int bufferSize = 1024;
+		char[] buffer = new char[bufferSize];
+		
+		Reader in = new InputStreamReader(stream, StandardCharsets.UTF_8);
+		 try {
+			for (int numRead; (numRead = in.read(buffer, 0, buffer.length)) > 0; ) {
+				 buf.append(buffer, 0, numRead);
+			 }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return buf.toString();
+	}
 	
 	private CharacterSheet convertFormat(SheetSourceType type, DndBeyondSheet character, DiscordUser user) {
 		CharacterSheet sheet = new CharacterSheet();
