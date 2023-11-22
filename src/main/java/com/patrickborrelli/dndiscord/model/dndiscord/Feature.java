@@ -1,9 +1,9 @@
 package com.patrickborrelli.dndiscord.model.dndiscord;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.patrickborrelli.dndiscord.utilities.ActivationType;
-import com.patrickborrelli.dndiscord.utilities.FeatureType;
-import com.patrickborrelli.dndiscord.utilities.ResetType;
+import com.patrickborrelli.dndiscord.model.type.ActivationType;
+import com.patrickborrelli.dndiscord.model.type.FeatureType;
+import com.patrickborrelli.dndiscord.model.type.ResetType;
 
 /**
  * Model of dDnDiscord Feature.

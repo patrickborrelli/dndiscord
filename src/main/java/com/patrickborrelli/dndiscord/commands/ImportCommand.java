@@ -42,22 +42,22 @@ import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.dndiscord.Feature;
 import com.patrickborrelli.dndiscord.model.dndiscord.Item;
-import com.patrickborrelli.dndiscord.utilities.ActionType;
-import com.patrickborrelli.dndiscord.utilities.ActivationType;
-import com.patrickborrelli.dndiscord.utilities.AlignmentType;
-import com.patrickborrelli.dndiscord.utilities.ArmorType;
-import com.patrickborrelli.dndiscord.utilities.AttackSubtype;
+import com.patrickborrelli.dndiscord.model.type.ActionType;
+import com.patrickborrelli.dndiscord.model.type.ActivationType;
+import com.patrickborrelli.dndiscord.model.type.AlignmentType;
+import com.patrickborrelli.dndiscord.model.type.ArmorType;
+import com.patrickborrelli.dndiscord.model.type.AttackSubtype;
+import com.patrickborrelli.dndiscord.model.type.DamageType;
+import com.patrickborrelli.dndiscord.model.type.FeatureType;
+import com.patrickborrelli.dndiscord.model.type.FilterType;
+import com.patrickborrelli.dndiscord.model.type.LifestyleType;
+import com.patrickborrelli.dndiscord.model.type.ResetType;
+import com.patrickborrelli.dndiscord.model.type.SheetSourceType;
+import com.patrickborrelli.dndiscord.model.type.StatType;
+import com.patrickborrelli.dndiscord.model.type.WeaponPropertyType;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
-import com.patrickborrelli.dndiscord.utilities.DamageType;
-import com.patrickborrelli.dndiscord.utilities.FeatureType;
-import com.patrickborrelli.dndiscord.utilities.FilterType;
-import com.patrickborrelli.dndiscord.utilities.LifestyleType;
-import com.patrickborrelli.dndiscord.utilities.ResetType;
 import com.patrickborrelli.dndiscord.utilities.RulesetUtil;
-import com.patrickborrelli.dndiscord.utilities.SheetSourceType;
-import com.patrickborrelli.dndiscord.utilities.StatType;
-import com.patrickborrelli.dndiscord.utilities.WeaponPropertyType;
 
 /**
  * Command class provided to process all sheet import related command requests

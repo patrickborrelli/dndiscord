@@ -1,4 +1,4 @@
-package com.patrickborrelli.dndiscord.utilities;
+package com.patrickborrelli.dndiscord.model.type;
 
 import java.util.HashMap;
 

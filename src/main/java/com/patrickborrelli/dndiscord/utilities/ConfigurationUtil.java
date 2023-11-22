@@ -12,8 +12,10 @@ public class ConfigurationUtil {
 	private static volatile ConfigurationUtil instance;
 	private static final String DNDISCORD_TOKEN = "DNDISCORD_TOKEN";
 	private static final String DNDISCORD_BETA_TOKEN = "DNDISCORD_BETA_TOKEN";
+	private static final String DNDISCORD_DEV_TOKEN = "DNDISCORD_DEV_TOKEN";
 	private static final String BETA = "BETA";
 	private static final String PROD = "PROD";
+	private static final String DEV = "DEV";
 	public static final String DEFAULT_PREFIX = "-";
 	public static final String HTTP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; "
 			+ "Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
@@ -50,6 +52,8 @@ public class ConfigurationUtil {
 			token = System.getenv(DNDISCORD_TOKEN);
 		} else if(scope.equalsIgnoreCase(BETA)) {
 			token = System.getenv(DNDISCORD_BETA_TOKEN);
+		} else if(scope.equalsIgnoreCase(DEV)) {
+			token = System.getenv(DNDISCORD_DEV_TOKEN);
 		}
 		if(token == null || token.isEmpty()) {
 			throw new MissingEnvironmentVarException("Required DNDISCORD_TOKEN environment variable not found.");

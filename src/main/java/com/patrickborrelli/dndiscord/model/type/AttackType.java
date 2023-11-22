@@ -1,4 +1,4 @@
-package com.patrickborrelli.dndiscord.utilities;
+package com.patrickborrelli.dndiscord.model.type;
 
 import java.util.HashMap;
 
@@ -7,33 +7,27 @@ import java.util.HashMap;
  * 
  * @author Patrick Borrelli
  */
-public enum ArmorType {
-	LIGHT(1),
-	MEDIUM(2),
-	HEAVY(3),
-	SHIELD(4);	
+public enum AttackType {
+	MELEE(1),
+	RANGED(2);	
 	
 	private Integer value;
-	private static HashMap<Integer, ArmorType> valuesMap;
-	private static HashMap<ArmorType, String> stringMap;
+	private static HashMap<Integer, AttackType> valuesMap;
+	private static HashMap<AttackType, String> stringMap;
 	
 	static {
 		valuesMap = 
-			new HashMap<Integer, ArmorType>(ArmorType.values().length);
-		valuesMap.put(1, LIGHT);
-		valuesMap.put(2, MEDIUM);
-		valuesMap.put(3, HEAVY);
-		valuesMap.put(4, SHIELD);
+			new HashMap<Integer, AttackType>(AttackType.values().length);
+		valuesMap.put(1, MELEE);
+		valuesMap.put(2, RANGED);
 		
 		stringMap = 
-			new HashMap<ArmorType, String>(ArmorType.values().length);
-		stringMap.put(LIGHT, "Light");
-		stringMap.put(MEDIUM, "Medium");
-		stringMap.put(HEAVY, "Heavy");
-		stringMap.put(SHIELD, "Shield");
+			new HashMap<AttackType, String>(AttackType.values().length);
+		stringMap.put(MELEE, "Melee");
+		stringMap.put(RANGED, "Ranged");
 	}
 	
-	private ArmorType(Integer theValue) {
+	private AttackType(Integer theValue) {
 		value = theValue;
 	}
 	
@@ -60,10 +54,10 @@ public enum ArmorType {
 	 * value for this enumeration
 	 * 
 	 * @param theValue the String value of this enumeration.
-	 * @return an ArmorType containing the enumeration 
+	 * @return an AttackType containing the enumeration 
 	 * 			represented by the provided String.
 	 */
-	public static ArmorType getEnum(Integer theValue) {
+	public static AttackType getEnum(Integer theValue) {
 		return valuesMap.get(theValue);
 	}
 	

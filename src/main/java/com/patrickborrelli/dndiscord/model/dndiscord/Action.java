@@ -1,13 +1,13 @@
 package com.patrickborrelli.dndiscord.model.dndiscord;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.patrickborrelli.dndiscord.utilities.ActionType;
-import com.patrickborrelli.dndiscord.utilities.ActivationType;
-import com.patrickborrelli.dndiscord.utilities.AttackSubtype;
-import com.patrickborrelli.dndiscord.utilities.DamageType;
-import com.patrickborrelli.dndiscord.utilities.FeatureType;
-import com.patrickborrelli.dndiscord.utilities.ResetType;
-import com.patrickborrelli.dndiscord.utilities.StatType;
+import com.patrickborrelli.dndiscord.model.type.ActionType;
+import com.patrickborrelli.dndiscord.model.type.ActivationType;
+import com.patrickborrelli.dndiscord.model.type.AttackSubtype;
+import com.patrickborrelli.dndiscord.model.type.DamageType;
+import com.patrickborrelli.dndiscord.model.type.FeatureType;
+import com.patrickborrelli.dndiscord.model.type.ResetType;
+import com.patrickborrelli.dndiscord.model.type.StatType;
 
 /**
  * Model of dDnDiscord Character Action.

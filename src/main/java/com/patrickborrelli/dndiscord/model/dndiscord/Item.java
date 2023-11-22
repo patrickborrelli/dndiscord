@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.patrickborrelli.dndiscord.utilities.ArmorType;
-import com.patrickborrelli.dndiscord.utilities.AttackType;
-import com.patrickborrelli.dndiscord.utilities.CategoryType;
-import com.patrickborrelli.dndiscord.utilities.DamageType;
-import com.patrickborrelli.dndiscord.utilities.FilterType;
-import com.patrickborrelli.dndiscord.utilities.ResetType;
-import com.patrickborrelli.dndiscord.utilities.WeaponPropertyType;
+import com.patrickborrelli.dndiscord.model.type.ArmorType;
+import com.patrickborrelli.dndiscord.model.type.AttackType;
+import com.patrickborrelli.dndiscord.model.type.CategoryType;
+import com.patrickborrelli.dndiscord.model.type.DamageType;
+import com.patrickborrelli.dndiscord.model.type.FilterType;
+import com.patrickborrelli.dndiscord.model.type.ResetType;
+import com.patrickborrelli.dndiscord.model.type.WeaponPropertyType;
 
 /**
  * Model of dDnDiscord Item.
