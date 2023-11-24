@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.Formula;
 import com.patrickborrelli.dndiscord.model.TokenResponse;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
+import com.patrickborrelli.dndiscord.utilities.AppUtil;
 
 /**
  * Singleton instance responsible for adding, modifying, and deleting 
@@ -31,15 +33,33 @@ public class WebserviceManager {
 	private static final Logger LOGGER = LogManager.getLogger(WebserviceManager.class.getName());
 	private static final String ADMIN_USERNAME = System.getenv("DNDISCORD_ADMIN_USER");
 	private static final String ADMIN_CREDENTIALS = System.getenv("DNDISCORD_ADMIN_CREDENTIALS");
+	private static final ObjectMapper MAPPER = new ObjectMapper();
 	private static String TOKEN = "";
 	
 	//static URLs
-	private static final String BASE_URL = System.getenv("DNDISCORD_API_BASE");
-	private static final String GET_USER_URL = BASE_URL + "/users/discordUser/";
-	private static final String CREATE_USER_URL = BASE_URL + "/users/register";
-	private static final String LOGIN_URL = BASE_URL + "/users/login";
-	private static final String FORMULA_URL = BASE_URL + "/formulae";
+	private static String BASE_URL;
+	private static String CHARACTER_URL;
+	private static String CREATE_USER_URL;
+	private static String FORMULA_URL;
+	private static String GET_USER_URL;
+	private static String LOGIN_URL;
 	private static final String QUERY = "?";
+	
+	static {
+		if(AppUtil.getInstance().getScope().equalsIgnoreCase("DEV")) {
+			BASE_URL = System.getenv("DNDISCORD_DEV_API_BASE");
+		} else {
+			BASE_URL = System.getenv("DNDISCORD_API_BASE");			
+		}
+		
+		CHARACTER_URL = BASE_URL + "characters";
+		CREATE_USER_URL = BASE_URL + "users/register";
+		FORMULA_URL = BASE_URL + "formulae";
+		GET_USER_URL = BASE_URL + "users/discordUser/";		
+		LOGIN_URL = BASE_URL + "users/login";
+		
+		LOGGER.debug("USING BaseUrl of: {} for {}", BASE_URL, AppUtil.getInstance().getScope());
+	}
 	
 	private WebserviceManager() {
 		TOKEN = getToken();
@@ -125,6 +145,72 @@ public class WebserviceManager {
 			LOGGER.debug(ioex.getMessage());
 			ioex.printStackTrace();
 		}
+		return buff.toString();
+	}
+	
+	public String addUserCharacter(DiscordUser user, CharacterSheet character) {
+		StringBuilder buff = new StringBuilder();
+		
+		LOGGER.debug("Making call to API: " + CHARACTER_URL);
+		
+		BufferedReader in = null;
+		HttpURLConnection con = null;		
+		String POST_BODY = "";
+		
+		try {
+			POST_BODY = MAPPER.writeValueAsString(character);
+		} catch (JsonProcessingException e) {
+			LOGGER.error("Failed to unmarshall character {}", e);
+		}
+		
+		LOGGER.debug("Body: " + POST_BODY);
+		
+		try {
+			URL obj = new URL(CHARACTER_URL);
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			con.setDoOutput(true);
+			
+			OutputStream os = con.getOutputStream();
+			os.write(POST_BODY.getBytes());
+			os.flush();
+			os.close();
+				
+			int responseCode = con.getResponseCode();
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				LOGGER.error("Error while adding character: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				LOGGER.debug("Saved successfully: " + response.toString());
+				buff.append("Character: " + character.getCharacterName() + " is now active.");		
+				in.close();
+				con.disconnect();
+			}		
+		} catch(MalformedURLException murl) {
+			LOGGER.error(murl);
+		} catch(IOException ioex) {
+			LOGGER.error(ioex);
+		}
+		
 		return buff.toString();
 	}
 	

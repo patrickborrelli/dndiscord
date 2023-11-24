@@ -1,4 +1,4 @@
-package com.patrickborrelli.dndiscord.commands;
+ package com.patrickborrelli.dndiscord.commands;
 
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -55,6 +55,7 @@ import com.patrickborrelli.dndiscord.model.type.ResetType;
 import com.patrickborrelli.dndiscord.model.type.SheetSourceType;
 import com.patrickborrelli.dndiscord.model.type.StatType;
 import com.patrickborrelli.dndiscord.model.type.WeaponPropertyType;
+import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
 import com.patrickborrelli.dndiscord.utilities.RulesetUtil;
@@ -67,6 +68,8 @@ import com.patrickborrelli.dndiscord.utilities.RulesetUtil;
  */
 public class ImportCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(ImportCommand.class);
+	
+	private static final WebserviceManager WSMANAGER = WebserviceManager.getInstance();
 	private RulesetUtil ruleset = RulesetUtil.getInstance();
 	private Set<Feature> features = null;
 
@@ -110,8 +113,8 @@ public class ImportCommand implements CommandExecutor {
 
 				response = mapper.readValue(content.toString(), DndBeyondResponse.class);
 
-				// TODO: save to database, restore on character load:
 				CharacterSheet converted = convertFormat(SheetSourceType.BEYOND, response.getData(), user);
+				WSMANAGER.addUserCharacter(user, converted);
 				buildSheetEmbed(msg, converted);
 				user.addCharacter(converted);
 			} catch (Exception e) {
