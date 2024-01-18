@@ -1,22 +1,13 @@
 package com.patrickborrelli.dndiscord.commands;
 
-import java.awt.Color;
-import java.net.URL;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
-import org.javacord.api.entity.message.embed.EmbedBuilder;
-import org.javacord.api.entity.user.User;
-
-import com.patrickborrelli.dndiscord.DNDiscordMain;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.exceptions.MissingEnvironmentVarException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
-import com.patrickborrelli.dndiscord.utilities.AppUtil;
 import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
 
@@ -30,7 +21,6 @@ public class PrefixCommand implements CommandExecutor {
 	
 	private static final Logger LOGGER = LogManager.getLogger(PrefixCommand.class);
 	private static ConfigurationUtil configUtil;
-	private AppUtil appUtil;
 	
 	public PrefixCommand() {
 		try {
@@ -40,7 +30,6 @@ public class PrefixCommand implements CommandExecutor {
 			mevEx.printStackTrace();
 			LOGGER.error("Failed to initiate DNDiscord. " + mevEx.getLocalizedMessage());
 		}
-		appUtil = AppUtil.getInstance();
 	}
 
 	@Override
@@ -62,19 +51,5 @@ public class PrefixCommand implements CommandExecutor {
 				MessageResponse.sendReply(channel, "DnDiscord command prefix changed from: " + currentPrefix + " to: " + configUtil.getBotPrefix());
 			}			
 		}
-	}
-	
-	private void buildFormatEmbed(Message msg) {
-		//get bot avatar:
-		DiscordApi apiConnection = appUtil.getApi();
-		User botUser = apiConnection.getYourself();		
-		URL avatarUrl = botUser.getAvatar().getUrl();
-		
-		EmbedBuilder embed = new EmbedBuilder()
-			.setTitle("Prefix Command Help")
-		    .addField("Command Format", "prefix <<new prefix characters>>\n")
-		    .setColor(Color.GREEN)
-		    .setThumbnail(avatarUrl.toString());
-		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);		
 	}
 }

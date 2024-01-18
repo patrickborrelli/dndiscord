@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -28,7 +27,6 @@ public class DiscordUser {
 	@JsonProperty("avatar_hash")
 	private String avatar;
 	private boolean bot;
-	@JsonIgnore
 	private List<CharacterSheet> characters = new ArrayList<>();
 	
 	//default constructor:
