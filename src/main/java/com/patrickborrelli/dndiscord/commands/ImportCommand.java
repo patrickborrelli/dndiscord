@@ -486,11 +486,11 @@ public class ImportCommand implements CommandExecutor {
 		List<Modifier> featModifiers = Arrays.asList(character.getModifiers().getFeat());
 		List<Modifier> conditionModifiers = Arrays.asList(character.getModifiers().getCondition());
 
-		processBeyondModifierSet(racialModifiers, sheet, "Race", character);
-		processBeyondModifierSet(classModifiers, sheet, "Class", character);
-		processBeyondModifierSet(backgroundModifiers, sheet, "Background", character);
-		processBeyondModifierSet(itemModifiers, sheet, "Item", character);
-		processBeyondModifierSet(featModifiers, sheet, "Feat", character);
+		processBeyondModifierSet(racialModifiers, sheet, DndBeyondConstants.RACIAL_TRAIT, character);
+		processBeyondModifierSet(classModifiers, sheet, DndBeyondConstants.CLASS_FEATURE, character);
+		processBeyondModifierSet(backgroundModifiers, sheet, DndBeyondConstants.BACKGROUND_FEATURE, character);
+		processBeyondModifierSet(itemModifiers, sheet, DndBeyondConstants.ITEM_FEATURE, character);
+		processBeyondModifierSet(featModifiers, sheet, DndBeyondConstants.FEAT, character);
 		processBeyondModifierSet(conditionModifiers, sheet, "Condition", character);
 	}
 
@@ -513,9 +513,9 @@ public class ImportCommand implements CommandExecutor {
 		return type;
 	}
 
-	private Feature getFeatureFromModifier(Modifier mod, DndBeyondSheet character) {
+	private Feature getFeatureFromModifier(Modifier mod, DndBeyondSheet character, String featureType) {
 		Feature feat = null;
-		FeatureType type = getFeatureType(mod.getId());
+		FeatureType type = getFeatureType(featureType);
 		if (type != null) {
 			switch (type) {
 
@@ -690,13 +690,13 @@ public class ImportCommand implements CommandExecutor {
 		return feat;
 	}
 
-	private void processBeyondModifierSet(List<Modifier> mods, CharacterSheet sheet, String modifierType,
+	private void processBeyondModifierSet(List<Modifier> mods, CharacterSheet sheet, String type,
 			DndBeyondSheet character) {
-		LOGGER.debug("Processing " + modifierType + " modifiers.");
+		LOGGER.debug("Processing " + type + " modifiers.");
 		for (Modifier mod : mods) {
 			LOGGER.debug("Modifier: " + mod.toString());
 
-			Feature feat = getFeatureFromModifier(mod, character);
+			Feature feat = getFeatureFromModifier(mod, character, type);
 			if (feat != null)
 				features.add(feat);
 
