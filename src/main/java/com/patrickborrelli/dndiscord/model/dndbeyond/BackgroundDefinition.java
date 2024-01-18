@@ -2,7 +2,6 @@ package com.patrickborrelli.dndiscord.model.dndbeyond;
 
 import java.util.Arrays;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**

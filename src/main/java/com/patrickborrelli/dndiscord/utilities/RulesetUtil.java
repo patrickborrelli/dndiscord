@@ -2,8 +2,6 @@ package com.patrickborrelli.dndiscord.utilities;
 
 import java.util.HashMap;
 
-import org.javacord.api.DiscordApi;
-
 /**
  * A singleton ruleset utility to provide 
  * necessary common data for the bot application.

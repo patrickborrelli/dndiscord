@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +20,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.Formula;
 import com.patrickborrelli.dndiscord.model.TokenResponse;
+import com.patrickborrelli.dndiscord.model.dndiscord.Action;
+import com.patrickborrelli.dndiscord.model.dndiscord.Attack;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
+import com.patrickborrelli.dndiscord.model.dndiscord.Feature;
+import com.patrickborrelli.dndiscord.model.dndiscord.Item;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
 
 /**
@@ -34,16 +40,22 @@ public class WebserviceManager {
 	private static final String ADMIN_USERNAME = System.getenv("DNDISCORD_ADMIN_USER");
 	private static final String ADMIN_CREDENTIALS = System.getenv("DNDISCORD_ADMIN_CREDENTIALS");
 	private static final ObjectMapper MAPPER = new ObjectMapper();
-	private static String TOKEN = "";
+	private static final String QUERY = "?";
+	private static final String NULL_ID = ",\"_id\":null";
 	
 	//static URLs
+	private static String ACTION_URL;
+	private static String ATTACK_URL;
 	private static String BASE_URL;
 	private static String CHARACTER_URL;
+	private static String CHARACTER_CLASS_URL;
 	private static String CREATE_USER_URL;
+	private static String FEATURE_URL;
 	private static String FORMULA_URL;
 	private static String GET_USER_URL;
+	private static String ITEM_URL;
 	private static String LOGIN_URL;
-	private static final String QUERY = "?";
+	private static String TOKEN = "";
 	
 	static {
 		if(AppUtil.getInstance().getScope().equalsIgnoreCase("DEV")) {
@@ -52,10 +64,15 @@ public class WebserviceManager {
 			BASE_URL = System.getenv("DNDISCORD_API_BASE");			
 		}
 		
+		ACTION_URL = BASE_URL + "actions";
+		ATTACK_URL = BASE_URL + "attacks";
 		CHARACTER_URL = BASE_URL + "characters";
+		CHARACTER_CLASS_URL = BASE_URL + "characterClasses";
 		CREATE_USER_URL = BASE_URL + "users/register";
+		FEATURE_URL = BASE_URL + "features";
 		FORMULA_URL = BASE_URL + "formulae";
-		GET_USER_URL = BASE_URL + "users/discordUser/";		
+		GET_USER_URL = BASE_URL + "users/discordUser/";	
+		ITEM_URL = BASE_URL + "items";
 		LOGIN_URL = BASE_URL + "users/login";
 		
 		LOGGER.debug("USING BaseUrl of: {} for {}", BASE_URL, AppUtil.getInstance().getScope());
@@ -149,69 +166,54 @@ public class WebserviceManager {
 	}
 	
 	public String addUserCharacter(DiscordUser user, CharacterSheet character) {
-		StringBuilder buff = new StringBuilder();
 		
-		LOGGER.debug("Making call to API: " + CHARACTER_URL);
+		//first ensure any children are persisted:
+		if(character.getInventory() != null) addItemsToCharacter(character);
+		if(character.getActions() != null) addActionsToCharacter(character);
+		if(character.getAttacks() != null) addAttacksToCharacter(character);	
+		if(character.getCharacterClasses() != null) addClassesToCharacter(character);
+		if(character.getFeatures() != null) addFeaturesToCharacter(character);		
 		
-		BufferedReader in = null;
-		HttpURLConnection con = null;		
-		String POST_BODY = "";
+		LOGGER.debug("Making call to API: " + CHARACTER_URL);		
+		String POST_BODY = unmarshalObject(character);	
 		
-		try {
-			POST_BODY = MAPPER.writeValueAsString(character);
-		} catch (JsonProcessingException e) {
-			LOGGER.error("Failed to unmarshall character {}", e);
-		}
+		LOGGER.debug("Submitting JSON: {}", POST_BODY);
+		return postUrl(CHARACTER_URL, POST_BODY);
+	}
+	
+	public String addAction(Action action) {
+		LOGGER.debug("Making call to API: " + ACTION_URL);
+
+		String POST_BODY = unmarshalObject(action);
+		return postUrl(ACTION_URL, POST_BODY);
+	}
+	
+	public String addAttack(Attack attack) {
+		LOGGER.debug("Making call to API: " + ATTACK_URL);
 		
-		LOGGER.debug("Body: " + POST_BODY);
+		String POST_BODY = unmarshalObject(attack);			
+		return postUrl(ATTACK_URL, POST_BODY);
+	}
+	
+	public String addCharacterClass(CharacterClass charClass) {
+		LOGGER.debug("Making call to API: " + CHARACTER_CLASS_URL);
 		
-		try {
-			URL obj = new URL(CHARACTER_URL);
-			con = (HttpURLConnection) obj.openConnection();
-			con.setRequestMethod("POST");
-			con.setRequestProperty("Content-Type", "application/json");
-			con.setRequestProperty("x-access-token", TOKEN);
-			con.setDoOutput(true);
-			
-			OutputStream os = con.getOutputStream();
-			os.write(POST_BODY.getBytes());
-			os.flush();
-			os.close();
-				
-			int responseCode = con.getResponseCode();
-			
-			if(responseCode != HttpURLConnection.HTTP_OK) {
-				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
-				String inputLine;
-				StringBuffer errorResponse = new StringBuffer();
-				while ((inputLine = in.readLine()) != null) {
-					errorResponse.append(inputLine);
-				}
-				
-				LOGGER.error("Error while adding character: " + errorResponse.toString());
-				in.close();
-				con.disconnect();
-				throw new IOException(errorResponse.toString());
-			} else {
-				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-				String inputLine;
-				StringBuffer response = new StringBuffer();
-				while ((inputLine = in.readLine()) != null) {
-					response.append(inputLine);
-				}
-				
-				LOGGER.debug("Saved successfully: " + response.toString());
-				buff.append("Character: " + character.getCharacterName() + " is now active.");		
-				in.close();
-				con.disconnect();
-			}		
-		} catch(MalformedURLException murl) {
-			LOGGER.error(murl);
-		} catch(IOException ioex) {
-			LOGGER.error(ioex);
-		}
+		String POST_BODY = unmarshalObject(charClass);			
+		return postUrl(CHARACTER_CLASS_URL, POST_BODY);
+	}
+	
+	public String addFeature(Feature feature) {
+		LOGGER.debug("Making call to API: " + FEATURE_URL);
 		
-		return buff.toString();
+		String POST_BODY = unmarshalObject(feature);			
+		return postUrl(FEATURE_URL, POST_BODY);
+	}
+	
+	public String addItem(Item item) {
+		LOGGER.debug("Making call to API: " + ITEM_URL);
+		
+		String POST_BODY = unmarshalObject(item);			
+		return postUrl(ITEM_URL, POST_BODY);
 	}
 	
 	/**
@@ -483,7 +485,7 @@ public class WebserviceManager {
 					LOGGER.debug("Received a null response");
 				} else {
 					//print response:
-					LOGGER.debug(response.toString());
+					LOGGER.debug("Retrieved User: {}", response);
 					user = mapper.readValue(response.toString(), DiscordUser.class);					
 				}
 				
@@ -685,4 +687,201 @@ public class WebserviceManager {
 		return user;
 	}
 	
+	private void addActionsToCharacter(CharacterSheet character) {
+		List<Action> actions = new ArrayList<>();
+		Action result = null;
+		
+		for(Action action : character.getActions()) {
+			LOGGER.debug("Attempting to persist action {}", action);
+			String response = addAction(action);
+			
+			LOGGER.debug("Received response {}", response);
+			try {
+				result =  MAPPER.readValue(response, Action.class);
+				LOGGER.debug("Deserialized response to object {}", result);
+			} catch (JsonProcessingException e) {
+				LOGGER.error("Failed to marshall action {}", e);
+			}
+			actions.add(result);
+		}
+		
+		character.setActions(new HashSet<Action>(actions));
+	}
+	
+	private void addAttacksToCharacter(CharacterSheet character) {
+		List<Attack> attacks = new ArrayList<>();
+		Attack result = null;
+		
+		for(Attack attack : character.getAttacks()) {
+			LOGGER.debug("Attempting to persist attack {}", attack);
+			String response = addAttack(attack);
+			
+			LOGGER.debug("Received response {}", response);			
+			try {
+				result =  MAPPER.readValue(response, Attack.class);
+				LOGGER.debug("Deserialized response to object {}", result);
+			} catch (JsonProcessingException e) {
+				LOGGER.error("Failed to marshall attack {}", e);
+			}
+			attacks.add(result);
+		}
+		
+		character.setAttacks(new HashSet<Attack>(attacks));
+	}
+	
+	private void addItemsToCharacter(CharacterSheet character) {
+		List<Item> inventory = new ArrayList<>();
+		Item result = null;
+		
+		for(Item item : character.getInventory()) {
+			if(item.getGrantedModifiers() != null) {
+				addFeaturesToItem(item);
+			}
+			
+			LOGGER.debug("Attempting to persist item {}", item);
+			String response = addItem(item);
+			
+			LOGGER.debug("Received response {}", response);
+			try {
+				result =  MAPPER.readValue(response, Item.class);
+				LOGGER.debug("Deserialized response to object {}", result);
+			} catch (JsonProcessingException e) {
+				LOGGER.error("Failed to marshall item {}", e);
+			}
+			inventory.add(result);
+		}
+		
+		character.setInventory(inventory);
+	}
+	
+	private void addClassesToCharacter(CharacterSheet character) {
+		List<CharacterClass> classes = new ArrayList<>();
+		CharacterClass result = null;
+		
+		for(CharacterClass charClass : character.getCharacterClasses()) {
+			LOGGER.debug("Attempting to persist class {}", charClass);
+			String response = addCharacterClass(charClass);
+			
+			LOGGER.debug("Received response {}", response);
+			try {
+				result =  MAPPER.readValue(response, CharacterClass.class);
+				LOGGER.debug("Deserialized response to object {}", result);
+			} catch (JsonProcessingException e) {
+				LOGGER.error("Failed to marshall character class {}", e);
+			}
+			classes.add(result);
+		}
+		
+		character.setCharacterClasses(classes);
+	}	
+	
+	private void addFeaturesToCharacter(CharacterSheet character) {
+		List<Feature> features = new ArrayList<>();
+		Feature result = null;
+		
+		for(Feature feature : character.getFeatures()) {
+			LOGGER.debug("Attempting to persist feature {}", feature);
+			String response = addFeature(feature);
+			
+			LOGGER.debug("Received response {}", response);			
+			try {
+				result =  MAPPER.readValue(response, Feature.class);
+				LOGGER.debug("Deserialized response to object {}", result);
+			} catch (JsonProcessingException e) {
+				LOGGER.error("Failed to marshall feature {}", e);
+			}
+			features.add(result);
+		}
+		
+		character.setFeatures(new HashSet<Feature>(features));
+	}
+	
+	private void addFeaturesToItem(Item item) {
+		List<Feature> features = new ArrayList<>();
+		Feature result = null;
+		
+		for(Feature feature : item.getGrantedModifiers()) {
+			LOGGER.debug("Attempting to persist feature {}", feature);
+			String response = addFeature(feature);
+			
+			LOGGER.debug("Received response {}", response);	
+			
+			try {
+				result =  MAPPER.readValue(response, Feature.class);
+				LOGGER.debug("Deserialized response to object {}", result);
+			} catch (JsonProcessingException e) {
+				LOGGER.error("Failed to marshall feature {}", e);
+			}
+			features.add(result);
+		}
+		
+		item.setGrantedModifiers(features);
+	}
+	
+	private String unmarshalObject(Object object) {
+		String result = "";
+		try {
+			result = MAPPER.writeValueAsString(object);
+		} catch (JsonProcessingException e) {
+			LOGGER.error("Failed to unmarshall object {}", e);
+		}
+		
+		return result;
+	}
+	
+	private String postUrl(String url, String body) {
+		
+		StringBuilder response = new StringBuilder();
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		
+		body = body.replace(NULL_ID, "");
+		
+		try {
+			URL obj = new URL(url);
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			con.setDoOutput(true);
+			
+			OutputStream os = con.getOutputStream();
+			os.write(body.getBytes());
+			os.flush();
+			os.close();
+				
+			int responseCode = con.getResponseCode();
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				LOGGER.error("Error while posting: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				LOGGER.debug("Saved successfully: " + response.toString());		
+				in.close();
+				con.disconnect();
+			}		
+		} catch(IOException e) {
+			LOGGER.error(e);
+		} finally {
+			con.disconnect();
+		}
+		
+		return response.toString();
+	}
 }
