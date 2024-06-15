@@ -15,7 +15,7 @@ public class Modifier {
 	private String entityTypeId;
 	private String type;
 	private String subType;
-	private String dice;
+	private Dice dice;
 	private String restriction;
 	private String statId;
 	private boolean requiresAttunement;
@@ -103,14 +103,14 @@ public class Modifier {
 	/**
 	 * @return the dice
 	 */
-	public String getDice() {
+	public Dice getDice() {
 		return dice;
 	}
 
 	/**
 	 * @param dice the dice to set
 	 */
-	public void setDice(String dice) {
+	public void setDice(Dice dice) {
 		this.dice = dice;
 	}
 

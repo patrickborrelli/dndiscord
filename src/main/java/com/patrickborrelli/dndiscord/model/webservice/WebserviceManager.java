@@ -52,7 +52,8 @@ public class WebserviceManager {
 	private static String CREATE_USER_URL;
 	private static String FEATURE_URL;
 	private static String FORMULA_URL;
-	private static String GET_USER_URL;
+	private static String USER_URL;
+	private static String UPDATE_USER_URL;
 	private static String ITEM_URL;
 	private static String LOGIN_URL;
 	private static String TOKEN = "";
@@ -71,7 +72,8 @@ public class WebserviceManager {
 		CREATE_USER_URL = BASE_URL + "users/register";
 		FEATURE_URL = BASE_URL + "features";
 		FORMULA_URL = BASE_URL + "formulae";
-		GET_USER_URL = BASE_URL + "users/discordUser/";	
+		USER_URL = BASE_URL + "users/discordUser";	
+		UPDATE_USER_URL = BASE_URL + "users";
 		ITEM_URL = BASE_URL + "items";
 		LOGIN_URL = BASE_URL + "users/login";
 		
@@ -167,6 +169,8 @@ public class WebserviceManager {
 	
 	public String addUserCharacter(DiscordUser user, CharacterSheet character) {
 		
+		CharacterSheet addedCharacter = null; 
+		
 		//first ensure any children are persisted:
 		if(character.getInventory() != null) addItemsToCharacter(character);
 		if(character.getActions() != null) addActionsToCharacter(character);
@@ -174,46 +178,60 @@ public class WebserviceManager {
 		if(character.getCharacterClasses() != null) addClassesToCharacter(character);
 		if(character.getFeatures() != null) addFeaturesToCharacter(character);		
 		
-		LOGGER.debug("Making call to API: " + CHARACTER_URL);		
+		LOGGER.debug("Making call to API: " + CHARACTER_URL);
+		LOGGER.debug("Attempting to unmarshall object: " + character);
 		String POST_BODY = unmarshalObject(character);	
 		
 		LOGGER.debug("Submitting JSON: {}", POST_BODY);
-		return postUrl(CHARACTER_URL, POST_BODY);
+		String result = post(CHARACTER_URL, POST_BODY);
+		
+		try {
+			addedCharacter =  MAPPER.readValue(result, CharacterSheet.class);
+			LOGGER.debug("Deserialized response to object {}", addedCharacter);
+		} catch (JsonProcessingException e) {
+			LOGGER.error("Failed to marshall character sheet {}", e);
+		}
+		
+		user.addCharacter(addedCharacter);
+		user.setActiveCharacter(addedCharacter);
+		LOGGER.debug("Sending user : " + user + " to update");
+		
+		return put(UPDATE_USER_URL + "/" + user.getId(), unmarshalObject(user));
 	}
 	
 	public String addAction(Action action) {
 		LOGGER.debug("Making call to API: " + ACTION_URL);
 
 		String POST_BODY = unmarshalObject(action);
-		return postUrl(ACTION_URL, POST_BODY);
+		return post(ACTION_URL, POST_BODY);
 	}
 	
 	public String addAttack(Attack attack) {
 		LOGGER.debug("Making call to API: " + ATTACK_URL);
 		
 		String POST_BODY = unmarshalObject(attack);			
-		return postUrl(ATTACK_URL, POST_BODY);
+		return post(ATTACK_URL, POST_BODY);
 	}
 	
 	public String addCharacterClass(CharacterClass charClass) {
 		LOGGER.debug("Making call to API: " + CHARACTER_CLASS_URL);
 		
 		String POST_BODY = unmarshalObject(charClass);			
-		return postUrl(CHARACTER_CLASS_URL, POST_BODY);
+		return post(CHARACTER_CLASS_URL, POST_BODY);
 	}
 	
 	public String addFeature(Feature feature) {
 		LOGGER.debug("Making call to API: " + FEATURE_URL);
 		
 		String POST_BODY = unmarshalObject(feature);			
-		return postUrl(FEATURE_URL, POST_BODY);
+		return post(FEATURE_URL, POST_BODY);
 	}
 	
 	public String addItem(Item item) {
 		LOGGER.debug("Making call to API: " + ITEM_URL);
 		
 		String POST_BODY = unmarshalObject(item);			
-		return postUrl(ITEM_URL, POST_BODY);
+		return post(ITEM_URL, POST_BODY);
 	}
 	
 	/**
@@ -441,7 +459,7 @@ public class WebserviceManager {
 	 */
 	public DiscordUser getUser(String discordId) {
 		StringBuilder buf = new StringBuilder();
-		buf.append(GET_USER_URL)
+		buf.append(USER_URL+ "/")
 			.append(discordId);
 		
 		LOGGER.debug("Making call to API: " + buf.toString());
@@ -829,7 +847,7 @@ public class WebserviceManager {
 		return result;
 	}
 	
-	private String postUrl(String url, String body) {
+	private String post(String url, String body) {
 		
 		StringBuilder response = new StringBuilder();
 		BufferedReader in = null;
@@ -873,6 +891,63 @@ public class WebserviceManager {
 				}
 				
 				LOGGER.debug("Saved successfully: " + response.toString());		
+				in.close();
+				con.disconnect();
+			}		
+		} catch(IOException e) {
+			LOGGER.error(e);
+		} finally {
+			con.disconnect();
+		}
+		
+		return response.toString();
+	}
+	
+	private String put(String url, String body) {
+		
+		StringBuilder response = new StringBuilder();
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+				
+		try {
+			URL obj = new URL(url);
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("PUT");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			con.setDoOutput(true);
+			
+			OutputStream os = con.getOutputStream();
+			os.write(body.getBytes());
+			os.flush();
+			os.close();
+			
+			LOGGER.debug("Sending connection request: " + con);
+			LOGGER.debug("With body: " + con.getOutputStream().toString());
+				
+			int responseCode = con.getResponseCode();
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				LOGGER.error("Error while updating: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				LOGGER.debug("Updated successfully: " + response.toString());		
 				in.close();
 				con.disconnect();
 			}		
