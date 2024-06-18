@@ -118,9 +118,12 @@ public class Item {
 	 */
 	public void setVersatileDiceString(String versatileDiceString) {
 		this.versatileDiceString = versatileDiceString;
-		//parse format xdy:
-		String[] parsed = versatileDiceString.split("d");
-		this.versatileDieCount = Integer.valueOf(parsed[0]);
-		this.versatileDieValue = Integer.valueOf(parsed[1]);		
+		
+		if(versatileDiceString != null) {
+			//parse format xdy:
+			String[] parsed = versatileDiceString.split("d");
+			this.versatileDieCount = Integer.valueOf(parsed[0]);
+			this.versatileDieValue = Integer.valueOf(parsed[1]);	
+		}
 	}
 }
