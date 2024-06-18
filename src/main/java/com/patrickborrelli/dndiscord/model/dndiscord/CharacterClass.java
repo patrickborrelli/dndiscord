@@ -20,10 +20,14 @@ public class CharacterClass {
 	@JsonProperty("_id")
 	private String id;
 	private String name;
+	@JsonProperty("starting_class")
 	private boolean startingClass;
 	private int level;
+	@JsonProperty("subclass_name")
 	private String subclassName;
+	@JsonProperty("hit_die_type")
 	private int hitDieType;
+	@JsonProperty("hit_dice_used")
 	private int hitDiceUsed;
 
 	/**

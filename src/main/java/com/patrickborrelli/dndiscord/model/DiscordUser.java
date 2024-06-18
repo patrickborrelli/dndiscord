@@ -32,6 +32,7 @@ public class DiscordUser {
 	private String avatar;
 	private boolean bot;
 	private List<CharacterSheet> characters = new ArrayList<>();
+	@JsonProperty("active_character")
 	private CharacterSheet activeCharacter;
 	
 	public void addCharacter(CharacterSheet sheet) {

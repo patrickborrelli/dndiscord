@@ -19,7 +19,10 @@ public class Attack {
 	@JsonProperty("_id")
 	private String id;
 	private String name;
+	@JsonProperty("to_hit")
 	private String toHit;
+	@JsonProperty("damage_string")
 	private String damageString;
+	@JsonProperty("damage_type")
 	private String damageType;
 }
