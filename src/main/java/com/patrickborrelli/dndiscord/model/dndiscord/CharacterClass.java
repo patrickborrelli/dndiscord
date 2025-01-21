@@ -34,8 +34,10 @@ public class CharacterClass {
 	 * @param subclassName the subclassName to set
 	 */
 	public void setSubclassName(String subclassName) {
-		String newStr = subclassName.replaceAll(DndBeyondConstants.ARCHIVED, "");
-		this.subclassName = newStr.trim();
+		if(subclassName != null) {
+			String newStr = subclassName.replaceAll(DndBeyondConstants.ARCHIVED, "");
+			this.subclassName = newStr.trim();
+		}
 	}
 
 }

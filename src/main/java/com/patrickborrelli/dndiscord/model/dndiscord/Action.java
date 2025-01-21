@@ -103,4 +103,8 @@ public class Action {
 	@JsonProperty("activation_type")
     private ActivationType activationType;
 	private int duration;
+	
+	public Action(String id) {
+		this.id = id;
+	}
 }

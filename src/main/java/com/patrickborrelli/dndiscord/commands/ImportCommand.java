@@ -77,12 +77,12 @@ public class ImportCommand implements CommandExecutor {
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
 
 		TextChannel channel = msg.getChannel();
-		DndBeyondResponse response = null;
+		DndBeyondSheet response = null;
 		ObjectMapper mapper = new ObjectMapper();
 
 		String[] args = msg.getContent().split(" ");
 		StringBuilder urlStringBuffer = new StringBuilder()
-				.append("https://character-service.dndbeyond.com/character/v3/character/");
+				.append("https://dndbeyond.com/character/");
 		String terminator = "/";
 
 		if (args.length != 3) {
@@ -92,8 +92,8 @@ public class ImportCommand implements CommandExecutor {
 		} else if (args.length == 3) {
 			features = new HashSet<>();
 
-			urlStringBuffer.append(args[2]);
-			urlStringBuffer.append(terminator);
+			urlStringBuffer.append(extractCharacterId(args[2]));
+			urlStringBuffer.append(terminator).append("json");
 
 			HttpURLConnection connection = null;
 
@@ -111,12 +111,12 @@ public class ImportCommand implements CommandExecutor {
 				}
 				in.close();
 
-				response = mapper.readValue(content.toString(), DndBeyondResponse.class);
+				response = mapper.readValue(content.toString(), DndBeyondSheet.class);
 
-				CharacterSheet converted = convertFormat(SheetSourceType.BEYOND, response.getData(), user);
+				CharacterSheet converted = convertFormat(SheetSourceType.BEYOND, response, user);
+				user.addCharacter(converted);
 				WSMANAGER.addUserCharacter(user, converted);
 				buildSheetEmbed(msg, converted);
-				user.addCharacter(converted);
 			} catch (Exception e) {
 				LOGGER.error("We broke something: {}", e);
 			} finally {
@@ -125,12 +125,23 @@ public class ImportCommand implements CommandExecutor {
 		}
 	}
 
+	private String extractCharacterId(String string) {
+		StringBuffer buf = new StringBuffer();		
+		String[] substrings = string.split("/");
+	
+		if(substrings.length > 1) { 
+			buf.append(substrings[2]);
+		} else
+			buf.append(substrings[0]);
+		return buf.toString();
+	}
+
 	private CharacterSheet convertFormat(SheetSourceType type, DndBeyondSheet character, DiscordUser user) {
 		CharacterSheet sheet = new CharacterSheet();
 
 		if (type == SheetSourceType.BEYOND) {
 			sheet.setSheetSource(type.getValue());
-			sheet.setUser(user);
+			//sheet.setUser(user);
 			sheet.setCharacterName(character.getName());
 			sheet.setAvatarUrl(character.getAvatarUrl());
 			sheet.setAge(character.getAge());
@@ -251,7 +262,7 @@ public class ImportCommand implements CommandExecutor {
 		action.setName(actIn.getName());
 		action.setDescription(cleanString(actIn.getDescription()));
 		action.setSnippet(actIn.getSnippet());
-		action.setType(FeatureType.RACE);
+		action.setType(type);
 		action.setAbilityModifierStat(StatType.getEnum(actIn.getAbilityModifierStatId()));
 		action.setAttackTypeRange(actIn.getAttackTypeRange());
 		action.setActionType(ActionType.getEnum(actIn.getActionType()));
@@ -458,8 +469,9 @@ public class ImportCommand implements CommandExecutor {
 			thisClass.setLevel(beyondClass.getLevel());
 			thisClass.setName(beyondClass.getDefinition().getName());
 			thisClass.setStartingClass(beyondClass.isStartingClass());
-			thisClass.setSubclassName(beyondClass.getSubclassDefinition().getName());
-			thisClass.setHitDiceUsed(beyondClass.getHitDiceUsed());
+			if(beyondClass.getSubclassDefinition() != null) {
+				thisClass.setSubclassName(beyondClass.getSubclassDefinition().getName());
+			}
 			thisClass.setHitDieType(beyondClass.getDefinition().getHitDice());
 			discordClasses.add(thisClass);
 			totalLevel += beyondClass.getLevel();

@@ -195,8 +195,9 @@ public class WebserviceManager {
 		user.addCharacter(addedCharacter);
 		user.setActiveCharacter(addedCharacter);
 		LOGGER.debug("Sending user : " + user + " to update");
+		String unmarshalled = unmarshalObject(user);
 		
-		return put(UPDATE_USER_URL + "/" + user.getId(), unmarshalObject(user));
+		return put(UPDATE_USER_URL + "/" + user.getId(), unmarshalled);
 	}
 	
 	public String addAction(Action action) {
@@ -720,7 +721,7 @@ public class WebserviceManager {
 			} catch (JsonProcessingException e) {
 				LOGGER.error("Failed to marshall action {}", e);
 			}
-			actions.add(result);
+			actions.add(new Action(result.getId()));
 		}
 		
 		character.setActions(new HashSet<Action>(actions));
@@ -766,7 +767,7 @@ public class WebserviceManager {
 			} catch (JsonProcessingException e) {
 				LOGGER.error("Failed to marshall item {}", e);
 			}
-			inventory.add(result);
+			inventory.add(new Item(result.getId()));
 		}
 		
 		character.setInventory(inventory);

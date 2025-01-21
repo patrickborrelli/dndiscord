@@ -111,7 +111,11 @@ public class Item {
 	@JsonProperty("reset_type")
 	private ResetType resetType;
 	@JsonProperty("reset_type_description")
-	private String resetTypeDescription;	
+	private String resetTypeDescription;
+	
+	public Item(String id) {
+		this.id = id;
+	}
 	
 	/**
 	 * @param versatileDiceString String the versatileDiceString to set

@@ -25,9 +25,7 @@ public class DiscordUserSerializer extends JsonSerializer<DiscordUser> {
 		}
 		gen.writeEndArray();
 		if(null != user.getActiveCharacter()) {
-			gen.writeStringField("activeCharacter", user.getActiveCharacter().getId());
-		} else {
-			gen.writeStringField("activeCharacter",null);
+			gen.writeStringField("active_character", user.getActiveCharacter().getId());
 		}
 		gen.writeEndObject();		
 	}

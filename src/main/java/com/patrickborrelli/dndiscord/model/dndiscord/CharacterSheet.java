@@ -5,7 +5,6 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.patrickborrelli.dndiscord.model.DiscordUser;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,7 @@ public class CharacterSheet {
 	private String id;
 	@JsonProperty("sheet_source")
 	private String sheetSource;
-	private DiscordUser user;
+	//private DiscordUser user;
 	@JsonProperty("character_name")
 	private String characterName;
 	@JsonProperty("avatar_url")
