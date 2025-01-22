@@ -20,18 +20,24 @@ public class CharacterClass {
 	@JsonProperty("_id")
 	private String id;
 	private String name;
+	@JsonProperty("starting_class")
 	private boolean startingClass;
 	private int level;
+	@JsonProperty("subclass_name")
 	private String subclassName;
+	@JsonProperty("hit_die_type")
 	private int hitDieType;
+	@JsonProperty("hit_dice_used")
 	private int hitDiceUsed;
 
 	/**
 	 * @param subclassName the subclassName to set
 	 */
 	public void setSubclassName(String subclassName) {
-		String newStr = subclassName.replaceAll(DndBeyondConstants.ARCHIVED, "");
-		this.subclassName = newStr.trim();
+		if(subclassName != null) {
+			String newStr = subclassName.replaceAll(DndBeyondConstants.ARCHIVED, "");
+			this.subclassName = newStr.trim();
+		}
 	}
 
 }
