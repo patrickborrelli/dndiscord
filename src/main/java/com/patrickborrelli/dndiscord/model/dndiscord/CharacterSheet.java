@@ -283,6 +283,8 @@ public class CharacterSheet {
 	
 	private Set<String> proficiencies;
 	
+	private Set<String> languages;
+	
 	private List<Item> inventory;
 	
 	//attacks and actions:

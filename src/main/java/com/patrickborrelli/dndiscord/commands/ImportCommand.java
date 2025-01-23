@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.entity.channel.TextChannel;
@@ -26,7 +27,6 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.Background;
 import com.patrickborrelli.dndiscord.model.dndbeyond.ClassFeature;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondCharacterClass;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondConstants;
-import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondResponse;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Feat;
 import com.patrickborrelli.dndiscord.model.dndbeyond.ItemDefinition;
@@ -72,6 +72,8 @@ public class ImportCommand implements CommandExecutor {
 	private static final WebserviceManager WSMANAGER = WebserviceManager.getInstance();
 	private RulesetUtil ruleset = RulesetUtil.getInstance();
 	private Set<Feature> features = null;
+	private Set<String> languages = null;
+	private Set<String> proficiencies = null;
 
 	@Override
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
@@ -91,6 +93,8 @@ public class ImportCommand implements CommandExecutor {
 			new HelpCommand().onCommand(msg, CommandUtil.IMPORT, user, messageReceiptTime);
 		} else if (args.length == 3) {
 			features = new HashSet<>();
+			languages = new HashSet<>();
+			proficiencies = new HashSet<>();
 
 			urlStringBuffer.append(extractCharacterId(args[2]));
 			urlStringBuffer.append(terminator).append("json");
@@ -187,6 +191,8 @@ public class ImportCommand implements CommandExecutor {
 			sheet.setTemporaryHitPoints(character.getTemporaryHitPoints());
 			sheet.setFeatures(features);
 			sheet.setActions(generateActions(sheet, character));
+			sheet.setLanguages(languages);
+			sheet.setProficiencies(proficiencies);
 			applyAbilityScoreMods(sheet);
 			applySavingThrowMods(sheet);
 			applySkillMods(sheet);
@@ -709,8 +715,9 @@ public class ImportCommand implements CommandExecutor {
 			LOGGER.debug("Modifier: " + mod.toString());
 
 			Feature feat = getFeatureFromModifier(mod, character, type);
-			if (feat != null)
+			if (feat != null) {
 				features.add(feat);
+			}
 
 			if (mod.getType().equalsIgnoreCase(DndBeyondConstants.BONUS)) {
 				switch (mod.getSubType()) {
@@ -869,7 +876,8 @@ public class ImportCommand implements CommandExecutor {
 					break;
 
 				default:
-					LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());
+					proficiencies.add(mod.getFriendlySubtypeName());
+					LOGGER.info("Manually added {} Proficiency.",mod.getFriendlySubtypeName());
 				}
 			} else if (mod.getType().equalsIgnoreCase(DndBeyondConstants.EXPERTISE)) {
 				switch (mod.getSubType()) {
@@ -948,6 +956,25 @@ public class ImportCommand implements CommandExecutor {
 				default:
 					LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());
 				}
+			} else if (mod.getType().equalsIgnoreCase(DndBeyondConstants.SIZE)) {
+				switch (mod.getSubType()) {
+				case DndBeyondConstants.TINY:
+				case DndBeyondConstants.SMALL:
+				case DndBeyondConstants.MEDIUM:
+				case DndBeyondConstants.LARGE:
+				case DndBeyondConstants.HUGE:
+				case DndBeyondConstants.GARGANTUAN:
+					sheet.setSize(WordUtils.capitalize(mod.getSubType()));
+					break;
+
+				default:
+					LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());
+				}
+			} else if (mod.getType().equalsIgnoreCase(DndBeyondConstants.LANGUAGE)) {
+				languages.add(mod.getFriendlySubtypeName());
+			} else {
+				//add as catch all for sake of debugging.
+				LOGGER.warn("Received modifier of type {} that I am not handling: {}", mod.getType(), mod.toString());
 			}
 		}
 	}

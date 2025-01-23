@@ -19,6 +19,7 @@ public class DndBeyondConstants {
 	public static final String SET = "set";
 	public static final String LANGUAGE = "language";
 	public static final String ARCHIVED = "\\(archived\\)";
+	public static final String SIZE = "size";
 	
 	//subtypes:
 	public static final String STRENGTH_SCORE = "strength-score";
@@ -53,6 +54,14 @@ public class DndBeyondConstants {
 	public static final String SLEIGHT_OF_HAND = "sleight-of-hand";
 	public static final String STEALTH = "stealth";
 	public static final String SURVIVAL = "survival";
+	
+	//sizes:
+	public static final String TINY = "tiny";
+	public static final String SMALL = "small";
+	public static final String MEDIUM = "medium";
+	public static final String LARGE = "large";
+	public static final String HUGE = "huge";
+	public static final String GARGANTUAN = "gargantuan";
 	
 	//TODO: to be implemented when attack model is in place:
 	public static final String RANGED_WEAPON_ATTACKS = "ranged-weapon-attacks";
