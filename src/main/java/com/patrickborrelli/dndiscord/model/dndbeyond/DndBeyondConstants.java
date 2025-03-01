@@ -1,5 +1,8 @@
 package com.patrickborrelli.dndiscord.model.dndbeyond;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class DndBeyondConstants {
 
 	//feature classes:
@@ -55,6 +58,8 @@ public class DndBeyondConstants {
 	public static final String STEALTH = "stealth";
 	public static final String SURVIVAL = "survival";
 	
+	public static final Set<String> SKILLS = new HashSet<>(18);
+	
 	//sizes:
 	public static final String TINY = "tiny";
 	public static final String SMALL = "small";
@@ -68,6 +73,23 @@ public class DndBeyondConstants {
 	
 	
 	public DndBeyondConstants() {
-		
+		SKILLS.add(ACROBATICS);
+		SKILLS.add(ANIMAL_HANDLING);
+		SKILLS.add(ARCANA);
+		SKILLS.add(ATHLETICS);
+		SKILLS.add(DECEPTION);
+		SKILLS.add(HISTORY);
+		SKILLS.add(INSIGHT);
+		SKILLS.add(INTIMIDATION);
+		SKILLS.add(INVESTIGATION);
+		SKILLS.add(MEDICINE);
+		SKILLS.add(NATURE);
+		SKILLS.add(PERCEPTION);
+		SKILLS.add(PERFORMANCE);
+		SKILLS.add(PERSUASION);
+		SKILLS.add(RELIGION);
+		SKILLS.add(SLEIGHT_OF_HAND);
+		SKILLS.add(STEALTH);
+		SKILLS.add(SURVIVAL);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.patrickborrelli.dndiscord.model.type.StatType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -389,5 +390,36 @@ public class CharacterSheet {
 	public void setCharismaBonus(int charismaBonus) {
 		this.charismaBonus = charismaBonus;
 		this.totalCharisma = baseCharisma + charismaBonus;
+	}
+	
+	/**
+	 * @param type the StatType to retrieve a modifier for.
+	 * @return an integer modifier for the provided StatType
+	 */
+	public int getModifierByStatType(StatType type) {
+		int modifier = 0;
+		switch (type) {
+		case STRENGTH:
+			modifier = getStrengthMod();
+			break;
+		case DEXTERITY:
+			modifier = getDexterityMod();
+			break;
+		case CONSTITUTION:
+			modifier = getConstitutionMod();
+			break;
+		case INTELLIGENCE:
+			modifier = getIntelligenceMod();
+			break;
+		case WISDOM:
+			modifier = getWisdomMod();
+			break;
+		case CHARISMA:
+			modifier = getCharismaMod();
+			break;
+		default:
+			;
+		}
+		return modifier;
 	}
 }
