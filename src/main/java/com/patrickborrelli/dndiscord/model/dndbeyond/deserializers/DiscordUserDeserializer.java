@@ -43,7 +43,7 @@ public class DiscordUserDeserializer extends StdDeserializer<DiscordUser> {
 		user.setBot(node.get("bot").asBoolean());
 		
 		JsonNode activeCharId = node.get("active_character");
-		if( !(activeCharId instanceof NullNode) && activeCharId.hasNonNull("_id")) {
+		if(activeCharId != null && !(activeCharId instanceof NullNode) && activeCharId.hasNonNull("_id")) {
 			CharacterSheet active = new CharacterSheet();
 			active.setId(activeCharId.get("_id").asText());
 			user.setActiveCharacter(active);

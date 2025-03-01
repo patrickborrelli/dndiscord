@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.entity.channel.TextChannel;
@@ -26,7 +27,6 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.Background;
 import com.patrickborrelli.dndiscord.model.dndbeyond.ClassFeature;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondCharacterClass;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondConstants;
-import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondResponse;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Feat;
 import com.patrickborrelli.dndiscord.model.dndbeyond.ItemDefinition;
@@ -72,6 +72,9 @@ public class ImportCommand implements CommandExecutor {
 	private static final WebserviceManager WSMANAGER = WebserviceManager.getInstance();
 	private RulesetUtil ruleset = RulesetUtil.getInstance();
 	private Set<Feature> features = null;
+	private Set<String> languages = null;
+	private Set<String> proficiencies = null;
+	private List<Modifier> delayedModifiers = null;
 
 	@Override
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
@@ -91,6 +94,9 @@ public class ImportCommand implements CommandExecutor {
 			new HelpCommand().onCommand(msg, CommandUtil.IMPORT, user, messageReceiptTime);
 		} else if (args.length == 3) {
 			features = new HashSet<>();
+			languages = new HashSet<>();
+			proficiencies = new HashSet<>();
+			delayedModifiers = new ArrayList<>();
 
 			urlStringBuffer.append(extractCharacterId(args[2]));
 			urlStringBuffer.append(terminator).append("json");
@@ -187,9 +193,12 @@ public class ImportCommand implements CommandExecutor {
 			sheet.setTemporaryHitPoints(character.getTemporaryHitPoints());
 			sheet.setFeatures(features);
 			sheet.setActions(generateActions(sheet, character));
+			sheet.setLanguages(languages);
+			sheet.setProficiencies(proficiencies);
 			applyAbilityScoreMods(sheet);
 			applySavingThrowMods(sheet);
 			applySkillMods(sheet);
+			processDelayedModifiers(delayedModifiers, sheet);
 		}
 		LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
@@ -701,6 +710,95 @@ public class ImportCommand implements CommandExecutor {
 		}
 		return feat;
 	}
+	
+	private void processDelayedModifiers(List<Modifier> mods, CharacterSheet sheet) {
+		LOGGER.debug("Processing delayed modifiers.");
+		StatType statType = null;
+		
+		for (Modifier mod : mods) {
+			LOGGER.debug("Modifier: " + mod.toString());
+			statType = StatType.getEnum(Integer.valueOf(mod.getStatId()));
+			int modValue = sheet.getModifierByStatType(statType) > 1 ? sheet.getModifierByStatType(statType) : 1;
+			
+			switch (mod.getSubType()) {
+				case DndBeyondConstants.ACROBATICS:
+					//TODO: correct logic, bonus applies the associated attribute modifier, min 1 (based on statId)
+					sheet.setAcrobaticsMod(sheet.getAcrobaticsMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.ANIMAL_HANDLING:
+					sheet.setAnimalHandlingMod(sheet.getAnimalHandlingMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.ARCANA:
+					sheet.setArcanaMod(sheet.getArcanaMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.ATHLETICS:
+					sheet.setAthleticsMod(sheet.getAthleticsMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.DECEPTION:
+					sheet.setDeceptionMod(sheet.getDeceptionMod() + modValue);					
+					break;
+					
+				case DndBeyondConstants.HISTORY:
+					sheet.setHistoryMod(sheet.getHistoryMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.INSIGHT:
+					sheet.setInsightMod(sheet.getInsightMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.INTIMIDATION:
+					sheet.setIntimidationMod(sheet.getIntimidationMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.INVESTIGATION:
+					sheet.setInvestigationMod(sheet.getInvestigationMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.MEDICINE:
+					sheet.setMedicineMod(sheet.getMedicineMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.NATURE:
+					sheet.setNatureMod(sheet.getNatureMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.PERCEPTION:
+					sheet.setPerceptionMod(sheet.getPerceptionMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.PERFORMANCE:
+					sheet.setPerformanceMod(sheet.getPerformanceMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.PERSUASION:
+					sheet.setPersuasionMod(sheet.getPersuasionMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.RELIGION:
+					sheet.setReligionMod(sheet.getReligionMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.SLEIGHT_OF_HAND:
+					sheet.setSleightOfHandMod(sheet.getSleightOfHandMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.STEALTH:
+					sheet.setStealthMod(sheet.getStealthMod() + modValue);
+					break;
+					
+				case DndBeyondConstants.SURVIVAL:
+					sheet.setSurvivalMod(sheet.getSurvivalMod() + modValue);
+					break;
+					
+				default:
+					LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());
+			}
+		}		
+	}
 
 	private void processBeyondModifierSet(List<Modifier> mods, CharacterSheet sheet, String type,
 			DndBeyondSheet character) {
@@ -709,8 +807,9 @@ public class ImportCommand implements CommandExecutor {
 			LOGGER.debug("Modifier: " + mod.toString());
 
 			Feature feat = getFeatureFromModifier(mod, character, type);
-			if (feat != null)
+			if (feat != null) {
 				features.add(feat);
+			}
 
 			if (mod.getType().equalsIgnoreCase(DndBeyondConstants.BONUS)) {
 				switch (mod.getSubType()) {
@@ -736,6 +835,27 @@ public class ImportCommand implements CommandExecutor {
 
 				case DndBeyondConstants.CHARISMA_SCORE:
 					sheet.setCharismaBonus(sheet.getCharismaBonus() + mod.getValue());
+					break;
+					
+				case DndBeyondConstants.ACROBATICS:
+				case DndBeyondConstants.ANIMAL_HANDLING:
+				case DndBeyondConstants.ARCANA:
+				case DndBeyondConstants.ATHLETICS:
+				case DndBeyondConstants.DECEPTION:
+				case DndBeyondConstants.HISTORY:
+				case DndBeyondConstants.INSIGHT:
+				case DndBeyondConstants.INTIMIDATION:
+				case DndBeyondConstants.INVESTIGATION:
+				case DndBeyondConstants.MEDICINE:
+				case DndBeyondConstants.NATURE:
+				case DndBeyondConstants.PERCEPTION:
+				case DndBeyondConstants.PERFORMANCE:
+				case DndBeyondConstants.PERSUASION:
+				case DndBeyondConstants.RELIGION:
+				case DndBeyondConstants.SLEIGHT_OF_HAND:
+				case DndBeyondConstants.STEALTH:
+				case DndBeyondConstants.SURVIVAL:
+					delayedModifiers.add(mod);
 					break;
 
 				default:
@@ -869,7 +989,8 @@ public class ImportCommand implements CommandExecutor {
 					break;
 
 				default:
-					LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());
+					proficiencies.add(mod.getFriendlySubtypeName());
+					LOGGER.info("Manually added {} Proficiency.",mod.getFriendlySubtypeName());
 				}
 			} else if (mod.getType().equalsIgnoreCase(DndBeyondConstants.EXPERTISE)) {
 				switch (mod.getSubType()) {
@@ -948,6 +1069,25 @@ public class ImportCommand implements CommandExecutor {
 				default:
 					LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());
 				}
+			} else if (mod.getType().equalsIgnoreCase(DndBeyondConstants.SIZE)) {
+				switch (mod.getSubType()) {
+				case DndBeyondConstants.TINY:
+				case DndBeyondConstants.SMALL:
+				case DndBeyondConstants.MEDIUM:
+				case DndBeyondConstants.LARGE:
+				case DndBeyondConstants.HUGE:
+				case DndBeyondConstants.GARGANTUAN:
+					sheet.setSize(WordUtils.capitalize(mod.getSubType()));
+					break;
+
+				default:
+					LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());
+				}
+			} else if (mod.getType().equalsIgnoreCase(DndBeyondConstants.LANGUAGE)) {
+				languages.add(mod.getFriendlySubtypeName());
+			} else {
+				//add as catch all for sake of debugging.
+				LOGGER.warn("Received modifier of type {} that I am not handling: {}", mod.getType(), mod.toString());
 			}
 		}
 	}

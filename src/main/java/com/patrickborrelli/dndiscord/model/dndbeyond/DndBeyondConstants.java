@@ -1,5 +1,8 @@
 package com.patrickborrelli.dndiscord.model.dndbeyond;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class DndBeyondConstants {
 
 	//feature classes:
@@ -19,6 +22,7 @@ public class DndBeyondConstants {
 	public static final String SET = "set";
 	public static final String LANGUAGE = "language";
 	public static final String ARCHIVED = "\\(archived\\)";
+	public static final String SIZE = "size";
 	
 	//subtypes:
 	public static final String STRENGTH_SCORE = "strength-score";
@@ -54,11 +58,38 @@ public class DndBeyondConstants {
 	public static final String STEALTH = "stealth";
 	public static final String SURVIVAL = "survival";
 	
+	public static final Set<String> SKILLS = new HashSet<>(18);
+	
+	//sizes:
+	public static final String TINY = "tiny";
+	public static final String SMALL = "small";
+	public static final String MEDIUM = "medium";
+	public static final String LARGE = "large";
+	public static final String HUGE = "huge";
+	public static final String GARGANTUAN = "gargantuan";
+	
 	//TODO: to be implemented when attack model is in place:
 	public static final String RANGED_WEAPON_ATTACKS = "ranged-weapon-attacks";
 	
 	
 	public DndBeyondConstants() {
-		
+		SKILLS.add(ACROBATICS);
+		SKILLS.add(ANIMAL_HANDLING);
+		SKILLS.add(ARCANA);
+		SKILLS.add(ATHLETICS);
+		SKILLS.add(DECEPTION);
+		SKILLS.add(HISTORY);
+		SKILLS.add(INSIGHT);
+		SKILLS.add(INTIMIDATION);
+		SKILLS.add(INVESTIGATION);
+		SKILLS.add(MEDICINE);
+		SKILLS.add(NATURE);
+		SKILLS.add(PERCEPTION);
+		SKILLS.add(PERFORMANCE);
+		SKILLS.add(PERSUASION);
+		SKILLS.add(RELIGION);
+		SKILLS.add(SLEIGHT_OF_HAND);
+		SKILLS.add(STEALTH);
+		SKILLS.add(SURVIVAL);
 	}
 }
