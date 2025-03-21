@@ -18,12 +18,17 @@ public class DiscordUserSerializer extends JsonSerializer<DiscordUser> {
 		gen.writeStringField("username", user.getUsername());
 		gen.writeStringField("discriminator", user.getDiscriminator());
 		gen.writeStringField("avatar_hash", user.getAvatar());
-		gen.writeBooleanField("bot", user.isBot()); 
-		gen.writeArrayFieldStart("characters");
-		for(CharacterSheet sheet : user.getCharacters()) {
-			gen.writeString(sheet.getId());
+		gen.writeBooleanField("bot", user.isBot());
+		
+		//if user has characters:
+		if(user.getCharacters().size() > 0) {
+			gen.writeArrayFieldStart("characters");
+			for(CharacterSheet sheet : user.getCharacters()) {
+				gen.writeString(sheet.getId());
+			}
+			gen.writeEndArray();
 		}
-		gen.writeEndArray();
+		
 		if(null != user.getActiveCharacter()) {
 			gen.writeStringField("active_character", user.getActiveCharacter().getId());
 		}

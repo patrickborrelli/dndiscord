@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageAttachment;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
@@ -19,9 +20,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
+import com.patrickborrelli.dndiscord.exceptions.MalformedEquationException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
+import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 
 /**
  * Command class provided to process all character sheet related
@@ -31,58 +35,33 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
  */
 public class SheetCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(SheetCommand.class);
-	private List<MessageAttachment> attachments;
+	private String characterName = null;
 
 	@Override
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
-		InputStream stream = null;
-		InputStreamReader reader = null;
-		DndBeyondSheet sheet = null;
-		CharsetDetector detector = new CharsetDetector();
-		CharsetMatch match;
+		String[] args = msg.getContent().split(" ");
+		TextChannel channel = msg.getChannel();
 		
-		//TODO: need to store currently loaded characters in a CharacterModel, along with indication of currently active character:
-		List<DndBeyondSheet> characters = new ArrayList<>();
-		attachments = msg.getAttachments();
-		ObjectMapper mapper = new ObjectMapper();
-		LOGGER.debug("Received Sheet Command message: " + msg.getContent() + " with " + attachments.size() + " attachments");
-		
-		for(MessageAttachment attach : attachments) {
-			//for now, assume it is a json file representing a character.
-			try {
-				stream = attach.asInputStream();
-				
-				//determine correct encoding:
-				detector.setText(new BufferedInputStream(stream));
-				LOGGER.debug("Determining encoding for stream {}", stream);
-				match = detector.detect();
-				LOGGER.debug("Determined encoding for stream is {}", match.getName());
-				
-				Charset charset = Charset.forName(match.getName());
-				LOGGER.debug("Using charset {}", charset.displayName());
-				
-				reader = new InputStreamReader(attach.asInputStream(), charset);
-				
-				sheet = mapper.readValue(reader, DndBeyondSheet.class);
-				characters.add(sheet);				
-			} catch (IOException e) {
-				e.printStackTrace();
+		if (args.length == 1) {
+			LOGGER.debug("Received request for current character: " + msg.getContent());
+			if(user.getActiveCharacter() != null) {
+				characterName = user.getActiveCharacter().getCharacterName();				
+			} else {
+				characterName = "No current character selected";
 			}
+		} else {
+			LOGGER.error("Inappropriate arguments provided: ");
+			MessageResponse.sendReply(channel, "Inappropriate arguments provided:");
 		}
-		LOGGER.debug("Retrieved the following characters:");
-		for(DndBeyondSheet index : characters) {
-			LOGGER.debug(index.toString());
-			buildSheetEmbed(msg, index);
-		}
+		buildSheetEmbed(msg);
 	}
 	
-	private void buildSheetEmbed(Message msg, DndBeyondSheet sheet) {
+	private void buildSheetEmbed(Message msg) {
 		EmbedBuilder embed = new EmbedBuilder()
-			.setTitle(sheet.getName())
-			.setDescription("DnDiscord is a multifaceted D&D 5e utility bot designed to enable you and your party a seamless online D&D experience.")
+			.setTitle(characterName)
+			.setDescription(characterName)
 		    .setColor(Color.GREEN)
-		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
-		    .setThumbnail(sheet.getAvatarUrl().toString());
+		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png");
 		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);		
 	}
 }
