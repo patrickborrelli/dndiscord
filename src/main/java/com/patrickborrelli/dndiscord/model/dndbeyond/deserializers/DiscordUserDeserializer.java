@@ -14,11 +14,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
-import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
 
 public class DiscordUserDeserializer extends StdDeserializer<DiscordUser> {
 
