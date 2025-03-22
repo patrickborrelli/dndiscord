@@ -88,13 +88,17 @@ public class DiscordUserDeserializer extends StdDeserializer<DiscordUser> {
     }
 	
 	private String removeEmptyStrings(String source) {	
-		LOGGER.debug("Received INPUT: " + source);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Received INPUT: " + source);
 		String temp = removeEscapes(source);
-		LOGGER.debug("Rmoved ESCAPES: " + temp);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Rmoved ESCAPES: " + temp);
 		String cleared = temp.replaceAll("(\"\")", "null");
-		LOGGER.debug("Removed EMPTY STRINGS: " + cleared);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Removed EMPTY STRINGS: " + cleared);
 		String output = cleared.replace("inches", "\\\"");
-		LOGGER.debug("Returning OUTPUT: " + output);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Returning OUTPUT: " + output);
 		return output;
 	}
 	

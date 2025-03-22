@@ -78,7 +78,8 @@ public class RollCommand implements CommandExecutor {
 				buf.append(mee.getMessage());
 				LOGGER.error(mee.getMessage());
 			}
-			LOGGER.debug("Sending back reply: " + buf.toString());
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Sending back reply: " + buf.toString());
 			if (!sendEmbed || sendBoth) {
 				MessageResponse.sendReply(channel, buf.toString());
 			} else {
@@ -157,19 +158,23 @@ public class RollCommand implements CommandExecutor {
 		 * check to see if there are one or more named parameters, if there are,
 		 * individually delete them all, if not, delete all formulas for this user
 		 */
-		LOGGER.debug("Processing parameters [" + param + "] to clear values");
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Processing parameters [" + param + "] to clear values");
 		// confirm param contains 'clear':
 		if (param.contains(CLEAR)) {
 			param = param.replaceAll(CLEAR, "");
-			LOGGER.debug("Parameter stripped of clear = " + param);
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Parameter stripped of clear = " + param);
 			String[] params = param.split("\\$");
 
 			if (params.length == 0) {
-				LOGGER.debug("Empty parameters, clearing ALL saved rolls");
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Empty parameters, clearing ALL saved rolls");
 				result.append(wsManager.deleteUserFormula(user, params));
 			} else {
 				// process remaining parameters:
-				LOGGER.debug("Empty parameters, clearing ALL saved rolls");
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Empty parameters, clearing ALL saved rolls");
 				result.append(wsManager.deleteUserFormula(user, params));
 			}
 		} else {
@@ -201,7 +206,8 @@ public class RollCommand implements CommandExecutor {
 		String roll = null;
 		String name = param.substring(1);
 
-		LOGGER.debug("Processing roll request for: " + param);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Processing roll request for: " + param);
 
 		// retrieve user formula:
 		roll = wsManager.getUserFormula(user, name);
@@ -238,7 +244,8 @@ public class RollCommand implements CommandExecutor {
 		String roll = null;
 		String name = null;
 
-		LOGGER.debug("Processing save request for: " + param);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Processing save request for: " + param);
 
 		// pull out roll formula:
 		int beginIndex = param.indexOf("(");
@@ -254,7 +261,8 @@ public class RollCommand implements CommandExecutor {
 			roll = formula.substring(0, formula.indexOf(","));
 			name = formula.substring(formula.indexOf(",") + 1);
 		}
-		LOGGER.debug("Pulled out roll: " + roll + " and name: " + name);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Pulled out roll: " + roll + " and name: " + name);
 
 		// now validate the roll formula:
 		try {
@@ -337,7 +345,8 @@ public class RollCommand implements CommandExecutor {
 		param = param.replaceAll(" ", "");
 		String equation = param.substring(param.indexOf('(') + 1, param.indexOf(','));
 		int repeats = Integer.parseInt(param.substring(param.indexOf(',') + 1, param.indexOf(')')));
-		LOGGER.debug("Will process equation: " + equation + " " + repeats + " times");
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Will process equation: " + equation + " " + repeats + " times");
 		buf.append("\n");
 		for (int i = 0; i < repeats; i++) {
 			buf.append(buildDieResponse(equation));
@@ -389,7 +398,8 @@ public class RollCommand implements CommandExecutor {
 						haveCount = true;
 					} else if (haveCount && haveDieIndicator && !haveDieValue) {
 						// if standard add it otherwise add non-standard:
-						LOGGER.debug("Attempting to get die type for " + value);
+						if(LOGGER.isDebugEnabled()) 
+							LOGGER.debug("Attempting to get die type for " + value);
 						DieType type = DieType.getEnum(value);
 						if (type == null) {
 							equation.setNonStandardDieSides(value);
@@ -475,7 +485,8 @@ public class RollCommand implements CommandExecutor {
 			equation.setDie(DieType.d0);
 		}
 		equation.solveEquation();
-		LOGGER.debug(equation.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug(equation.toString());
 		return equation;
 	}
 }

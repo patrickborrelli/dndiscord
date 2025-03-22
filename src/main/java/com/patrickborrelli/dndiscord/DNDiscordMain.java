@@ -30,7 +30,9 @@ public class DNDiscordMain {
 			String scope = args[0];
 			appUtilInstance = AppUtil.getInstance();
 			appUtilInstance.setScope(scope.toUpperCase());
-			LOGGER.debug("Attempting to have DNDiscord login and join.");
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Attempting to have DNDiscord login and join.");
+			}
 			instance = ConfigurationUtil.getInstance();
 			
 			token = instance.getBotToken();

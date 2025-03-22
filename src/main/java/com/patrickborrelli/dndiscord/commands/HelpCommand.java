@@ -88,16 +88,20 @@ public class HelpCommand implements CommandExecutor {
 			// specific command help:
 			String argument = args[1];
 			if (argument.equalsIgnoreCase(CommandUtil.ROLL) || argument.equalsIgnoreCase(CommandUtil.R)) {
-				LOGGER.debug("Building dialog for ROLL help.");
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Building dialog for ROLL help.");
 				buildRollHelpEmbed(msg);
 			} else if (argument.equalsIgnoreCase(CommandUtil.PREFIX)) {
-				LOGGER.debug("Building dialog for PREFIX help.");
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Building dialog for PREFIX help.");
 				buildPrefixHelpEmbed(msg);
 			} else if (argument.equalsIgnoreCase(CommandUtil.PING)) {
-				LOGGER.debug("Building dialog for PING help.");
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Building dialog for PING help.");
 				buildPingHelpEmbed(msg);
 			} else if (argument.equalsIgnoreCase(CommandUtil.IMPORT)) {
-				LOGGER.debug("Building dialog for IMPORT help.");
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Building dialog for IMPORT help.");
 				buildImportHelpEmbed(msg);
 			} else {
 				MessageResponse.sendReply(channel, "Invalid help command: " + msg.getContent());

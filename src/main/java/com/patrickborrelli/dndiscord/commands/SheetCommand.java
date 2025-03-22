@@ -27,7 +27,9 @@ public class SheetCommand implements CommandExecutor {
 		TextChannel channel = msg.getChannel();
 		
 		if (args.length == 1) {
-			LOGGER.debug("Received request for current character: " + msg.getContent());
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Received request for current character: " + msg.getContent());
+			}
 			if(user.getActiveCharacter() != null) {
 				characterName = user.getActiveCharacter().getCharacterName();				
 			} else {

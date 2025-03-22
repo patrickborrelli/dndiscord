@@ -223,9 +223,11 @@ public class PrimaryEquation {
 	}
 	
 	private void keepLowest(List<Token> rolls, int countLowest) {
-		LOGGER.debug("Tokens before sorting: " + rolls.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Tokens before sorting: " + rolls.toString());
 		Collections.sort(rolls, new TokenValueAscCompare());
-		LOGGER.debug("Tokens after sorting: " + rolls.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Tokens after sorting: " + rolls.toString());
 		//walk through from lowest until count normal marked are found, then strikethrough all others
 		int i = 0;
 		for(Token tok : rolls) {
@@ -242,9 +244,11 @@ public class PrimaryEquation {
 	}
 	
 	private void keepHighest(List<Token> rolls, int countHighest) {
-		LOGGER.debug("Tokens before sorting: " + rolls.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Tokens before sorting: " + rolls.toString());
 		Collections.sort(rolls, new TokenValueDescCompare());
-		LOGGER.debug("Tokens after sorting: " + rolls.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Tokens after sorting: " + rolls.toString());
 		//walk through from lowest until count normal marked are found, then strikethrough all others
 		int i = 0;
 		for(Token tok : rolls) {
@@ -261,9 +265,11 @@ public class PrimaryEquation {
 	}
 	
 	private void dropLowest(List<Token> rolls, int countLowest) {
-		LOGGER.debug("Tokens before sorting: " + rolls.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Tokens before sorting: " + rolls.toString());
 		Collections.sort(rolls, new TokenValueAscCompare());
-		LOGGER.debug("Tokens after sorting: " + rolls.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Tokens after sorting: " + rolls.toString());
 		//walk through from lowest striking through until i = countLowest:
 		int i = 0;
 		for(Token tok : rolls) {
@@ -281,9 +287,11 @@ public class PrimaryEquation {
 	}
 	
 	private void dropHighest(List<Token> rolls, int countHighest) {
-		LOGGER.debug("Tokens before sorting: " + rolls.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Tokens before sorting: " + rolls.toString());
 		Collections.sort(rolls, new TokenValueDescCompare());
-		LOGGER.debug("Tokens after sorting: " + rolls.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Tokens after sorting: " + rolls.toString());
 		//walk through from highest striking through until i = countLowest:
 		int i = 0;
 		for(Token tok : rolls) {

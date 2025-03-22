@@ -89,7 +89,7 @@ public class ImportCommand implements CommandExecutor {
 		String terminator = "/";
 
 		if (args.length != 3) {
-			LOGGER.debug("Inappropriate arguments provided to import command: {}", msg.getContent());
+			LOGGER.warn("Inappropriate arguments provided to import command: {}", msg.getContent());
 			MessageResponse.sendReply(channel, "Inappropriate arguments provided: IMPORT BEYOND <<characterIDnumber>>");
 			new HelpCommand().onCommand(msg, CommandUtil.IMPORT, user, messageReceiptTime);
 		} else if (args.length == 3) {
@@ -113,7 +113,8 @@ public class ImportCommand implements CommandExecutor {
 				StringBuffer content = new StringBuffer();
 				while ((inputLine = in.readLine()) != null) {
 					content.append(inputLine);
-					LOGGER.debug("READ LINE: {}", inputLine);
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("READ LINE: {}", inputLine);
 				}
 				in.close();
 
@@ -200,7 +201,8 @@ public class ImportCommand implements CommandExecutor {
 			applySkillMods(sheet);
 			processDelayedModifiers(delayedModifiers, sheet);
 		}
-		LOGGER.debug("Converted character to: " + sheet.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
 	}
 
@@ -334,7 +336,8 @@ public class ImportCommand implements CommandExecutor {
 	}
 
 	private void convertItem(com.patrickborrelli.dndiscord.model.dndbeyond.Item sourceItem, Item convertedItem) {
-		LOGGER.debug("Original Item: " + sourceItem.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Original Item: " + sourceItem.toString());
 
 		ItemDefinition sourceDetail = sourceItem.getDefinition();
 		convertedItem.setName(sourceDetail.getName());
@@ -403,7 +406,8 @@ public class ImportCommand implements CommandExecutor {
 			convertedItem.setLongRange(sourceDetail.getWeaponBehaviors()[0].getLongRange());
 			convertedItem.setMonkWeapon(sourceDetail.getWeaponBehaviors()[0].isMonkWeapon());
 		}
-		LOGGER.debug("Converted Item: " + convertedItem.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Converted Item: " + convertedItem.toString());
 	}
 
 	private Set<WeaponPropertyType> convertWeaponProperties(ItemProperty[] props) {
@@ -712,11 +716,13 @@ public class ImportCommand implements CommandExecutor {
 	}
 	
 	private void processDelayedModifiers(List<Modifier> mods, CharacterSheet sheet) {
-		LOGGER.debug("Processing delayed modifiers.");
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Processing delayed modifiers.");
 		StatType statType = null;
 		
 		for (Modifier mod : mods) {
-			LOGGER.debug("Modifier: " + mod.toString());
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Modifier: " + mod.toString());
 			statType = StatType.getEnum(Integer.valueOf(mod.getStatId()));
 			int modValue = sheet.getModifierByStatType(statType) > 1 ? sheet.getModifierByStatType(statType) : 1;
 			
@@ -802,9 +808,11 @@ public class ImportCommand implements CommandExecutor {
 
 	private void processBeyondModifierSet(List<Modifier> mods, CharacterSheet sheet, String type,
 			DndBeyondSheet character) {
-		LOGGER.debug("Processing " + type + " modifiers.");
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Processing " + type + " modifiers.");
 		for (Modifier mod : mods) {
-			LOGGER.debug("Modifier: " + mod.toString());
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Modifier: " + mod.toString());
 
 			Feature feat = getFeatureFromModifier(mod, character, type);
 			if (feat != null) {
