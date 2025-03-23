@@ -53,6 +53,7 @@ public class WebserviceManager {
 	private static String FEATURE_URL;
 	private static String FORMULA_URL;
 	private static String USER_URL;
+	private static String USER_CHAR_URL;
 	private static String UPDATE_USER_URL;
 	private static String ITEM_URL;
 	private static String LOGIN_URL;
@@ -73,6 +74,7 @@ public class WebserviceManager {
 		FEATURE_URL = BASE_URL + "features";
 		FORMULA_URL = BASE_URL + "formulae";
 		USER_URL = BASE_URL + "users/discordUser";	
+		USER_CHAR_URL = BASE_URL + "users/characters";
 		UPDATE_USER_URL = BASE_URL + "users";
 		ITEM_URL = BASE_URL + "items";
 		LOGIN_URL = BASE_URL + "users/login";
@@ -472,6 +474,76 @@ public class WebserviceManager {
 		}	
 		
 		result = (formulas == null) ? null : new ArrayList<>(Arrays.asList(formulas));		
+		return result;
+	}
+	
+	public List<CharacterSheet> getUserCharacters(DiscordUser user) {
+		List<CharacterSheet> result = new ArrayList<>();
+		StringBuilder url = new StringBuilder().append(USER_CHAR_URL).append("/").append(user.getDiscord_id());
+
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + url.toString());
+		
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		ObjectMapper mapper = new ObjectMapper();
+		CharacterSheet[] characters = null;
+		
+		try {
+			URL obj = new URL(url.toString());
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			int responseCode = con.getResponseCode();			
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				//print in String
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				//handle case where user does not currently exist:
+				if(response.toString().equalsIgnoreCase("null") || response.toString().equalsIgnoreCase("[]")) {
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Received a null response");
+				} else {
+					//print response:
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug(response.toString());
+					characters = mapper.readValue(response.toString(), CharacterSheet[].class);			
+				}
+				
+				in.close();
+				con.disconnect();
+			}		
+		} catch(MalformedURLException murl) {
+			LOGGER.warn(murl.getMessage());
+			murl.printStackTrace();
+		} catch(IOException ioex) {
+			LOGGER.warn(ioex.getMessage());
+			ioex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		
+		result = (characters == null) ? null : new ArrayList<>(Arrays.asList(characters));		
 		return result;
 	}
 	
