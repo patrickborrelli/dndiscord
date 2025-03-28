@@ -27,7 +27,8 @@ public class HelpCommand implements CommandExecutor {
 			+ "__**import**__ - imports third-party characters for DnDiscord use.\n"
 			+ "__**ping**__ - tests the bot's connection.\n"
 			+ "__**prefix**__ - sets the bot's prefix for this server.\n"
-			+ "__**roll, r**__ - generates dice roll results.\n";
+			+ "__**roll, r**__ - generates dice roll results.\n"
+			+ "__**sheet**__ - handling of chosen character sheet.\n";
 
 	private static final String MORE_HELP = "An underlined command indicates that the command has subcommands.\n"
 			+ "Type help <command> for more information on a specific command.";
@@ -64,6 +65,10 @@ public class HelpCommand implements CommandExecutor {
 	private static final String PING_HELP_TEXT = "**ping** - returns round trip message latency to the server\n"
 			+ "**ping author** - returns information about the bot author\n"
 			+ "**ping time** - returns the current date and time at the server.";
+	
+	private static final String SHEET_HELP_TEXT = "**sheet** - displays the active character sheet.\n"
+			+ "**sheet list** - returns a list of all imported characters.\n"
+			+ "**sheet switch <<character name>>** - sets the selected character as the active sheet.";
 
 	private static final String IMPORT_HELP_TEXT = "**import beyond <<dnd beyond character id number>>** - imports the selected "
 			+ "character and makes them your primary character.";
@@ -103,6 +108,10 @@ public class HelpCommand implements CommandExecutor {
 				if(LOGGER.isDebugEnabled()) 
 					LOGGER.debug("Building dialog for IMPORT help.");
 				buildImportHelpEmbed(msg);
+			} else if(argument.equalsIgnoreCase(CommandUtil.SHEET)) {
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Building dialog for SHEET help.");
+				buildSheetHelpEmbed(msg);
 			} else {
 				MessageResponse.sendReply(channel, "Invalid help command: " + msg.getContent());
 			}
@@ -144,6 +153,16 @@ public class HelpCommand implements CommandExecutor {
 				.setDescription("Changes the server prefix for DnDiscord.")
 				.setAuthor("DnDiscord", "http://github.com/patrickborrelli", appUtil.getBotAvatarUrl().toString())
 				.addField("Format", PREFIX_HELP_TEXT).setColor(Color.GREEN)
+				.setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
+				.setThumbnail(appUtil.getBotAvatarUrl().toString());
+		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);
+	}
+	
+	private void buildSheetHelpEmbed(Message msg) {
+		EmbedBuilder embed = new EmbedBuilder().setTitle("DnDiscord Help -sheet")
+				.setDescription("Handles character sheet inquiries.")
+				.setAuthor("DnDiscord", "http://github.com/patrickborrelli", appUtil.getBotAvatarUrl().toString())
+				.addField("Format", SHEET_HELP_TEXT).setColor(Color.GREEN)
 				.setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
 				.setThumbnail(appUtil.getBotAvatarUrl().toString());
 		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);
