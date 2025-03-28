@@ -3,14 +3,20 @@ package com.patrickborrelli.dndiscord.commands;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
+import org.javacord.api.entity.message.MessageBuilder;
+import org.javacord.api.entity.message.component.ActionRow;
+import org.javacord.api.entity.message.component.SelectMenu;
+import org.javacord.api.entity.message.component.SelectMenuOption;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
+import org.javacord.api.interaction.SelectMenuInteraction;
 
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
@@ -19,6 +25,7 @@ import com.patrickborrelli.dndiscord.model.dndiscord.CharacterBrief;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
+import com.patrickborrelli.dndiscord.utilities.AppUtil;
 
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
@@ -42,6 +49,7 @@ public class SheetCommand implements CommandExecutor {
 	private CharacterSheet activeCharacter = null;
 	
 	WebserviceManager wsManager = WebserviceManager.getInstance();
+	DiscordApi api = AppUtil.getInstance().getApi();
 
 	@Override
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
@@ -66,29 +74,7 @@ public class SheetCommand implements CommandExecutor {
 			buildListEmbed(msg, buildCharacterList(user));
 		} else if(args.length > 2 && args[1].equalsIgnoreCase(SWITCH)) {
 			String requestedChar = getCharacterNameArgs(args);
-			
-			List<CharacterBrief> characters = wsManager.getUserCharactersLazy(user);
-			List<ExtractedResult> choice = (List<ExtractedResult>)FuzzySearch.extractTop(requestedChar, getCharacterNames(characters), 1);
-			if(choice != null) {
-				ExtractedResult result = choice.get(0);
-				if(result.getScore() > 65) {
-					//consider this a valid match and retrieve the character and set it as active:
-					//if this is already the active character just reply with active
-					//otherwise get the character to activate, set it in the user object and update the user
-					if(result.getString().equalsIgnoreCase(user.getActiveCharacter().getCharacterName())) {
-						//TODO: already done
-					} else {
-						CharacterSheet sheet = wsManager.getCharacter(getCharacterId(characters, result.getString()));
-						user.setActiveCharacter(sheet);
-						wsManager.updateUser(user);
-						characterName = sheet.getCharacterName();
-						activeCharacter = sheet;
-					}
-				}
-				buildSheetEmbed(msg);
-			} else {
-				//TODO: research interactions with user and list all and ask to select
-			}
+			handleCleanSwitch(msg, requestedChar, user);
 		}		
 		else {
 			LOGGER.error("Inappropriate arguments provided: ");
@@ -122,6 +108,37 @@ public class SheetCommand implements CommandExecutor {
 		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);		
 	}
 	
+	private void sendCharacterQuery(Message msg, List<String> characters, DiscordUser user) {
+		List<SelectMenuOption> options = new ArrayList<>();
+		for(String character : characters) {
+			options.add(SelectMenuOption.create(character, "You selected " + character + "!", ""));
+		}
+		api.addMessageComponentCreateListener(event -> {			
+			event.getInteraction().respondLater().thenAccept(originalInteraction -> {
+				Optional<SelectMenuInteraction> opt = event.getMessageComponentInteraction().asSelectMenuInteraction();
+							
+				if(opt.isPresent()) {
+					SelectMenuInteraction interaction = opt.get();
+					String chosen = interaction.getChosenOptions().get(0).getLabel();				
+					originalInteraction.setContent("Loading character: " + chosen).update();
+					
+					try {
+						handleCleanSwitch(msg, chosen, user);
+					} catch (Exception e) {
+						
+					}
+								
+				}
+			});			
+		});
+		
+		new MessageBuilder()
+	    .setContent("Which character did you mean?")
+	    .addComponents(
+	        ActionRow.of(SelectMenu.createStringMenu("chosen",  "Click to show the list", 1, 1, options)))
+	    .send(msg.getChannel());		
+	}
+	
 	private String getCharacterId(List<CharacterBrief> characters, String selectedChar) {
 		String charId = null;
 		for(CharacterBrief brief : characters) {
@@ -141,13 +158,43 @@ public class SheetCommand implements CommandExecutor {
 		return buff.toString();
 	}
 	
-	private Collection<String> getCharacterNames(List<CharacterBrief> characters) {
-		Collection<String> result = new ArrayList<>();
+	private List<String> getCharacterNames(List<CharacterBrief> characters) {
+		List<String> result = new ArrayList<>();
 		
 		for(CharacterBrief brief : characters) {
 			result.add(brief.toString());
 		}
 		return result;
+	}
+	
+	private void handleCleanSwitch(Message msg, String chosen, DiscordUser user) throws CommandProcessingException {
+		List<CharacterBrief> characters = wsManager.getUserCharactersLazy(user);
+		List<ExtractedResult> choice = (List<ExtractedResult>)FuzzySearch.extractTop(chosen, getCharacterNames(characters), 1);
+		if(choice != null) {
+			ExtractedResult result = choice.get(0);
+			
+			if(result.getScore() > 65) {				
+				if(result.getString().equalsIgnoreCase(user.getActiveCharacter().getCharacterName())) {
+					//nothing to do here:
+					characterName = user.getActiveCharacter().getCharacterName();
+					activeCharacter = user.getActiveCharacter();
+				} else {
+					CharacterSheet sheet = wsManager.getCharacter(getCharacterId(characters, result.getString()));
+					user.setActiveCharacter(sheet);
+					wsManager.updateUser(user);
+					characterName = sheet.getCharacterName();
+					activeCharacter = sheet;
+				}
+				
+				buildSheetEmbed(msg);
+			} else {
+				//which character did you mean?
+				sendCharacterQuery(msg, getCharacterNames(characters), user);
+			}
+			
+		} else {
+			sendCharacterQuery(msg, getCharacterNames(characters), user);
+		}
 	}
 	
 	/**
