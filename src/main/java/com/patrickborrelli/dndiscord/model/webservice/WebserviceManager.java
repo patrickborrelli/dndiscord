@@ -22,6 +22,7 @@ import com.patrickborrelli.dndiscord.model.Formula;
 import com.patrickborrelli.dndiscord.model.TokenResponse;
 import com.patrickborrelli.dndiscord.model.dndiscord.Action;
 import com.patrickborrelli.dndiscord.model.dndiscord.Attack;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterBrief;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.dndiscord.Feature;
@@ -53,6 +54,8 @@ public class WebserviceManager {
 	private static String FEATURE_URL;
 	private static String FORMULA_URL;
 	private static String USER_URL;
+	private static String USER_CHAR_URL;
+	private static String LAZY_URL;
 	private static String UPDATE_USER_URL;
 	private static String ITEM_URL;
 	private static String LOGIN_URL;
@@ -73,9 +76,11 @@ public class WebserviceManager {
 		FEATURE_URL = BASE_URL + "features";
 		FORMULA_URL = BASE_URL + "formulae";
 		USER_URL = BASE_URL + "users/discordUser";	
+		USER_CHAR_URL = BASE_URL + "users/characters";
 		UPDATE_USER_URL = BASE_URL + "users";
 		ITEM_URL = BASE_URL + "items";
 		LOGIN_URL = BASE_URL + "users/login";
+		LAZY_URL = USER_CHAR_URL + "/lazy";
 		
 		LOGGER.debug("USING BaseUrl of: {} for {}", BASE_URL, AppUtil.getInstance().getScope());
 	}
@@ -117,7 +122,8 @@ public class WebserviceManager {
 			}
 		}
 		
-		LOGGER.debug("Making call to API: " + FORMULA_URL + QUERY + params.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + FORMULA_URL + QUERY + params.toString());
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;		
@@ -152,21 +158,29 @@ public class WebserviceManager {
 					response.append(inputLine);
 				}
 				
-				LOGGER.debug("Deleted successfully: " + response.toString());
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Deleted successfully: " + response.toString());
 				buff.append(response.toString());		
 				in.close();
 				con.disconnect();
 			}		
 		} catch(MalformedURLException murl) {
-			LOGGER.debug(murl.getMessage());
+			LOGGER.warn(murl.getMessage());
 			murl.printStackTrace();
 		} catch(IOException ioex) {
-			LOGGER.debug(ioex.getMessage());
+			LOGGER.warn(ioex.getMessage());
 			ioex.printStackTrace();
 		}
 		return buff.toString();
 	}
 	
+	/**
+	 * Adds a new character to an existing User.
+	 * 
+	 * @param user
+	 * @param character
+	 * @return
+	 */
 	public String addUserCharacter(DiscordUser user, CharacterSheet character) {
 		
 		CharacterSheet addedCharacter = null; 
@@ -178,58 +192,150 @@ public class WebserviceManager {
 		if(character.getCharacterClasses() != null) addClassesToCharacter(character);
 		if(character.getFeatures() != null) addFeaturesToCharacter(character);		
 		
-		LOGGER.debug("Making call to API: " + CHARACTER_URL);
-		LOGGER.debug("Attempting to unmarshall object: " + character);
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Making call to API: " + CHARACTER_URL);
+			LOGGER.debug("Attempting to unmarshall object: " + character);
+		}
 		String POST_BODY = unmarshalObject(character);	
 		
-		LOGGER.debug("Submitting JSON: {}", POST_BODY);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Submitting JSON: {}", POST_BODY);
 		String result = post(CHARACTER_URL, POST_BODY);
 		
 		try {
 			addedCharacter =  MAPPER.readValue(result, CharacterSheet.class);
-			LOGGER.debug("Deserialized response to object {}", addedCharacter);
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Deserialized response to object {}", addedCharacter);
 		} catch (JsonProcessingException e) {
 			LOGGER.error("Failed to marshall character sheet {}", e);
 		}
 		
 		user.addCharacter(addedCharacter);
 		user.setActiveCharacter(addedCharacter);
-		LOGGER.debug("Sending user : " + user + " to update");
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Sending user : " + user + " to update");
+		String unmarshalled = unmarshalObject(user);
+		
+		return put(UPDATE_USER_URL + "/" + user.getId(), unmarshalled);
+	}
+	
+	public CharacterSheet getCharacter(String characterId) {
+		StringBuilder buf = new StringBuilder();
+		buf.append(CHARACTER_URL+ "/")
+			.append(characterId);
+		
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + buf.toString());
+		
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		ObjectMapper mapper = new ObjectMapper();
+		CharacterSheet character = null;
+		
+		try {
+			URL obj = new URL(buf.toString());
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			int responseCode = con.getResponseCode();			
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				//print in String
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				//handle case where user does not currently exist:
+				if(response.toString().equalsIgnoreCase("null")) {
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Received a null response");
+				} else {
+					//print response:
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Retrieved User: {}", response);
+					character = mapper.readValue(response.toString(), CharacterSheet.class);					
+				}
+				
+				in.close();
+				con.disconnect();
+			}		
+		} catch(MalformedURLException murl) {
+			LOGGER.warn(murl.getMessage());
+			murl.printStackTrace();
+		} catch(IOException ioex) {
+			LOGGER.warn(ioex.getMessage());
+			ioex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		return character;
+	}
+	
+	/**
+	 * Generic User update method.
+	 * @param user
+	 * @return
+	 */
+	public String updateUser(DiscordUser user) {
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Sending user : " + user + " to update");
 		String unmarshalled = unmarshalObject(user);
 		
 		return put(UPDATE_USER_URL + "/" + user.getId(), unmarshalled);
 	}
 	
 	public String addAction(Action action) {
-		LOGGER.debug("Making call to API: " + ACTION_URL);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + ACTION_URL);
 
 		String POST_BODY = unmarshalObject(action);
 		return post(ACTION_URL, POST_BODY);
 	}
 	
 	public String addAttack(Attack attack) {
-		LOGGER.debug("Making call to API: " + ATTACK_URL);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + ATTACK_URL);
 		
 		String POST_BODY = unmarshalObject(attack);			
 		return post(ATTACK_URL, POST_BODY);
 	}
 	
 	public String addCharacterClass(CharacterClass charClass) {
-		LOGGER.debug("Making call to API: " + CHARACTER_CLASS_URL);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + CHARACTER_CLASS_URL);
 		
 		String POST_BODY = unmarshalObject(charClass);			
 		return post(CHARACTER_CLASS_URL, POST_BODY);
 	}
 	
 	public String addFeature(Feature feature) {
-		LOGGER.debug("Making call to API: " + FEATURE_URL);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + FEATURE_URL);
 		
 		String POST_BODY = unmarshalObject(feature);			
 		return post(FEATURE_URL, POST_BODY);
 	}
 	
 	public String addItem(Item item) {
-		LOGGER.debug("Making call to API: " + ITEM_URL);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + ITEM_URL);
 		
 		String POST_BODY = unmarshalObject(item);			
 		return post(ITEM_URL, POST_BODY);
@@ -246,7 +352,8 @@ public class WebserviceManager {
 	public String addUserFormula(DiscordUser user, String formula, String name) {
 		StringBuilder buff = new StringBuilder();
 		
-		LOGGER.debug("Making call to API: " + FORMULA_URL);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + FORMULA_URL);
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
@@ -255,7 +362,8 @@ public class WebserviceManager {
 				   "\t" + "\"name\": \"" + name + "\",\n" + 
 				   "\t" + "\"roll\": \"" + formula + "\"\n}";
 		
-		LOGGER.debug("Using parameters: " + POST_PARAMS);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Using parameters: " + POST_PARAMS);
 		
 		try {
 			URL obj = new URL(FORMULA_URL);
@@ -292,16 +400,17 @@ public class WebserviceManager {
 					response.append(inputLine);
 				}
 				
-				LOGGER.debug("Saved successfully: " + response.toString());
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Saved successfully: " + response.toString());
 				buff.append("User formula: " + formula + " can now be called with roll $" + name);		
 				in.close();
 				con.disconnect();
 			}		
 		} catch(MalformedURLException murl) {
-			LOGGER.debug(murl.getMessage());
+			LOGGER.warn(murl.getMessage());
 			murl.printStackTrace();
 		} catch(IOException ioex) {
-			LOGGER.debug(ioex.getMessage());
+			LOGGER.warn(ioex.getMessage());
 			ioex.printStackTrace();
 		}
 		return buff.toString();
@@ -318,7 +427,8 @@ public class WebserviceManager {
 	public String getUserFormula(DiscordUser user, String name) {
 		StringBuilder url = new StringBuilder().append(FORMULA_URL).append(QUERY);
 		url.append("user=" + user.getId() + "&name=" + name);
-		LOGGER.debug("Making call to API: " + url.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + url.toString());
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
@@ -342,7 +452,8 @@ public class WebserviceManager {
 				}
 				
 				//print in String
-				LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
 				in.close();
 				con.disconnect();
 				throw new IOException(errorResponse.toString());
@@ -356,10 +467,12 @@ public class WebserviceManager {
 				
 				//handle case where user does not currently exist:
 				if(response.toString().equalsIgnoreCase("null") || response.toString().equalsIgnoreCase("[]")) {
-					LOGGER.debug("Received a null response");
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Received a null response");
 				} else {
 					//print response:
-					LOGGER.debug(response.toString());
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug(response.toString());
 					formulas = mapper.readValue(response.toString(), Formula[].class);			
 				}
 				
@@ -367,10 +480,10 @@ public class WebserviceManager {
 				con.disconnect();
 			}		
 		} catch(MalformedURLException murl) {
-			LOGGER.debug(murl.getMessage());
+			LOGGER.warn(murl.getMessage());
 			murl.printStackTrace();
 		} catch(IOException ioex) {
-			LOGGER.debug(ioex.getMessage());
+			LOGGER.warn(ioex.getMessage());
 			ioex.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -390,7 +503,8 @@ public class WebserviceManager {
 		List<Formula> result = new ArrayList<>();
 		StringBuilder url = new StringBuilder().append(FORMULA_URL).append(QUERY);
 		url.append("user=" + user.getId());
-		LOGGER.debug("Making call to API: " + url.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + url.toString());
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
@@ -414,7 +528,8 @@ public class WebserviceManager {
 				}
 				
 				//print in String
-				LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
 				in.close();
 				con.disconnect();
 				throw new IOException(errorResponse.toString());
@@ -428,10 +543,12 @@ public class WebserviceManager {
 				
 				//handle case where user does not currently exist:
 				if(response.toString().equalsIgnoreCase("null") || response.toString().equalsIgnoreCase("[]")) {
-					LOGGER.debug("Received a null response");
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Received a null response");
 				} else {
 					//print response:
-					LOGGER.debug(response.toString());
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug(response.toString());
 					formulas = mapper.readValue(response.toString(), Formula[].class);			
 				}
 				
@@ -439,16 +556,155 @@ public class WebserviceManager {
 				con.disconnect();
 			}		
 		} catch(MalformedURLException murl) {
-			LOGGER.debug(murl.getMessage());
+			LOGGER.warn(murl.getMessage());
 			murl.printStackTrace();
 		} catch(IOException ioex) {
-			LOGGER.debug(ioex.getMessage());
+			LOGGER.warn(ioex.getMessage());
 			ioex.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
 		
 		result = (formulas == null) ? null : new ArrayList<>(Arrays.asList(formulas));		
+		return result;
+	}
+	
+	public List<CharacterBrief> getUserCharactersLazy(DiscordUser user) {
+		List<CharacterBrief> result = new ArrayList<>();
+		StringBuilder url = new StringBuilder().append(LAZY_URL).append("/").append(user.getDiscord_id());
+
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + url.toString());
+		
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		ObjectMapper mapper = new ObjectMapper();
+		CharacterBrief[] characters = null;
+		
+		try {
+			URL obj = new URL(url.toString());
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			int responseCode = con.getResponseCode();			
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				//handle case where no characters returned:
+				if(response.toString().equalsIgnoreCase("null") || response.toString().equalsIgnoreCase("[]")) {
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Received an empty response");
+				} else {
+					//print response:
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug(response.toString());	
+					characters = mapper.readValue(response.toString(), CharacterBrief[].class);
+				}
+				
+				in.close();
+				con.disconnect();
+			}		
+		} catch(MalformedURLException murl) {
+			LOGGER.warn(murl.getMessage());
+			murl.printStackTrace();
+		} catch(IOException ioex) {
+			LOGGER.warn(ioex.getMessage());
+			ioex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		result = (characters == null) ? null : new ArrayList<>(Arrays.asList(characters));
+		return result;
+	}
+	
+	/**
+	 * Retrieves a comma-delimited string containing all characters currently imported by the user.
+	 * @param user
+	 * @return
+	 */
+	public String getUserCharacterNames(DiscordUser user) {
+		String result = "";
+		StringBuilder url = new StringBuilder().append(USER_CHAR_URL).append("/").append(user.getDiscord_id());
+
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + url.toString());
+		
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		
+		try {
+			URL obj = new URL(url.toString());
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			int responseCode = con.getResponseCode();			
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				//handle case where user does not currently exist:
+				if(response.toString().equalsIgnoreCase("null") || response.toString().equalsIgnoreCase("[]")) {
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Received a null response");
+				} else {
+					//print response:
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug(response.toString());	
+					result = response.toString();
+				}
+				
+				in.close();
+				con.disconnect();
+			}		
+		} catch(MalformedURLException murl) {
+			LOGGER.warn(murl.getMessage());
+			murl.printStackTrace();
+		} catch(IOException ioex) {
+			LOGGER.warn(ioex.getMessage());
+			ioex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		
 		return result;
 	}
 	
@@ -463,7 +719,8 @@ public class WebserviceManager {
 		buf.append(USER_URL+ "/")
 			.append(discordId);
 		
-		LOGGER.debug("Making call to API: " + buf.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + buf.toString());
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
@@ -487,7 +744,8 @@ public class WebserviceManager {
 				}
 				
 				//print in String
-				LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
 				in.close();
 				con.disconnect();
 				throw new IOException(errorResponse.toString());
@@ -501,10 +759,12 @@ public class WebserviceManager {
 				
 				//handle case where user does not currently exist:
 				if(response.toString().equalsIgnoreCase("null")) {
-					LOGGER.debug("Received a null response");
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Received a null response");
 				} else {
 					//print response:
-					LOGGER.debug("Retrieved User: {}", response);
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Retrieved User: {}", response);
 					user = mapper.readValue(response.toString(), DiscordUser.class);					
 				}
 				
@@ -512,10 +772,10 @@ public class WebserviceManager {
 				con.disconnect();
 			}		
 		} catch(MalformedURLException murl) {
-			LOGGER.debug(murl.getMessage());
+			LOGGER.warn(murl.getMessage());
 			murl.printStackTrace();
 		} catch(IOException ioex) {
-			LOGGER.debug(ioex.getMessage());
+			LOGGER.warn(ioex.getMessage());
 			ioex.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -586,16 +846,17 @@ public class WebserviceManager {
 					response.append(inputLine);
 				}
 				
-				LOGGER.debug(response.toString());
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug(response.toString());
 				result = retrieveCreateUserResponse(response.toString());			
 				in.close();
 				con.disconnect();
 			}		
 		} catch(MalformedURLException murl) {
-			LOGGER.debug(murl.getMessage());
+			LOGGER.warn(murl.getMessage());
 			murl.printStackTrace();
 		} catch(IOException ioex) {
-			LOGGER.debug(ioex.getMessage());
+			LOGGER.warn(ioex.getMessage());
 			ioex.printStackTrace();
 		}
 
@@ -609,7 +870,8 @@ public class WebserviceManager {
 		
 		final String POST_PARAMS = "{\n\t" + "\"username\": \"" + ADMIN_USERNAME + "\",\n" +
 				"\t" + "\"password\": \"" + ADMIN_CREDENTIALS + "\"\n}";
-		LOGGER.debug("Using parameters: " + POST_PARAMS);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Using parameters: " + POST_PARAMS);
 		
 		try {
 			URL obj = new URL(LOGIN_URL);
@@ -618,14 +880,16 @@ public class WebserviceManager {
 			con.setRequestProperty("Content-Type", "application/json");
 			con.setDoOutput(true);
 			
-			LOGGER.debug("Using URL: " + obj.toExternalForm());
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Using URL: " + obj.toExternalForm());
 			
 			OutputStream os = con.getOutputStream();
 			os.write(POST_PARAMS.getBytes());
 			os.flush();
 			os.close();
 			
-			LOGGER.debug("Using connection URL: " + obj.toString());
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Using connection URL: " + obj.toString());
 				
 			int responseCode = con.getResponseCode();
 			
@@ -654,17 +918,18 @@ public class WebserviceManager {
 					LOGGER.error("Received a null response while attempting to retrieve token.");
 				} else {
 					//print response and retrieve token value:
-					LOGGER.debug(response.toString());
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug(response.toString());
 					result.append(retrieveTokenResponse(response.toString()));
 				}				
 				in.close();
 				con.disconnect();
 			}		
 		} catch(MalformedURLException murl) {
-			LOGGER.debug(murl.getMessage());
+			LOGGER.warn(murl.getMessage());
 			murl.printStackTrace();
 		} catch(IOException ioex) {
-			LOGGER.debug(ioex.getMessage());
+			LOGGER.warn(ioex.getMessage());
 			ioex.printStackTrace();
 		}
 
@@ -711,13 +976,15 @@ public class WebserviceManager {
 		Action result = null;
 		
 		for(Action action : character.getActions()) {
-			LOGGER.debug("Attempting to persist action {}", action);
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Attempting to persist action {}", action);
 			String response = addAction(action);
 			
 			LOGGER.debug("Received response {}", response);
 			try {
 				result =  MAPPER.readValue(response, Action.class);
-				LOGGER.debug("Deserialized response to object {}", result);
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Deserialized response to object {}", result);
 			} catch (JsonProcessingException e) {
 				LOGGER.error("Failed to marshall action {}", e);
 			}
@@ -732,13 +999,16 @@ public class WebserviceManager {
 		Attack result = null;
 		
 		for(Attack attack : character.getAttacks()) {
-			LOGGER.debug("Attempting to persist attack {}", attack);
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Attempting to persist attack {}", attack);
 			String response = addAttack(attack);
 			
-			LOGGER.debug("Received response {}", response);			
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Received response {}", response);			
 			try {
 				result =  MAPPER.readValue(response, Attack.class);
-				LOGGER.debug("Deserialized response to object {}", result);
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Deserialized response to object {}", result);
 			} catch (JsonProcessingException e) {
 				LOGGER.error("Failed to marshall attack {}", e);
 			}
@@ -757,13 +1027,16 @@ public class WebserviceManager {
 				addFeaturesToItem(item);
 			}
 			
-			LOGGER.debug("Attempting to persist item {}", item);
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Attempting to persist item {}", item);
 			String response = addItem(item);
 			
-			LOGGER.debug("Received response {}", response);
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Received response {}", response);
 			try {
 				result =  MAPPER.readValue(response, Item.class);
-				LOGGER.debug("Deserialized response to object {}", result);
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Deserialized response to object {}", result);
 			} catch (JsonProcessingException e) {
 				LOGGER.error("Failed to marshall item {}", e);
 			}
@@ -778,13 +1051,16 @@ public class WebserviceManager {
 		CharacterClass result = null;
 		
 		for(CharacterClass charClass : character.getCharacterClasses()) {
-			LOGGER.debug("Attempting to persist class {}", charClass);
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Attempting to persist class {}", charClass);
 			String response = addCharacterClass(charClass);
 			
-			LOGGER.debug("Received response {}", response);
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Received response {}", response);
 			try {
 				result =  MAPPER.readValue(response, CharacterClass.class);
-				LOGGER.debug("Deserialized response to object {}", result);
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Deserialized response to object {}", result);
 			} catch (JsonProcessingException e) {
 				LOGGER.error("Failed to marshall character class {}", e);
 			}
@@ -799,13 +1075,16 @@ public class WebserviceManager {
 		Feature result = null;
 		
 		for(Feature feature : character.getFeatures()) {
-			LOGGER.debug("Attempting to persist feature {}", feature);
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Attempting to persist feature {}", feature);
 			String response = addFeature(feature);
 			
-			LOGGER.debug("Received response {}", response);			
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Received response {}", response);			
 			try {
 				result =  MAPPER.readValue(response, Feature.class);
-				LOGGER.debug("Deserialized response to object {}", result);
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Deserialized response to object {}", result);
 			} catch (JsonProcessingException e) {
 				LOGGER.error("Failed to marshall feature {}", e);
 			}
@@ -820,14 +1099,17 @@ public class WebserviceManager {
 		Feature result = null;
 		
 		for(Feature feature : item.getGrantedModifiers()) {
-			LOGGER.debug("Attempting to persist feature {}", feature);
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Attempting to persist feature {}", feature);
 			String response = addFeature(feature);
 			
-			LOGGER.debug("Received response {}", response);	
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Received response {}", response);	
 			
 			try {
 				result =  MAPPER.readValue(response, Feature.class);
-				LOGGER.debug("Deserialized response to object {}", result);
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Deserialized response to object {}", result);
 			} catch (JsonProcessingException e) {
 				LOGGER.error("Failed to marshall feature {}", e);
 			}
@@ -891,7 +1173,8 @@ public class WebserviceManager {
 					response.append(inputLine);
 				}
 				
-				LOGGER.debug("Saved successfully: " + response.toString());		
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Saved successfully: " + response.toString());		
 				in.close();
 				con.disconnect();
 			}		
@@ -923,8 +1206,10 @@ public class WebserviceManager {
 			os.flush();
 			os.close();
 			
-			LOGGER.debug("Sending connection request: " + con);
-			LOGGER.debug("With body: " + con.getOutputStream().toString());
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Sending connection request: " + con);
+				LOGGER.debug("With body: " + con.getOutputStream().toString());
+			}
 				
 			int responseCode = con.getResponseCode();
 			
@@ -948,7 +1233,8 @@ public class WebserviceManager {
 					response.append(inputLine);
 				}
 				
-				LOGGER.debug("Updated successfully: " + response.toString());		
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Updated successfully: " + response.toString());		
 				in.close();
 				con.disconnect();
 			}		

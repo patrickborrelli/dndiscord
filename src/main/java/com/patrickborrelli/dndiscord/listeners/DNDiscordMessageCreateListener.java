@@ -52,13 +52,18 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 		long timeReceived = System.currentTimeMillis();
 		DiscordUser user = null;
 		Message message = event.getMessage();
-		LOGGER.debug("Received message: " + message.toString());
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Received message: " + message.toString());
 		List<MessageAttachment> attachments = message.getAttachments();
-		if(attachments != null && attachments.size() > 0) {
-			for(MessageAttachment file : attachments) {
-				LOGGER.debug("Recieved file attachment: " + file.getFileName());
+		
+		if(LOGGER.isDebugEnabled()) {
+			if(attachments != null && attachments.size() > 0) {
+				for(MessageAttachment file : attachments) {
+					LOGGER.debug("Recieved file attachment: " + file.getFileName());
+				}
 			}
 		}
+		
 		String[] messageArgs = message.getContent().split(" ");
 		boolean isRealUser = !message.getAuthor().isBotUser();
 		String command = stripPrefix(messageArgs[0]);
@@ -70,7 +75,8 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 		if(optUser.isPresent()) currentUser = optUser.get();
 		
 		if(currentUser != null) {
-			LOGGER.debug("Message sent by user: " + currentUser.toString());
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Message sent by user: " + currentUser.toString());
 			if(isRealUser) {
 				user = wsManager.getUser(String.valueOf(currentUser.getId()));
 				if(user == null) {
@@ -82,9 +88,11 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 							currentUser.getDiscriminator(), 
 							String.valueOf(currentUser.getAvatar().hashCode()), 
 							currentUser.isBot());
-					LOGGER.debug("Created user: " + user.toString());
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Created user: " + user.toString());
 				} else {
-					LOGGER.debug("Retrieved existing user: " + user.toString());
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Retrieved existing user: " + user.toString());
 				}
 			}
 		}	
@@ -93,26 +101,30 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 			try {	
 				switch(command) {
 					case CommandUtil.PING:
-						LOGGER.debug("Handling ping message.");
+						if(LOGGER.isDebugEnabled()) 
+							LOGGER.debug("Handling ping message.");
 						executor = router.getCommandExecutor(CommandUtil.PING);
 						if(null != executor) executor.onCommand(message, user, timeReceived);
 						break;
 						
 					case CommandUtil.PREFIX:
-						LOGGER.debug("Handling prefix message.");
+						if(LOGGER.isDebugEnabled()) 
+							LOGGER.debug("Handling prefix message.");
 						executor = router.getCommandExecutor(CommandUtil.PREFIX);
 						if(null != executor) executor.onCommand(message, user, timeReceived);
 						break;
 						
 					case CommandUtil.HELP:
-						LOGGER.debug("Handling help message.");
+						if(LOGGER.isDebugEnabled()) 
+							LOGGER.debug("Handling help message.");
 						executor = router.getCommandExecutor(CommandUtil.HELP);
 						if(null != executor) executor.onCommand(message, user, timeReceived);
 						break;
 						
 					case CommandUtil.ROLL:
 					case CommandUtil.R:
-						LOGGER.debug("Handling Roll message.");
+						if(LOGGER.isDebugEnabled()) 
+							LOGGER.debug("Handling Roll message.");
 						executor = router.getCommandExecutor(CommandUtil.ROLL);
 						if(null != executor) executor.onCommand(message, user, timeReceived);
 						break;
@@ -124,7 +136,8 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 						break;
 						
 					case CommandUtil.IMPORT:
-						LOGGER.debug("Handling import command message.");
+						if(LOGGER.isDebugEnabled()) 
+							LOGGER.debug("Handling import command message.");
 						executor = router.getCommandExecutor(CommandUtil.IMPORT);
 						if(null != executor) executor.onCommand(message, user, timeReceived);
 						break;

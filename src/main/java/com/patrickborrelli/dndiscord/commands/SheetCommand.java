@@ -1,27 +1,34 @@
 package com.patrickborrelli.dndiscord.commands;
 
 import java.awt.Color;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.javacord.api.DiscordApi;
+import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
-import org.javacord.api.entity.message.MessageAttachment;
+import org.javacord.api.entity.message.MessageBuilder;
+import org.javacord.api.entity.message.component.ActionRow;
+import org.javacord.api.entity.message.component.SelectMenu;
+import org.javacord.api.entity.message.component.SelectMenuOption;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
+import org.javacord.api.interaction.SelectMenuInteraction;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ibm.icu.text.CharsetDetector;
-import com.ibm.icu.text.CharsetMatch;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
-import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterBrief;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
+import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
+import com.patrickborrelli.dndiscord.utilities.AppUtil;
+
+import me.xdrop.fuzzywuzzy.FuzzySearch;
+import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 
 /**
  * Command class provided to process all character sheet related
@@ -31,58 +38,217 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
  */
 public class SheetCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(SheetCommand.class);
-	private List<MessageAttachment> attachments;
+	
+	private static final String SPACE = " ";
+	private static final String SEPARATOR = "/";
+	private static final String COMMA = ",";
+	private static final String LIST = "list";
+	private static final String SWITCH = "switch";
+	
+	private String characterName = null;
+	private CharacterSheet activeCharacter = null;
+	
+	WebserviceManager wsManager = WebserviceManager.getInstance();
+	DiscordApi api = AppUtil.getInstance().getApi();
 
 	@Override
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
-		InputStream stream = null;
-		InputStreamReader reader = null;
-		DndBeyondSheet sheet = null;
-		CharsetDetector detector = new CharsetDetector();
-		CharsetMatch match;
+		String[] args = msg.getContent().split(" ");
+		TextChannel channel = msg.getChannel();
 		
-		//TODO: need to store currently loaded characters in a CharacterModel, along with indication of currently active character:
-		List<DndBeyondSheet> characters = new ArrayList<>();
-		attachments = msg.getAttachments();
-		ObjectMapper mapper = new ObjectMapper();
-		LOGGER.debug("Received Sheet Command message: " + msg.getContent() + " with " + attachments.size() + " attachments");
-		
-		for(MessageAttachment attach : attachments) {
-			//for now, assume it is a json file representing a character.
-			try {
-				stream = attach.asInputStream();
-				
-				//determine correct encoding:
-				detector.setText(new BufferedInputStream(stream));
-				LOGGER.debug("Determining encoding for stream {}", stream);
-				match = detector.detect();
-				LOGGER.debug("Determined encoding for stream is {}", match.getName());
-				
-				Charset charset = Charset.forName(match.getName());
-				LOGGER.debug("Using charset {}", charset.displayName());
-				
-				reader = new InputStreamReader(attach.asInputStream(), charset);
-				
-				sheet = mapper.readValue(reader, DndBeyondSheet.class);
-				characters.add(sheet);				
-			} catch (IOException e) {
-				e.printStackTrace();
+		if (args.length == 1) {
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Received request for current character: " + msg.getContent());
 			}
-		}
-		LOGGER.debug("Retrieved the following characters:");
-		for(DndBeyondSheet index : characters) {
-			LOGGER.debug(index.toString());
-			buildSheetEmbed(msg, index);
+			if(user.getActiveCharacter() != null) {
+				activeCharacter = user.getActiveCharacter();
+				characterName = activeCharacter.getCharacterName();	
+				buildSheetEmbed(msg);
+			} else {
+				characterName = "No current character selected";
+			}
+		} else if(args.length == 2 && args[1].equalsIgnoreCase(LIST)) {
+			if(user.getActiveCharacter() != null) {
+				activeCharacter = user.getActiveCharacter();
+			}
+			buildListEmbed(msg, buildCharacterList(user));
+		} else if(args.length > 2 && args[1].equalsIgnoreCase(SWITCH)) {
+			String requestedChar = getCharacterNameArgs(args);
+			handleCleanSwitch(msg, requestedChar, user);
+		}		
+		else {
+			LOGGER.error("Inappropriate arguments provided: ");
+			MessageResponse.sendReply(channel, "Inappropriate arguments provided:");
 		}
 	}
 	
-	private void buildSheetEmbed(Message msg, DndBeyondSheet sheet) {
+	private void buildListEmbed(Message msg, String characterList) {
 		EmbedBuilder embed = new EmbedBuilder()
-			.setTitle(sheet.getName())
-			.setDescription("DnDiscord is a multifaceted D&D 5e utility bot designed to enable you and your party a seamless online D&D experience.")
+				.setTitle(msg.getAuthor().getDisplayName() + "'s Imported Characters")
+				.setDescription(buildList(characterList))
+				.setColor(Color.GREEN)
+			    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
+			    .setThumbnail(activeCharacter.getAvatarUrl());
+			MessageResponse.sendEmbedMessage(msg.getChannel(), embed);
+	}
+	
+	private void buildSheetEmbed(Message msg) {
+		EmbedBuilder embed = new EmbedBuilder()
+			.setTitle(characterName)
+			.setDescription(buildDescription())
+			.addInlineField("STR", Integer.toString(activeCharacter.getTotalStrength()))
+			.addInlineField("DEX", Integer.toString(activeCharacter.getTotalDexterity()))
+			.addInlineField("CON", Integer.toString(activeCharacter.getTotalConstitution()))
+			.addInlineField("INT", Integer.toString(activeCharacter.getTotalIntelligence()))
+			.addInlineField("WIS", Integer.toString(activeCharacter.getTotalWisdom()))
+			.addInlineField("CHA", Integer.toString(activeCharacter.getTotalCharisma()))
 		    .setColor(Color.GREEN)
 		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
-		    .setThumbnail(sheet.getAvatarUrl().toString());
+		    .setThumbnail(activeCharacter.getAvatarUrl());
 		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);		
+	}
+	
+	private void sendCharacterQuery(Message msg, List<String> characters, DiscordUser user) {
+		List<SelectMenuOption> options = new ArrayList<>();
+		for(String character : characters) {
+			options.add(SelectMenuOption.create(character, "You selected " + character + "!", ""));
+		}
+		api.addMessageComponentCreateListener(event -> {			
+			event.getInteraction().respondLater().thenAccept(originalInteraction -> {
+				Optional<SelectMenuInteraction> opt = event.getMessageComponentInteraction().asSelectMenuInteraction();
+							
+				if(opt.isPresent()) {
+					SelectMenuInteraction interaction = opt.get();
+					String chosen = interaction.getChosenOptions().get(0).getLabel();				
+					originalInteraction.setContent("Loading character: " + chosen).update();
+					
+					try {
+						handleCleanSwitch(msg, chosen, user);
+					} catch (Exception e) {
+						
+					}
+								
+				}
+			});			
+		});
+		
+		new MessageBuilder()
+	    .setContent("Which character did you mean?")
+	    .addComponents(
+	        ActionRow.of(SelectMenu.createStringMenu("chosen",  "Click to show the list", 1, 1, options)))
+	    .send(msg.getChannel());		
+	}
+	
+	private String getCharacterId(List<CharacterBrief> characters, String selectedChar) {
+		String charId = null;
+		for(CharacterBrief brief : characters) {
+			if(brief.getName().equalsIgnoreCase(selectedChar)) {
+				charId = brief.getId();
+			}
+		}
+		return charId;
+	}
+	
+	private String getCharacterNameArgs(String[] args) {
+		StringBuilder buff = new StringBuilder();
+		for(int i = 2; i < args.length; i++) {
+			buff.append(args[i]);
+			if(i < args.length - 1) buff.append(SPACE);
+		}		
+		return buff.toString();
+	}
+	
+	private List<String> getCharacterNames(List<CharacterBrief> characters) {
+		List<String> result = new ArrayList<>();
+		
+		for(CharacterBrief brief : characters) {
+			result.add(brief.toString());
+		}
+		return result;
+	}
+	
+	private void handleCleanSwitch(Message msg, String chosen, DiscordUser user) throws CommandProcessingException {
+		List<CharacterBrief> characters = wsManager.getUserCharactersLazy(user);
+		List<ExtractedResult> choice = (List<ExtractedResult>)FuzzySearch.extractTop(chosen, getCharacterNames(characters), 1);
+		if(choice != null) {
+			ExtractedResult result = choice.get(0);
+			
+			if(result.getScore() > 65) {				
+				if(result.getString().equalsIgnoreCase(user.getActiveCharacter().getCharacterName())) {
+					//nothing to do here:
+					characterName = user.getActiveCharacter().getCharacterName();
+					activeCharacter = user.getActiveCharacter();
+				} else {
+					CharacterSheet sheet = wsManager.getCharacter(getCharacterId(characters, result.getString()));
+					user.setActiveCharacter(sheet);
+					wsManager.updateUser(user);
+					characterName = sheet.getCharacterName();
+					activeCharacter = sheet;
+				}
+				
+				buildSheetEmbed(msg);
+			} else {
+				//which character did you mean?
+				sendCharacterQuery(msg, getCharacterNames(characters), user);
+			}
+			
+		} else {
+			sendCharacterQuery(msg, getCharacterNames(characters), user);
+		}
+	}
+	
+	/**
+	 * The description of a character is a single string containing its species, class(es), and level(s).
+	 * @return a String representation of the character
+	 */
+	private String buildDescription() {
+		StringBuilder buff = new StringBuilder();
+		List<CharacterClass> classes = activeCharacter.getCharacterClasses();
+		int separators = classes.size() - 1;
+
+		buff.append(activeCharacter.getRace()).append(SPACE);
+		
+		for(CharacterClass myClass : classes) {
+			buff.append(myClass.getName()).append(SPACE).append(myClass.getLevel());
+			if(separators > 0) {
+				buff.append(SEPARATOR);
+				separators--;
+			}
+		}
+		
+		return buff.toString();
+	}
+	
+	private String buildList(String charList) {
+		StringBuilder buff = new StringBuilder();
+		String result = "";
+		charList = charList.replaceAll("\"", "");
+		if(charList != null) {
+			String [] characters = charList.split(COMMA);
+			Arrays.sort(characters);
+			
+			for(String character : characters) {
+				if(activeCharacter.getCharacterName() != null && character.equalsIgnoreCase(activeCharacter.getCharacterName())) {
+					//make the active character bold:
+					buff.append("**" + character + "**");
+				} else {
+					buff.append(character);
+				}
+				buff.append(COMMA).append(SPACE);
+			}
+			//remove final COMMA/SPACE combination:
+			result = buff.substring(0,  buff.length() - 2);
+		}	
+		return result;
+	}
+	
+	/**
+	 * Get the names of all characters the user has imported.
+	 * @param user
+	 * @return
+	 */
+	private String buildCharacterList(DiscordUser user) {
+		
+		return wsManager.getUserCharacterNames(user);
 	}
 }
