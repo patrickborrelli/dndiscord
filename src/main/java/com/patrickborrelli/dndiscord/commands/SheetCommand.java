@@ -1,6 +1,7 @@
 package com.patrickborrelli.dndiscord.commands;
 
 import java.awt.Color;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +27,7 @@ public class SheetCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(SheetCommand.class);
 	private static final String SPACE = " ";
 	private static final String SEPARATOR = "/";
+	private static final String COMMA = ",";
 	private static final String LIST = "list";
 	private String characterName = null;
 	private CharacterSheet activeCharacter = null;
@@ -49,11 +51,24 @@ public class SheetCommand implements CommandExecutor {
 				characterName = "No current character selected";
 			}
 		} else if(args.length == 2 && args[1].equalsIgnoreCase(LIST)) {
-			MessageResponse.sendReply(channel, buildCharacterList(user));
+			if(user.getActiveCharacter() != null) {
+				activeCharacter = user.getActiveCharacter();
+			}
+			buildListEmbed(msg, buildCharacterList(user));
 		} else {
 			LOGGER.error("Inappropriate arguments provided: ");
 			MessageResponse.sendReply(channel, "Inappropriate arguments provided:");
 		}
+	}
+	
+	private void buildListEmbed(Message msg, String characterList) {
+		EmbedBuilder embed = new EmbedBuilder()
+				.setTitle(msg.getAuthor().getDisplayName() + "'s Imported Characters")
+				.setDescription(buildList(characterList))
+				.setColor(Color.GREEN)
+			    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
+			    .setThumbnail(activeCharacter.getAvatarUrl());
+			MessageResponse.sendEmbedMessage(msg.getChannel(), embed);
 	}
 	
 	private void buildSheetEmbed(Message msg) {
@@ -94,19 +109,36 @@ public class SheetCommand implements CommandExecutor {
 		return buff.toString();
 	}
 	
+	private String buildList(String charList) {
+		StringBuilder buff = new StringBuilder();
+		String result = "";
+		charList = charList.replaceAll("\"", "");
+		if(charList != null) {
+			String [] characters = charList.split(COMMA);
+			Arrays.sort(characters);
+			
+			for(String character : characters) {
+				if(activeCharacter.getCharacterName() != null && character.equalsIgnoreCase(activeCharacter.getCharacterName())) {
+					//make the active character bold:
+					buff.append("**" + character + "**");
+				} else {
+					buff.append(character);
+				}
+				buff.append(COMMA).append(SPACE);
+			}
+			//remove final COMMA/SPACE combination:
+			result = buff.substring(0,  buff.length() - 2);
+		}	
+		return result;
+	}
+	
 	/**
 	 * Get the names of all characters the user has imported.
 	 * @param user
 	 * @return
 	 */
 	private String buildCharacterList(DiscordUser user) {
-		StringBuilder buff = new StringBuilder();
 		
-		List<CharacterSheet> sheets = wsManager.getUserCharacters(user);
-		for(CharacterSheet sheet : sheets) {
-			buff.append(sheet.getCharacterName()).append(SPACE);
-		}
-		
-		return buff.toString();
+		return wsManager.getUserCharacters(user);
 	}
 }

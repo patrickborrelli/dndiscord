@@ -477,8 +477,8 @@ public class WebserviceManager {
 		return result;
 	}
 	
-	public List<CharacterSheet> getUserCharacters(DiscordUser user) {
-		List<CharacterSheet> result = new ArrayList<>();
+	public String getUserCharacters(DiscordUser user) {
+		String result = "";
 		StringBuilder url = new StringBuilder().append(USER_CHAR_URL).append("/").append(user.getDiscord_id());
 
 		if(LOGGER.isDebugEnabled()) 
@@ -486,8 +486,6 @@ public class WebserviceManager {
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
-		ObjectMapper mapper = new ObjectMapper();
-		CharacterSheet[] characters = null;
 		
 		try {
 			URL obj = new URL(url.toString());
@@ -505,7 +503,6 @@ public class WebserviceManager {
 					errorResponse.append(inputLine);
 				}
 				
-				//print in String
 				if(LOGGER.isDebugEnabled()) 
 					LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
 				in.close();
@@ -526,8 +523,8 @@ public class WebserviceManager {
 				} else {
 					//print response:
 					if(LOGGER.isDebugEnabled()) 
-						LOGGER.debug(response.toString());
-					characters = mapper.readValue(response.toString(), CharacterSheet[].class);			
+						LOGGER.debug(response.toString());	
+					result = response.toString();
 				}
 				
 				in.close();
@@ -543,7 +540,6 @@ public class WebserviceManager {
 			e.printStackTrace();
 		}	
 		
-		result = (characters == null) ? null : new ArrayList<>(Arrays.asList(characters));		
 		return result;
 	}
 	
