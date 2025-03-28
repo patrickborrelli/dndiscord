@@ -74,6 +74,11 @@ public class SheetConverter {
 	
 	public CharacterSheet convertFormat(SheetSourceType type, DndBeyondSheet character) {
 		CharacterSheet sheet = new CharacterSheet();
+		
+		features = new HashSet<>();
+        languages = new HashSet<>();
+        proficiencies = new HashSet<>();
+        delayedModifiers = new ArrayList<>();
 
 		if (type == SheetSourceType.BEYOND) {
 			sheet.setSheetSource(type.getValue());

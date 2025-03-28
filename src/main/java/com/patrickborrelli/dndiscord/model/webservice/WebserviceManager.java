@@ -22,6 +22,7 @@ import com.patrickborrelli.dndiscord.model.Formula;
 import com.patrickborrelli.dndiscord.model.TokenResponse;
 import com.patrickborrelli.dndiscord.model.dndiscord.Action;
 import com.patrickborrelli.dndiscord.model.dndiscord.Attack;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterBrief;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.dndiscord.Feature;
@@ -54,6 +55,7 @@ public class WebserviceManager {
 	private static String FORMULA_URL;
 	private static String USER_URL;
 	private static String USER_CHAR_URL;
+	private static String LAZY_URL;
 	private static String UPDATE_USER_URL;
 	private static String ITEM_URL;
 	private static String LOGIN_URL;
@@ -78,6 +80,7 @@ public class WebserviceManager {
 		UPDATE_USER_URL = BASE_URL + "users";
 		ITEM_URL = BASE_URL + "items";
 		LOGIN_URL = BASE_URL + "users/login";
+		LAZY_URL = USER_CHAR_URL + "/lazy";
 		
 		LOGGER.debug("USING BaseUrl of: {} for {}", BASE_URL, AppUtil.getInstance().getScope());
 	}
@@ -171,6 +174,13 @@ public class WebserviceManager {
 		return buff.toString();
 	}
 	
+	/**
+	 * Adds a new character to an existing User.
+	 * 
+	 * @param user
+	 * @param character
+	 * @return
+	 */
 	public String addUserCharacter(DiscordUser user, CharacterSheet character) {
 		
 		CharacterSheet addedCharacter = null; 
@@ -202,6 +212,88 @@ public class WebserviceManager {
 		
 		user.addCharacter(addedCharacter);
 		user.setActiveCharacter(addedCharacter);
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Sending user : " + user + " to update");
+		String unmarshalled = unmarshalObject(user);
+		
+		return put(UPDATE_USER_URL + "/" + user.getId(), unmarshalled);
+	}
+	
+	public CharacterSheet getCharacter(String characterId) {
+		StringBuilder buf = new StringBuilder();
+		buf.append(CHARACTER_URL+ "/")
+			.append(characterId);
+		
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + buf.toString());
+		
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		ObjectMapper mapper = new ObjectMapper();
+		CharacterSheet character = null;
+		
+		try {
+			URL obj = new URL(buf.toString());
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			int responseCode = con.getResponseCode();			
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				//print in String
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				//handle case where user does not currently exist:
+				if(response.toString().equalsIgnoreCase("null")) {
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Received a null response");
+				} else {
+					//print response:
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Retrieved User: {}", response);
+					character = mapper.readValue(response.toString(), CharacterSheet.class);					
+				}
+				
+				in.close();
+				con.disconnect();
+			}		
+		} catch(MalformedURLException murl) {
+			LOGGER.warn(murl.getMessage());
+			murl.printStackTrace();
+		} catch(IOException ioex) {
+			LOGGER.warn(ioex.getMessage());
+			ioex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		return character;
+	}
+	
+	/**
+	 * Generic User update method.
+	 * @param user
+	 * @return
+	 */
+	public String updateUser(DiscordUser user) {
 		if(LOGGER.isDebugEnabled()) 
 			LOGGER.debug("Sending user : " + user + " to update");
 		String unmarshalled = unmarshalObject(user);
@@ -477,7 +569,80 @@ public class WebserviceManager {
 		return result;
 	}
 	
-	public String getUserCharacters(DiscordUser user) {
+	public List<CharacterBrief> getUserCharactersLazy(DiscordUser user) {
+		List<CharacterBrief> result = new ArrayList<>();
+		StringBuilder url = new StringBuilder().append(LAZY_URL).append("/").append(user.getDiscord_id());
+
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + url.toString());
+		
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		ObjectMapper mapper = new ObjectMapper();
+		CharacterBrief[] characters = null;
+		
+		try {
+			URL obj = new URL(url.toString());
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			int responseCode = con.getResponseCode();			
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				//handle case where no characters returned:
+				if(response.toString().equalsIgnoreCase("null") || response.toString().equalsIgnoreCase("[]")) {
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("Received an empty response");
+				} else {
+					//print response:
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug(response.toString());	
+					characters = mapper.readValue(response.toString(), CharacterBrief[].class);
+				}
+				
+				in.close();
+				con.disconnect();
+			}		
+		} catch(MalformedURLException murl) {
+			LOGGER.warn(murl.getMessage());
+			murl.printStackTrace();
+		} catch(IOException ioex) {
+			LOGGER.warn(ioex.getMessage());
+			ioex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		result = (characters == null) ? null : new ArrayList<>(Arrays.asList(characters));
+		return result;
+	}
+	
+	/**
+	 * Retrieves a comma-delimited string containing all characters currently imported by the user.
+	 * @param user
+	 * @return
+	 */
+	public String getUserCharacterNames(DiscordUser user) {
 		String result = "";
 		StringBuilder url = new StringBuilder().append(USER_CHAR_URL).append("/").append(user.getDiscord_id());
 

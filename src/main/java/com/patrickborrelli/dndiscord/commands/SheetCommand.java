@@ -1,7 +1,9 @@
 package com.patrickborrelli.dndiscord.commands;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,9 +15,13 @@ import org.javacord.api.entity.message.embed.EmbedBuilder;
 import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterBrief;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
+
+import me.xdrop.fuzzywuzzy.FuzzySearch;
+import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 
 /**
  * Command class provided to process all character sheet related
@@ -25,10 +31,13 @@ import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
  */
 public class SheetCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(SheetCommand.class);
+	
 	private static final String SPACE = " ";
 	private static final String SEPARATOR = "/";
 	private static final String COMMA = ",";
 	private static final String LIST = "list";
+	private static final String SWITCH = "switch";
+	
 	private String characterName = null;
 	private CharacterSheet activeCharacter = null;
 	
@@ -55,7 +64,33 @@ public class SheetCommand implements CommandExecutor {
 				activeCharacter = user.getActiveCharacter();
 			}
 			buildListEmbed(msg, buildCharacterList(user));
-		} else {
+		} else if(args.length > 2 && args[1].equalsIgnoreCase(SWITCH)) {
+			String requestedChar = getCharacterNameArgs(args);
+			
+			List<CharacterBrief> characters = wsManager.getUserCharactersLazy(user);
+			List<ExtractedResult> choice = (List<ExtractedResult>)FuzzySearch.extractTop(requestedChar, getCharacterNames(characters), 1);
+			if(choice != null) {
+				ExtractedResult result = choice.get(0);
+				if(result.getScore() > 65) {
+					//consider this a valid match and retrieve the character and set it as active:
+					//if this is already the active character just reply with active
+					//otherwise get the character to activate, set it in the user object and update the user
+					if(result.getString().equalsIgnoreCase(user.getActiveCharacter().getCharacterName())) {
+						//TODO: already done
+					} else {
+						CharacterSheet sheet = wsManager.getCharacter(getCharacterId(characters, result.getString()));
+						user.setActiveCharacter(sheet);
+						wsManager.updateUser(user);
+						characterName = sheet.getCharacterName();
+						activeCharacter = sheet;
+					}
+				}
+				buildSheetEmbed(msg);
+			} else {
+				//TODO: research interactions with user and list all and ask to select
+			}
+		}		
+		else {
 			LOGGER.error("Inappropriate arguments provided: ");
 			MessageResponse.sendReply(channel, "Inappropriate arguments provided:");
 		}
@@ -85,6 +120,34 @@ public class SheetCommand implements CommandExecutor {
 		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
 		    .setThumbnail(activeCharacter.getAvatarUrl());
 		MessageResponse.sendEmbedMessage(msg.getChannel(), embed);		
+	}
+	
+	private String getCharacterId(List<CharacterBrief> characters, String selectedChar) {
+		String charId = null;
+		for(CharacterBrief brief : characters) {
+			if(brief.getName().equalsIgnoreCase(selectedChar)) {
+				charId = brief.getId();
+			}
+		}
+		return charId;
+	}
+	
+	private String getCharacterNameArgs(String[] args) {
+		StringBuilder buff = new StringBuilder();
+		for(int i = 2; i < args.length; i++) {
+			buff.append(args[i]);
+			if(i < args.length - 1) buff.append(SPACE);
+		}		
+		return buff.toString();
+	}
+	
+	private Collection<String> getCharacterNames(List<CharacterBrief> characters) {
+		Collection<String> result = new ArrayList<>();
+		
+		for(CharacterBrief brief : characters) {
+			result.add(brief.toString());
+		}
+		return result;
 	}
 	
 	/**
@@ -139,6 +202,6 @@ public class SheetCommand implements CommandExecutor {
 	 */
 	private String buildCharacterList(DiscordUser user) {
 		
-		return wsManager.getUserCharacters(user);
+		return wsManager.getUserCharacterNames(user);
 	}
 }
