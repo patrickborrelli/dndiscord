@@ -515,7 +515,7 @@ public class SheetConverter {
 					feat.setSubClassFeature(myFeature.getDefinition().isSubClassFeature());
 					LimitedUse[] limUses = myFeature.getDefinition().getLimitedUse();
 					if (limUses != null && limUses.length > 0) {
-						feat.setLimitedUseResetType(ResetType.getEnum(Integer.parseInt(limUses[0].getResetType())));
+						if (limUses[0].getResetType() != null) feat.setLimitedUseResetType(ResetType.getEnum(Integer.parseInt(limUses[0].getResetType())));
 						feat.setLimitedUseNumberUsed(limUses[0].getNumberUsed());
 						feat.setLimitedUseMinNumberConsumed(limUses[0].getMinNumberConsumed());
 						feat.setLimitedUseMaxNumberConsumed(limUses[0].getMaxNumberConsumed());
