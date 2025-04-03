@@ -17,9 +17,11 @@ import org.apache.logging.log4j.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.Formula;
 import com.patrickborrelli.dndiscord.model.TokenResponse;
+import com.patrickborrelli.dndiscord.model.dndbeyond.DndBeyondSheet;
 import com.patrickborrelli.dndiscord.model.dndiscord.Action;
 import com.patrickborrelli.dndiscord.model.dndiscord.Attack;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterBrief;
@@ -28,6 +30,8 @@ import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.dndiscord.Feature;
 import com.patrickborrelli.dndiscord.model.dndiscord.Item;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
+import com.patrickborrelli.dndiscord.utilities.ApplicationObjectMapper;
+import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
 
 /**
  * Singleton instance responsible for adding, modifying, and deleting 
@@ -36,11 +40,16 @@ import com.patrickborrelli.dndiscord.utilities.AppUtil;
  * @author Patrick Borrelli
  */
 public class WebserviceManager {
+	
 	private volatile static WebserviceManager instance;
 	private static final Logger LOGGER = LogManager.getLogger(WebserviceManager.class.getName());
 	private static final String ADMIN_USERNAME = System.getenv("DNDISCORD_ADMIN_USER");
 	private static final String ADMIN_CREDENTIALS = System.getenv("DNDISCORD_ADMIN_CREDENTIALS");
-	private static final ObjectMapper MAPPER = new ObjectMapper();
+	private static final ObjectMapper MAPPER = ApplicationObjectMapper.getInstance();
+	private static final ObjectReader CHARACTER_READER = MAPPER.reader().forType(CharacterSheet.class);
+	private static final ObjectReader FORMULA_READER = MAPPER.reader().forType(Formula.class);
+	private static final ObjectReader FORMULA_ARRAY_READER = MAPPER.reader().forType(Formula[].class);
+	private static final ObjectReader DISCORD_USER_READER = MAPPER.reader().forType(DiscordUser.class);
 	private static final String QUERY = "?";
 	private static final String NULL_ID = ",\"_id\":null";
 	
@@ -184,7 +193,7 @@ public class WebserviceManager {
 	public String addUserCharacter(DiscordUser user, CharacterSheet character) {
 		
 		CharacterSheet addedCharacter = null; 
-		
+				
 		//first ensure any children are persisted:
 		if(character.getInventory() != null) addItemsToCharacter(character);
 		if(character.getActions() != null) addActionsToCharacter(character);
@@ -203,7 +212,7 @@ public class WebserviceManager {
 		String result = post(CHARACTER_URL, POST_BODY);
 		
 		try {
-			addedCharacter =  MAPPER.readValue(result, CharacterSheet.class);
+			addedCharacter =  CHARACTER_READER.readValue(result);
 			if(LOGGER.isDebugEnabled()) 
 				LOGGER.debug("Deserialized response to object {}", addedCharacter);
 		} catch (JsonProcessingException e) {
@@ -229,7 +238,6 @@ public class WebserviceManager {
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
-		ObjectMapper mapper = new ObjectMapper();
 		CharacterSheet character = null;
 		
 		try {
@@ -270,7 +278,7 @@ public class WebserviceManager {
 					//print response:
 					if(LOGGER.isDebugEnabled()) 
 						LOGGER.debug("Retrieved User: {}", response);
-					character = mapper.readValue(response.toString(), CharacterSheet.class);					
+					character = CHARACTER_READER.readValue(response.toString());					
 				}
 				
 				in.close();
@@ -432,7 +440,6 @@ public class WebserviceManager {
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
-		ObjectMapper mapper = new ObjectMapper();
 		Formula[] formulas = null;
 		
 		try {
@@ -473,7 +480,7 @@ public class WebserviceManager {
 					//print response:
 					if(LOGGER.isDebugEnabled()) 
 						LOGGER.debug(response.toString());
-					formulas = mapper.readValue(response.toString(), Formula[].class);			
+					formulas = FORMULA_READER.readValue(response.toString());			
 				}
 				
 				in.close();
@@ -508,7 +515,6 @@ public class WebserviceManager {
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
-		ObjectMapper mapper = new ObjectMapper();
 		Formula[] formulas = null;
 		
 		try {
@@ -549,7 +555,7 @@ public class WebserviceManager {
 					//print response:
 					if(LOGGER.isDebugEnabled()) 
 						LOGGER.debug(response.toString());
-					formulas = mapper.readValue(response.toString(), Formula[].class);			
+					formulas = FORMULA_ARRAY_READER.readValue(response.toString());			
 				}
 				
 				in.close();
@@ -578,8 +584,8 @@ public class WebserviceManager {
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
-		ObjectMapper mapper = new ObjectMapper();
 		CharacterBrief[] characters = null;
+		ObjectReader charBriefReader = MAPPER.reader().forType(CharacterBrief[].class);
 		
 		try {
 			URL obj = new URL(url.toString());
@@ -618,7 +624,7 @@ public class WebserviceManager {
 					//print response:
 					if(LOGGER.isDebugEnabled()) 
 						LOGGER.debug(response.toString());	
-					characters = mapper.readValue(response.toString(), CharacterBrief[].class);
+					characters = charBriefReader.readValue(response.toString());
 				}
 				
 				in.close();
@@ -724,8 +730,7 @@ public class WebserviceManager {
 		
 		BufferedReader in = null;
 		HttpURLConnection con = null;
-		ObjectMapper mapper = new ObjectMapper();
-		DiscordUser user = null;
+		DiscordUser user = null;		
 		
 		try {
 			URL obj = new URL(buf.toString());
@@ -765,7 +770,7 @@ public class WebserviceManager {
 					//print response:
 					if(LOGGER.isDebugEnabled()) 
 						LOGGER.debug("Retrieved User: {}", response);
-					user = mapper.readValue(response.toString(), DiscordUser.class);					
+					user = DISCORD_USER_READER.readValue(response.toString());					
 				}
 				
 				in.close();
@@ -863,6 +868,45 @@ public class WebserviceManager {
 		return result;
 	}		
 	
+	/**
+	 * Retrieve a DNDBeyond character sheet if one exists.
+	 * 
+	 * @param urlString the URL of the character sheet json request
+	 * @return a DndBeyondSheet object
+	 */
+	public DndBeyondSheet importDndBeyondSheet(String urlString) {
+		DndBeyondSheet response = null;
+		ObjectReader dndBeyondSheetReader = MAPPER.reader().forType(DndBeyondSheet.class);
+		
+		
+		if(urlString != null && !urlString.isEmpty()) {			
+			HttpURLConnection connection = null;
+			
+			try {
+				URL url = new URL(urlString);
+				connection = (HttpURLConnection) url.openConnection();
+				connection.setRequestProperty("User-Agent", ConfigurationUtil.HTTP_USER_AGENT);
+				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+				String inputLine;
+				StringBuffer content = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					content.append(inputLine);
+					if(LOGGER.isDebugEnabled()) 
+						LOGGER.debug("READ LINE: {}", inputLine);
+				}
+				in.close();
+
+				response = dndBeyondSheetReader.readValue(content.toString());
+			} catch(Exception e) {
+				LOGGER.error("We broke something: {}", e);
+			} finally {
+				connection.disconnect();
+			}
+		}
+		return response;
+	}
+	
 	private String getToken() {
 		StringBuffer result = new StringBuffer();
 		BufferedReader in = null;
@@ -939,10 +983,10 @@ public class WebserviceManager {
 	private String retrieveTokenResponse(String response) {
 		StringBuffer result = new StringBuffer();
 		TokenResponse token;
+		ObjectReader tokenResponseReader = MAPPER.reader().forType(TokenResponse.class);
 		
-		ObjectMapper mapper = new ObjectMapper();
 		try {
-			token = mapper.readValue(response, TokenResponse.class);
+			token = tokenResponseReader.readValue(response);
 			result.append(token.getToken());
 		} catch (JsonMappingException e) {
 			LOGGER.error(e);
@@ -958,9 +1002,8 @@ public class WebserviceManager {
 	private DiscordUser retrieveCreateUserResponse(String response) {
 		DiscordUser user = null;
 		
-		ObjectMapper mapper = new ObjectMapper();
 		try {
-			user = mapper.readValue(response, DiscordUser.class);
+			user = DISCORD_USER_READER.readValue(response);
 		} catch (JsonMappingException e) {
 			LOGGER.error(e);
 			e.printStackTrace();
@@ -974,6 +1017,7 @@ public class WebserviceManager {
 	private void addActionsToCharacter(CharacterSheet character) {
 		List<Action> actions = new ArrayList<>();
 		Action result = null;
+		ObjectReader actionReader = MAPPER.reader().forType(Action.class);
 		
 		for(Action action : character.getActions()) {
 			if(LOGGER.isDebugEnabled()) 
@@ -982,7 +1026,7 @@ public class WebserviceManager {
 			
 			LOGGER.debug("Received response {}", response);
 			try {
-				result =  MAPPER.readValue(response, Action.class);
+				result =  actionReader.readValue(response);
 				if(LOGGER.isDebugEnabled()) 
 					LOGGER.debug("Deserialized response to object {}", result);
 			} catch (JsonProcessingException e) {
@@ -997,6 +1041,7 @@ public class WebserviceManager {
 	private void addAttacksToCharacter(CharacterSheet character) {
 		List<Attack> attacks = new ArrayList<>();
 		Attack result = null;
+		ObjectReader attackReader = MAPPER.reader().forType(Attack.class);
 		
 		for(Attack attack : character.getAttacks()) {
 			if(LOGGER.isDebugEnabled()) 
@@ -1006,7 +1051,7 @@ public class WebserviceManager {
 			if(LOGGER.isDebugEnabled()) 
 				LOGGER.debug("Received response {}", response);			
 			try {
-				result =  MAPPER.readValue(response, Attack.class);
+				result =  attackReader.readValue(response);
 				if(LOGGER.isDebugEnabled()) 
 					LOGGER.debug("Deserialized response to object {}", result);
 			} catch (JsonProcessingException e) {
@@ -1021,6 +1066,7 @@ public class WebserviceManager {
 	private void addItemsToCharacter(CharacterSheet character) {
 		List<Item> inventory = new ArrayList<>();
 		Item result = null;
+		ObjectReader itemReader = MAPPER.reader().forType(Item.class);
 		
 		for(Item item : character.getInventory()) {
 			if(item.getGrantedModifiers() != null) {
@@ -1034,21 +1080,21 @@ public class WebserviceManager {
 			if(LOGGER.isDebugEnabled()) 
 				LOGGER.debug("Received response {}", response);
 			try {
-				result =  MAPPER.readValue(response, Item.class);
+				result =  itemReader.readValue(response);
 				if(LOGGER.isDebugEnabled()) 
 					LOGGER.debug("Deserialized response to object {}", result);
 			} catch (JsonProcessingException e) {
 				LOGGER.error("Failed to marshall item {}", e);
 			}
 			inventory.add(new Item(result.getId()));
-		}
-		
+		}		
 		character.setInventory(inventory);
 	}
 	
 	private void addClassesToCharacter(CharacterSheet character) {
 		List<CharacterClass> classes = new ArrayList<>();
 		CharacterClass result = null;
+		ObjectReader characterClassReader = MAPPER.reader().forType(CharacterClass.class);
 		
 		for(CharacterClass charClass : character.getCharacterClasses()) {
 			if(LOGGER.isDebugEnabled()) 
@@ -1058,7 +1104,7 @@ public class WebserviceManager {
 			if(LOGGER.isDebugEnabled()) 
 				LOGGER.debug("Received response {}", response);
 			try {
-				result =  MAPPER.readValue(response, CharacterClass.class);
+				result =  characterClassReader.readValue(response);
 				if(LOGGER.isDebugEnabled()) 
 					LOGGER.debug("Deserialized response to object {}", result);
 			} catch (JsonProcessingException e) {
@@ -1073,6 +1119,7 @@ public class WebserviceManager {
 	private void addFeaturesToCharacter(CharacterSheet character) {
 		List<Feature> features = new ArrayList<>();
 		Feature result = null;
+		ObjectReader featureReader = MAPPER.reader().forType(Feature.class);
 		
 		for(Feature feature : character.getFeatures()) {
 			if(LOGGER.isDebugEnabled()) 
@@ -1082,7 +1129,7 @@ public class WebserviceManager {
 			if(LOGGER.isDebugEnabled()) 
 				LOGGER.debug("Received response {}", response);			
 			try {
-				result =  MAPPER.readValue(response, Feature.class);
+				result =  featureReader.readValue(response);
 				if(LOGGER.isDebugEnabled()) 
 					LOGGER.debug("Deserialized response to object {}", result);
 			} catch (JsonProcessingException e) {
@@ -1097,6 +1144,7 @@ public class WebserviceManager {
 	private void addFeaturesToItem(Item item) {
 		List<Feature> features = new ArrayList<>();
 		Feature result = null;
+		ObjectReader featureReader = MAPPER.reader().forType(Feature.class);
 		
 		for(Feature feature : item.getGrantedModifiers()) {
 			if(LOGGER.isDebugEnabled()) 
@@ -1107,7 +1155,7 @@ public class WebserviceManager {
 				LOGGER.debug("Received response {}", response);	
 			
 			try {
-				result =  MAPPER.readValue(response, Feature.class);
+				result =  featureReader.readValue(response);
 				if(LOGGER.isDebugEnabled()) 
 					LOGGER.debug("Deserialized response to object {}", result);
 			} catch (JsonProcessingException e) {

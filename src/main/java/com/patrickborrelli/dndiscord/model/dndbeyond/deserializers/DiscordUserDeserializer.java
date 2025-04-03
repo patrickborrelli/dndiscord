@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
+import com.patrickborrelli.dndiscord.utilities.ApplicationObjectMapper;
 
 public class DiscordUserDeserializer extends StdDeserializer<DiscordUser> {
 
@@ -37,8 +38,8 @@ public class DiscordUserDeserializer extends StdDeserializer<DiscordUser> {
 		
 		List<String> characterIds = new ArrayList<>();
 		
-		ObjectMapper om = new ObjectMapper();
-        om.addMixIn(CharacterSheet.class, DefaultJsonDeserializer.class);
+		ObjectMapper mapper = ApplicationObjectMapper.getInstance();
+		mapper.addMixIn(CharacterSheet.class, DefaultJsonDeserializer.class);
 		
 		DiscordUser user = new DiscordUser();
 		
@@ -57,7 +58,7 @@ public class DiscordUserDeserializer extends StdDeserializer<DiscordUser> {
 			String cleanedString = removeEmptyStrings(activeCharId.toString());
 			
 			try {
-				active = om.readValue(cleanedString, CharacterSheet.class);
+				active = mapper.readValue(cleanedString, CharacterSheet.class);
 				user.setActiveCharacter(active);
 			} catch(JsonProcessingException e) {
 			LOGGER.error("Failed to deserialize character sheet {}", e);
