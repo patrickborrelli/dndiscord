@@ -627,13 +627,25 @@ public class SheetConverter {
 		if(LOGGER.isDebugEnabled()) 
 			LOGGER.debug("Processing delayed modifiers.");
 		StatType statType = null;
+		int modValue = 0;
 		
 		for (Modifier mod : mods) {
 			if(LOGGER.isDebugEnabled()) 
 				LOGGER.debug("Modifier: " + mod.toString());
-			statType = StatType.getEnum(Integer.valueOf(mod.getStatId()));
-			int modValue = sheet.getModifierByStatType(statType) > 1 ? sheet.getModifierByStatType(statType) : 1;
 			
+			/**
+			 * DNDIS-35 Bugfix: need to introduce conditional processing here:
+			 * 
+			 * In some cases, a delayed modifier will simply provide a stat id that is to be affected,
+			 * in other cases, it could be a bonus provided by a piece of gear.
+			 */
+			if(mod.getStatId() != null) {
+				statType = StatType.getEnum(Integer.valueOf(mod.getStatId()));
+				modValue = sheet.getModifierByStatType(statType) > 1 ? sheet.getModifierByStatType(statType) : 1;
+			} else if(mod.getType().equalsIgnoreCase(DndBeyondConstants.BONUS)) {
+				modValue = mod.getValue();
+			}
+				
 			switch (mod.getSubType()) {
 				case DndBeyondConstants.ACROBATICS:
 					//TODO: correct logic, bonus applies the associated attribute modifier, min 1 (based on statId)
