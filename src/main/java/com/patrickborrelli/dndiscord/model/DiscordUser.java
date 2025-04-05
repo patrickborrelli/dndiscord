@@ -41,4 +41,8 @@ public class DiscordUser {
 	public void addCharacter(CharacterSheet sheet) {
 		characters.add(sheet);
 	}
+	
+	public void removeCharacter(CharacterSheet sheet) {
+		characters.remove(sheet);
+	}
 }

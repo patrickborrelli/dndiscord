@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,20 +55,22 @@ public class WebserviceManager {
 	private static final String NULL_ID = ",\"_id\":null";
 	
 	//static URLs
-	private static String ACTION_URL;
-	private static String ATTACK_URL;
-	private static String BASE_URL;
-	private static String CHARACTER_URL;
-	private static String CHARACTER_CLASS_URL;
-	private static String CREATE_USER_URL;
-	private static String FEATURE_URL;
-	private static String FORMULA_URL;
-	private static String USER_URL;
-	private static String USER_CHAR_URL;
-	private static String LAZY_URL;
-	private static String UPDATE_USER_URL;
-	private static String ITEM_URL;
-	private static String LOGIN_URL;
+	private static final String ACTION_URL;
+	private static final String ATTACK_URL;
+	private static final String BASE_URL;
+	private static final String CHARACTER_URL;
+	private static final String CHARACTER_CLASS_URL;
+	private static final String CREATE_USER_URL;
+	private static final String FEATURE_URL;
+	private static final String FORMULA_URL;
+	private static final String USER_URL;
+	private static final String USER_CHAR_URL;
+	private static final String LAZY_URL;
+	private static final String UPDATE_USER_URL;
+	private static final String ITEM_URL;
+	private static final String LOGIN_URL;
+	private static final String EMPTY_BODY = "";
+
 	private static String TOKEN = "";
 	
 	static {
@@ -869,6 +872,51 @@ public class WebserviceManager {
 	}		
 	
 	/**
+	 * Remove an existing character sheet from a User.
+	 * 
+	 * @param user
+	 * @param character
+	 * @return a DiscordUser with the character removed.
+	 */
+	public DiscordUser removeUserCharacter(DiscordUser user, CharacterSheet character) {
+		DiscordUser updatedUser = null;
+		
+		//first ensure any children are removed:
+		if(character.getInventory() != null) removeItemsFromCharacter(character);
+		if(character.getActions() != null) removeActionsFromCharacter(character);
+		if(character.getAttacks() != null) removeAttacksFromCharacter(character);	
+		if(character.getCharacterClasses() != null) removeClassesFromCharacter(character);
+		if(character.getFeatures() != null) removeFeaturesFromCharacter(character);		
+		
+		user.removeCharacter(character);
+		if(user.getActiveCharacter() == character) {
+			user.setActiveCharacter(null);
+		}
+		
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Sending user : " + user + " to update");
+		
+		String unmarshalled = unmarshalObject(user);
+		
+		String result = put(UPDATE_USER_URL + "/" + user.getId(), unmarshalled);
+		
+		//print response:
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Modified User: {}", result);
+		
+		try {			
+			updatedUser = DISCORD_USER_READER.readValue(result.toString());
+		} catch (JsonMappingException e) {
+			LOGGER.error(e);
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			LOGGER.error(e);
+			e.printStackTrace();
+		}
+		return updatedUser;
+	}
+	
+	/**
 	 * Retrieve a DNDBeyond character sheet if one exists.
 	 * 
 	 * @param urlString the URL of the character sheet json request
@@ -1038,6 +1086,29 @@ public class WebserviceManager {
 		character.setActions(new HashSet<Action>(actions));
 	}
 	
+	private void removeActionsFromCharacter(CharacterSheet character) {
+		Set<Action> deletedActions = new HashSet<>();
+		Set<Action> initialActions = character.getActions();
+		
+		for(Action action : character.getActions()) {			
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Attempting to remove action {}", action);
+				
+			String response = delete(ACTION_URL + "/" + action.getId(), EMPTY_BODY);			
+			
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Received response {}", response);
+			
+			if(response.contains("Successfully removed")) {
+				deletedActions.add(action);
+			}			
+		}		
+		
+		if(initialActions.removeAll(deletedActions)) {
+			character.setActions(initialActions);
+		}
+	}
+	
 	private void addAttacksToCharacter(CharacterSheet character) {
 		List<Attack> attacks = new ArrayList<>();
 		Attack result = null;
@@ -1061,6 +1132,29 @@ public class WebserviceManager {
 		}
 		
 		character.setAttacks(new HashSet<Attack>(attacks));
+	}
+	
+	private void removeAttacksFromCharacter(CharacterSheet character) {
+		Set<Attack> deletedAttacks = new HashSet<>();
+		Set<Attack> initialAttacks = character.getAttacks();
+		
+		for(Attack attack : character.getAttacks()) {
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Attempting to remove attack {}", attack);
+				
+			String response = delete(ATTACK_URL + "/" + attack.getId(), EMPTY_BODY);			
+			
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Received response {}", response);
+			
+			if(response.contains("Successfully removed")) {
+				deletedAttacks.add(attack);
+			}			
+		}		
+		
+		if(initialAttacks.removeAll(deletedAttacks)) {
+			character.setAttacks(initialAttacks);
+		}
 	}
 	
 	private void addItemsToCharacter(CharacterSheet character) {
@@ -1091,6 +1185,29 @@ public class WebserviceManager {
 		character.setInventory(inventory);
 	}
 	
+	private void removeItemsFromCharacter(CharacterSheet character) {
+		List<Item> deletedItems = new ArrayList<>();
+		List<Item> initialItems = character.getInventory();
+		
+		for(Item item : character.getInventory()) {			
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Attempting to remove item {}", item);
+				
+			String response = delete(ITEM_URL + "/" + item.getId(), EMPTY_BODY);			
+			
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Received response {}", response);
+			
+			if(response.contains("Successfully removed")) {
+				deletedItems.add(item);
+			}			
+		}		
+		
+		if(initialItems.removeAll(deletedItems)) {
+			character.setInventory(initialItems);
+		}
+	}
+	
 	private void addClassesToCharacter(CharacterSheet character) {
 		List<CharacterClass> classes = new ArrayList<>();
 		CharacterClass result = null;
@@ -1116,6 +1233,29 @@ public class WebserviceManager {
 		character.setCharacterClasses(classes);
 	}	
 	
+	private void removeClassesFromCharacter(CharacterSheet character) {
+		List<CharacterClass> deletedClasses = new ArrayList<>();
+		List<CharacterClass> initialClasses = character.getCharacterClasses();
+		
+		for(CharacterClass charClass : character.getCharacterClasses()) {			
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Attempting to remove character class {}", charClass);
+				
+			String response = delete(CHARACTER_CLASS_URL + "/" + charClass.getId(), EMPTY_BODY);			
+			
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Received response {}", response);
+			
+			if(response.contains("Successfully removed")) {
+				deletedClasses.add(charClass);
+			}			
+		}		
+		
+		if(initialClasses.removeAll(deletedClasses)) {
+			character.setCharacterClasses(initialClasses);
+		}
+	}
+	
 	private void addFeaturesToCharacter(CharacterSheet character) {
 		List<Feature> features = new ArrayList<>();
 		Feature result = null;
@@ -1139,6 +1279,29 @@ public class WebserviceManager {
 		}
 		
 		character.setFeatures(new HashSet<Feature>(features));
+	}
+	
+	private void removeFeaturesFromCharacter(CharacterSheet character) {
+		List<Feature> deletedFeatures = new ArrayList<>();
+		Set<Feature> initialFeatures = character.getFeatures();
+		
+		for(Feature feature : character.getFeatures()) {			
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Attempting to remove feature {}", feature);
+				
+			String response = delete(FEATURE_URL + "/" + feature.getId(), EMPTY_BODY);			
+			
+			if(LOGGER.isDebugEnabled()) 
+				LOGGER.debug("Received response {}", response);
+			
+			if(response.contains("Successfully removed")) {
+				deletedFeatures.add(feature);
+			}			
+		}		
+		
+		if(initialFeatures.removeAll(deletedFeatures)) {
+			character.setFeatures(initialFeatures);
+		}
 	}
 	
 	private void addFeaturesToItem(Item item) {
@@ -1283,6 +1446,66 @@ public class WebserviceManager {
 				
 				if(LOGGER.isDebugEnabled()) 
 					LOGGER.debug("Updated successfully: " + response.toString());		
+				in.close();
+				con.disconnect();
+			}		
+		} catch(IOException e) {
+			LOGGER.error(e);
+		} finally {
+			con.disconnect();
+		}
+		
+		return response.toString();
+	}
+	
+	private String delete(String url, String body) {
+		
+		StringBuilder response = new StringBuilder();
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		
+		try {
+			URL obj = new URL(url);
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("DELETE");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			con.setDoOutput(true);
+			
+			OutputStream os = con.getOutputStream();
+			os.write(body.getBytes());
+			os.flush();
+			os.close();
+			
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Sending connection request: " + con);
+				LOGGER.debug("With body: " + con.getOutputStream().toString());
+			}
+				
+			int responseCode = con.getResponseCode();
+			
+			if(responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+				
+				LOGGER.error("Error while removing item: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				if(LOGGER.isDebugEnabled()) 
+					LOGGER.debug("Successfully removed: " + response.toString());		
 				in.close();
 				con.disconnect();
 			}		

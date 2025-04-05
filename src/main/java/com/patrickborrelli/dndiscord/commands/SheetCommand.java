@@ -44,6 +44,7 @@ public class SheetCommand implements CommandExecutor {
 	private static final String COMMA = ",";
 	private static final String LIST = "list";
 	private static final String SWITCH = "switch";
+	private static final String REMOVE = "remove";
 	
 	private String characterName = null;
 	private CharacterSheet activeCharacter = null;
@@ -75,7 +76,16 @@ public class SheetCommand implements CommandExecutor {
 		} else if(args.length > 2 && args[1].equalsIgnoreCase(SWITCH)) {
 			String requestedChar = getCharacterNameArgs(args);
 			handleCleanSwitch(msg, requestedChar, user);
-		}		
+		} else if(args.length >= 2 && args[1].equalsIgnoreCase(REMOVE)) {
+			//determine if there is a provided character name, if not, remove the active character:
+			if(args.length == 2) {
+				user = wsManager.removeUserCharacter(user, activeCharacter);
+				//set active character to null, see what happens lmao
+			} else {
+				//character name provided, so remove that character:
+				String requestedChar = getCharacterNameArgs(args);
+			}
+		}
 		else {
 			LOGGER.error("Inappropriate arguments provided: ");
 			MessageResponse.sendReply(channel, "Inappropriate arguments provided:");
@@ -124,6 +134,37 @@ public class SheetCommand implements CommandExecutor {
 					
 					try {
 						handleCleanSwitch(msg, chosen, user);
+					} catch (Exception e) {
+						
+					}
+								
+				}
+			});			
+		});
+		
+		new MessageBuilder()
+	    .setContent("Which character did you mean?")
+	    .addComponents(
+	        ActionRow.of(SelectMenu.createStringMenu("chosen",  "Click to show the list", 1, 1, options)))
+	    .send(msg.getChannel());		
+	}
+	
+	private void sendCharacterRemoveQuery(Message msg, List<String> characters, DiscordUser user) {
+		List<SelectMenuOption> options = new ArrayList<>();
+		for(String character : characters) {
+			options.add(SelectMenuOption.create(character, "You selected " + character + "!", ""));
+		}
+		api.addMessageComponentCreateListener(event -> {			
+			event.getInteraction().respondLater().thenAccept(originalInteraction -> {
+				Optional<SelectMenuInteraction> opt = event.getMessageComponentInteraction().asSelectMenuInteraction();
+							
+				if(opt.isPresent()) {
+					SelectMenuInteraction interaction = opt.get();
+					String chosen = interaction.getChosenOptions().get(0).getLabel();				
+					originalInteraction.setContent("Loading character: " + chosen).update();
+					
+					try {
+						getCharacterIdByNameFuzzy(msg, chosen, user);
 					} catch (Exception e) {
 						
 					}
@@ -195,6 +236,29 @@ public class SheetCommand implements CommandExecutor {
 		} else {
 			sendCharacterQuery(msg, getCharacterNames(characters), user);
 		}
+	}
+	
+	private String getCharacterIdByNameFuzzy(Message msg, String chosen, DiscordUser user) throws CommandProcessingException {
+		
+		StringBuilder buffer = new StringBuilder();
+		List<CharacterBrief> characters = wsManager.getUserCharactersLazy(user);
+		List<ExtractedResult> choice = (List<ExtractedResult>)FuzzySearch.extractTop(chosen, getCharacterNames(characters), 1);
+		
+		if(choice != null) {
+			ExtractedResult result = choice.get(0);
+			
+			if(result.getScore() > 65) {				
+				buffer.append(getCharacterId(characters, result.getString()));
+			} else {
+				buffer.append("");
+				sendCharacterRemoveQuery(msg, getCharacterNames(characters), user);
+			}
+			
+		} else {
+			buffer.append("");
+			sendCharacterRemoveQuery(msg, getCharacterNames(characters), user);
+		}
+		return buffer.toString();
 	}
 	
 	/**
