@@ -881,17 +881,11 @@ public class WebserviceManager {
 	public DiscordUser removeUserCharacter(DiscordUser user, CharacterSheet character) {
 		DiscordUser updatedUser = null;
 		
-		//first ensure any children are removed:
-		if(character.getInventory() != null) removeItemsFromCharacter(character);
-		if(character.getActions() != null) removeActionsFromCharacter(character);
-		if(character.getAttacks() != null) removeAttacksFromCharacter(character);	
-		if(character.getCharacterClasses() != null) removeClassesFromCharacter(character);
-		if(character.getFeatures() != null) removeFeaturesFromCharacter(character);		
-		
-		user.removeCharacter(character);
 		if(user.getActiveCharacter() == character) {
 			user.setActiveCharacter(null);
 		}
+		user.removeCharacter(character);
+		delete(CHARACTER_URL + "/" + character.getId(), "");
 		
 		if(LOGGER.isDebugEnabled()) 
 			LOGGER.debug("Sending user : " + user + " to update");
