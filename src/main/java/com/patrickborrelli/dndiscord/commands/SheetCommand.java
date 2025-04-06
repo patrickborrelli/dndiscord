@@ -105,7 +105,7 @@ public class SheetCommand implements CommandExecutor {
 		}
 		EmbedBuilder embed = new EmbedBuilder()
 				.setTitle(msg.getAuthor().getDisplayName() + "'s Imported Characters")
-				.setDescription(buildList(characterList))
+				.setDescription(buildList(characterList, activeCharExists))
 				.setColor(Color.GREEN)
 			    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
 			    .setThumbnail(thumbnailUrl);
@@ -303,10 +303,9 @@ public class SheetCommand implements CommandExecutor {
 		return buff.toString();
 	}
 	
-	private String buildList(String charList) {
+	private String buildList(String charList, boolean activeCharExists) {
 		StringBuilder buff = new StringBuilder();
 		String result = "";
-		boolean activeCharExists = activeCharacter != null;
 		
 		charList = charList.replaceAll("\"", "");
 		if(charList != null) {
