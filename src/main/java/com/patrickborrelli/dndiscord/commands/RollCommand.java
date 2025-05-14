@@ -190,7 +190,7 @@ public class RollCommand implements CommandExecutor {
 		List<Formula> formulas = wsManager.getUserFormulas(user);
 
 		if (null == formulas || formulas.size() == 0) {
-			result.append("No saved rolls found for user");
+			result.append("No saved rolls found for user " + user.getUsername());
 		} else {
 			// format results:
 			for (Formula roll : formulas) {

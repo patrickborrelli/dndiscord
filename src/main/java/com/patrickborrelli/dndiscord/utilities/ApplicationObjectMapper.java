@@ -1,6 +1,7 @@
 package com.patrickborrelli.dndiscord.utilities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -29,6 +30,7 @@ public class ApplicationObjectMapper {
 					instance.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 					instance.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 					instance.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+					instance.enable(JsonParser.Feature.INCLUDE_SOURCE_IN_LOCATION);
 				}
 			}
 		}

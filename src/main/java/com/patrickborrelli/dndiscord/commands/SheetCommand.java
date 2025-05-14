@@ -88,6 +88,7 @@ public class SheetCommand implements CommandExecutor {
 			} else {
 				//character name provided, so remove that character:
 				String requestedChar = getCharacterNameArgs(args);
+				//TODO: finish this case
 			}
 		}
 		else {

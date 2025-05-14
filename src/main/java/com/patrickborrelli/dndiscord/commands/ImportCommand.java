@@ -48,16 +48,14 @@ public class ImportCommand implements CommandExecutor {
 			urlStringBuffer.append(terminator).append("json");
 
 			//retrieve and convert character sheet from DnDBeyond:
-			DndBeyondSheet response = WSMANAGER.importDndBeyondSheet(urlStringBuffer.toString());
+			DndBeyondSheet response = WSMANAGER.importDndBeyondSheet(urlStringBuffer.toString());			
 			
-			//handle case where no sheet is returned:
 			if(response != null) {
 				CharacterSheet converted = CONVERTER.convertFormat(SheetSourceType.BEYOND, response);
-				
-				user.addCharacter(converted);
 				WSMANAGER.addUserCharacter(user, converted);
 				buildSheetEmbed(msg, converted);	
 			} else {
+				//handle case where no sheet is returned:
 				LOGGER.warn("Unable to retrieve character: {}", msg.getContent());
 				MessageResponse.sendReply(channel, "Unable to retrieve character: {" + msg.getContent() + "}");
 			}

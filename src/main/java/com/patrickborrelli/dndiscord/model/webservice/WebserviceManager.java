@@ -193,7 +193,7 @@ public class WebserviceManager {
 	 * @param character
 	 * @return
 	 */
-	public String addUserCharacter(DiscordUser user, CharacterSheet character) {
+	public CharacterSheet addUserCharacter(DiscordUser user, CharacterSheet character) {
 		
 		CharacterSheet addedCharacter = null; 
 				
@@ -202,7 +202,8 @@ public class WebserviceManager {
 		if(character.getActions() != null) addActionsToCharacter(character);
 		if(character.getAttacks() != null) addAttacksToCharacter(character);	
 		if(character.getCharacterClasses() != null) addClassesToCharacter(character);
-		if(character.getFeatures() != null) addFeaturesToCharacter(character);		
+		if(character.getFeatures() != null) addFeaturesToCharacter(character);	
+		character.setUser(user);
 		
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Making call to API: " + CHARACTER_URL);
@@ -224,11 +225,7 @@ public class WebserviceManager {
 		
 		user.addCharacter(addedCharacter);
 		user.setActiveCharacter(addedCharacter);
-		if(LOGGER.isDebugEnabled()) 
-			LOGGER.debug("Sending user : " + user + " to update");
-		String unmarshalled = unmarshalObject(user);
-		
-		return put(UPDATE_USER_URL + "/" + user.getId(), unmarshalled);
+		return addedCharacter;
 	}
 	
 	public CharacterSheet getCharacter(String characterId) {
@@ -881,18 +878,15 @@ public class WebserviceManager {
 	public DiscordUser removeUserCharacter(DiscordUser user, CharacterSheet character) {
 		DiscordUser updatedUser = null;
 		
-		if(user.getActiveCharacter() == character) {
-			user.setActiveCharacter(null);
-		}
-		user.removeCharacter(character);
-		delete(CHARACTER_URL + "/" + character.getId(), "");
+		delete(CHARACTER_URL + "/" + character.getId(), "");	
+		//TODO: possibly need to reread the user from the DB at this point as we have a stale instance:\
+		DiscordUser editedUser = getUser(user.getDiscord_id());
+			
+		editedUser.setActiveCharacter(null);
+		editedUser.removeCharacter(character);
+		String unmarshalled = unmarshalObject(editedUser);
 		
-		if(LOGGER.isDebugEnabled()) 
-			LOGGER.debug("Sending user : " + user + " to update");
-		
-		String unmarshalled = unmarshalObject(user);
-		
-		String result = put(UPDATE_USER_URL + "/" + user.getId(), unmarshalled);
+		String result = put(UPDATE_USER_URL + "/" + editedUser.getId(), unmarshalled);
 		
 		//print response:
 		if(LOGGER.isDebugEnabled()) 
@@ -1413,7 +1407,7 @@ public class WebserviceManager {
 			
 			if(LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Sending connection request: " + con);
-				LOGGER.debug("With body: " + con.getOutputStream().toString());
+				LOGGER.debug("With body: " + body);
 			}
 				
 			int responseCode = con.getResponseCode();
