@@ -33,6 +33,7 @@ public class ImportCommand implements CommandExecutor {
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
 
 		TextChannel channel = msg.getChannel();
+		CharacterSheet converted = null;
 
 		String[] args = msg.getContent().split(" ");
 		StringBuilder urlStringBuffer = new StringBuilder()
@@ -51,9 +52,10 @@ public class ImportCommand implements CommandExecutor {
 			DndBeyondSheet response = WSMANAGER.importDndBeyondSheet(urlStringBuffer.toString());			
 			
 			if(response != null) {
-				CharacterSheet converted = CONVERTER.convertFormat(SheetSourceType.BEYOND, response);
+				converted = CONVERTER.convertFormat(SheetSourceType.BEYOND, response);
 				WSMANAGER.addUserCharacter(user, converted);
 				buildSheetEmbed(msg, converted);	
+				WSMANAGER.setActiveCharacter(user.getId(), converted.getId());
 			} else {
 				//handle case where no sheet is returned:
 				LOGGER.warn("Unable to retrieve character: {}", msg.getContent());

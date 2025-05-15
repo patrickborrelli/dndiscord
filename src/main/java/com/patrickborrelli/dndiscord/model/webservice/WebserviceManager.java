@@ -56,6 +56,7 @@ public class WebserviceManager {
 	
 	//static URLs
 	private static final String ACTION_URL;
+	private static final String ACTIVE_URL;
 	private static final String ATTACK_URL;
 	private static final String BASE_URL;
 	private static final String CHARACTER_URL;
@@ -93,6 +94,7 @@ public class WebserviceManager {
 		ITEM_URL = BASE_URL + "items";
 		LOGIN_URL = BASE_URL + "users/login";
 		LAZY_URL = USER_CHAR_URL + "/lazy";
+		ACTIVE_URL = CHARACTER_URL + "setActive";
 		
 		LOGGER.debug("USING BaseUrl of: {} for {}", BASE_URL, AppUtil.getInstance().getScope());
 	}
@@ -226,6 +228,20 @@ public class WebserviceManager {
 		user.addCharacter(addedCharacter);
 		user.setActiveCharacter(addedCharacter);
 		return addedCharacter;
+	}
+	
+	public String setActiveCharacter(String userId, String characterId) {
+		StringBuilder buf = new StringBuilder();
+		buf.append(ACTIVE_URL)
+			.append("/")
+			.append(userId)
+			.append("/")
+			.append(characterId);
+		
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Making call to API: " + buf.toString());
+		
+		return put(buf.toString(), "");
 	}
 	
 	public CharacterSheet getCharacter(String characterId) {
