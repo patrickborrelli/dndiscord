@@ -53,9 +53,9 @@ public class ImportCommand implements CommandExecutor {
 			
 			if(response != null) {
 				converted = CONVERTER.convertFormat(SheetSourceType.BEYOND, response);
-				WSMANAGER.addUserCharacter(user, converted);
+				CharacterSheet newChar = WSMANAGER.addUserCharacter(user, converted);
 				buildSheetEmbed(msg, converted);	
-				WSMANAGER.setActiveCharacter(user.getId(), converted.getId());
+				WSMANAGER.setActiveCharacter(user.getId(), newChar.getId());
 			} else {
 				//handle case where no sheet is returned:
 				LOGGER.warn("Unable to retrieve character: {}", msg.getContent());

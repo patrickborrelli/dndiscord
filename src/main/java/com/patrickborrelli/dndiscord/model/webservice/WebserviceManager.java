@@ -94,7 +94,7 @@ public class WebserviceManager {
 		ITEM_URL = BASE_URL + "items";
 		LOGIN_URL = BASE_URL + "users/login";
 		LAZY_URL = USER_CHAR_URL + "/lazy";
-		ACTIVE_URL = CHARACTER_URL + "setActive";
+		ACTIVE_URL = CHARACTER_URL + "/setActive";
 		
 		LOGGER.debug("USING BaseUrl of: {} for {}", BASE_URL, AppUtil.getInstance().getScope());
 	}
