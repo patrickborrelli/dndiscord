@@ -217,6 +217,9 @@ public class WebserviceManager {
 			LOGGER.debug("Submitting JSON: {}", POST_BODY);
 		String result = post(CHARACTER_URL, POST_BODY);
 		
+		if(LOGGER.isDebugEnabled()) 
+			LOGGER.debug("Post result: {}", result);
+		
 		try {
 			addedCharacter =  CHARACTER_READER.readValue(result);
 			if(LOGGER.isDebugEnabled()) 
@@ -225,7 +228,6 @@ public class WebserviceManager {
 			LOGGER.error("Failed to marshall character sheet {}", e);
 		}
 		
-		user.addCharacter(addedCharacter);
 		user.setActiveCharacter(addedCharacter);
 		return addedCharacter;
 	}
@@ -899,7 +901,6 @@ public class WebserviceManager {
 		DiscordUser editedUser = getUser(user.getDiscord_id());
 			
 		editedUser.setActiveCharacter(null);
-		editedUser.removeCharacter(character);
 		String unmarshalled = unmarshalObject(editedUser);
 		
 		String result = put(UPDATE_USER_URL + "/" + editedUser.getId(), unmarshalled);

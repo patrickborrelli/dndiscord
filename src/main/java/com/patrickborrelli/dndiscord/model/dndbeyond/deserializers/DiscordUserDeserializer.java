@@ -51,34 +51,6 @@ public class DiscordUserDeserializer extends StdDeserializer<DiscordUser> {
 		user.setAvatar(node.get("avatar_hash").asText());
 		user.setBot(node.get("bot").asBoolean());
 		
-		JsonNode activeCharId = node.get("active_character");
-		if(activeCharId != null && !(activeCharId instanceof NullNode) && activeCharId.hasNonNull("_id")) {
-			CharacterSheet active = null;
-			//clean up node as text to remove any empty strings replacing them with nulls:
-			String cleanedString = removeEmptyStrings(activeCharId.toString());
-			
-			try {
-				active = mapper.readValue(cleanedString, CharacterSheet.class);
-				user.setActiveCharacter(active);
-			} catch(JsonProcessingException e) {
-			LOGGER.error("Failed to deserialize character sheet {}", e);
-			}			
-		}
-		
-		JsonNode characters = node.get("characters");
-		if(characters != null && characters.isArray()) {
-			for(int i = 0; i < characters.size(); i++) {
-				if(!(characters.get(i) instanceof NullNode)) {
-					characterIds.add(characters.get(i).asText());
-				}
-			}
-		}
-		
-		for(String id : characterIds) {
-			CharacterSheet sheet = new CharacterSheet();
-			sheet.setId(id);
-			user.addCharacter(sheet);
-		}
 		
 		return user;
 	}
@@ -87,41 +59,6 @@ public class DiscordUserDeserializer extends StdDeserializer<DiscordUser> {
     private interface DefaultJsonDeserializer {
         // Reset default json deserializer
     }
-	
-	private String removeEmptyStrings(String source) {	
-		if(LOGGER.isDebugEnabled()) 
-			LOGGER.debug("Received INPUT: " + source);
-		String temp = removeEscapes(source);
-		if(LOGGER.isDebugEnabled()) 
-			LOGGER.debug("Rmoved ESCAPES: " + temp);
-		String cleared = temp.replaceAll("(\"\")", "null");
-		if(LOGGER.isDebugEnabled()) 
-			LOGGER.debug("Removed EMPTY STRINGS: " + cleared);
-		String output = cleared.replace("inches", "\\\"");
-		if(LOGGER.isDebugEnabled()) 
-			LOGGER.debug("Returning OUTPUT: " + output);
-		return output;
-	}
-	
-	private static String removeEscapes(String jsonString) {
-        StringBuilder result = new StringBuilder();
-        boolean escaped = false;
 
-        for (int i = 0; i < jsonString.length(); i++) {
-            char currentChar = jsonString.charAt(i);
-            if (escaped) {
-                escaped = false; // Reset the flag
-                if(currentChar == '"') {
-                	result.append("inches");
-                }
-                continue;
-            } else if (currentChar == '\\') {
-                escaped = true; // Mark the next character as escaped
-            } else {
-                result.append(currentChar); // Append normal characters
-            }
-        }
-        return result.toString();
-    }
 	
 }

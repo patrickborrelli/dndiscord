@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(using = DiscordUserSerializer.class)
-@JsonDeserialize(using = DiscordUserDeserializer.class)
+//@JsonDeserialize(using = DiscordUserDeserializer.class)
 public class DiscordUser {
 	
 	@JsonProperty("_id")
@@ -35,14 +35,5 @@ public class DiscordUser {
 	private String avatar;
 	private boolean bot;
 	private List<CharacterSheet> characters = new ArrayList<>();
-	@JsonProperty("active_character")
 	private CharacterSheet activeCharacter;
-	
-	public void addCharacter(CharacterSheet sheet) {
-		characters.add(sheet);
-	}
-	
-	public void removeCharacter(CharacterSheet sheet) {
-		characters.remove(sheet);
-	}
 }

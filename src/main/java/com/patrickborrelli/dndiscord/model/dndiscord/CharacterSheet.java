@@ -12,7 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Model of dDnDiscord Character Sheet entry.
+ * Model of DnDiscord Character Sheet entry.
  * 
  * @author Patrick Borrelli
  */
