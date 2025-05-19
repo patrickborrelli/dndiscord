@@ -1,14 +1,10 @@
 package com.patrickborrelli.dndiscord.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.patrickborrelli.dndiscord.model.dndbeyond.deserializers.DiscordUserDeserializer;
 import com.patrickborrelli.dndiscord.model.dndbeyond.serializers.DiscordUserSerializer;
-import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterDisplay;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -34,6 +30,5 @@ public class DiscordUser {
 	@JsonProperty("avatar_hash")
 	private String avatar;
 	private boolean bot;
-	private List<CharacterSheet> characters = new ArrayList<>();
-	private CharacterSheet activeCharacter;
+	private CharacterDisplay activeCharacter;
 }

@@ -22,7 +22,7 @@ import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterBrief;
-import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterDisplay;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
@@ -47,7 +47,7 @@ public class SheetCommand implements CommandExecutor {
 	private static final String REMOVE = "remove";
 	
 	private String characterName = null;
-	private CharacterSheet activeCharacter = null;
+	private CharacterDisplay activeCharacter = null;
 	
 	WebserviceManager wsManager = WebserviceManager.getInstance();
 	DiscordApi api = AppUtil.getInstance().getApi();
@@ -68,6 +68,7 @@ public class SheetCommand implements CommandExecutor {
 				buildSheetEmbed(msg);
 			} else {
 				characterName = "No current character selected";
+				MessageResponse.sendReply(channel, characterName);
 			}
 		} else if(args.length == 2 && args[1].equalsIgnoreCase(LIST)) {
 			if(activeCharExists) {
@@ -80,8 +81,8 @@ public class SheetCommand implements CommandExecutor {
 		} else if(args.length >= 2 && args[1].equalsIgnoreCase(REMOVE)) {
 			//determine if there is a provided character name, if not, remove the active character:
 			if(args.length == 2) {
-				CharacterSheet toBeRemoved = activeCharacter;
-				user = wsManager.removeUserCharacter(user, activeCharacter);
+				CharacterDisplay toBeRemoved = activeCharacter;
+				user = wsManager.removeUserCharacter(user, activeCharacter.getId());
 				//set active character to null
 				user.setActiveCharacter(null);
 				buildRemoveEmbed(msg, toBeRemoved);
@@ -113,7 +114,7 @@ public class SheetCommand implements CommandExecutor {
 			MessageResponse.sendEmbedMessage(msg.getChannel(), embed);
 	}
 	
-	private void buildRemoveEmbed(Message msg, CharacterSheet removedChar) {
+	private void buildRemoveEmbed(Message msg, CharacterDisplay removedChar) {
 		EmbedBuilder embed = new EmbedBuilder()
 				.setTitle("Removed Character")
 				.setDescription("Successfully removed " + removedChar.getCharacterName())
@@ -127,12 +128,12 @@ public class SheetCommand implements CommandExecutor {
 		EmbedBuilder embed = new EmbedBuilder()
 			.setTitle(characterName)
 			.setDescription(buildDescription())
-			.addInlineField("STR", Integer.toString(activeCharacter.getTotalStrength()))
-			.addInlineField("DEX", Integer.toString(activeCharacter.getTotalDexterity()))
-			.addInlineField("CON", Integer.toString(activeCharacter.getTotalConstitution()))
-			.addInlineField("INT", Integer.toString(activeCharacter.getTotalIntelligence()))
-			.addInlineField("WIS", Integer.toString(activeCharacter.getTotalWisdom()))
-			.addInlineField("CHA", Integer.toString(activeCharacter.getTotalCharisma()))
+			.addInlineField("STR", Integer.toString(activeCharacter.getStrength()))
+			.addInlineField("DEX", Integer.toString(activeCharacter.getDexterity()))
+			.addInlineField("CON", Integer.toString(activeCharacter.getConstitution()))
+			.addInlineField("INT", Integer.toString(activeCharacter.getIntelligence()))
+			.addInlineField("WIS", Integer.toString(activeCharacter.getWisdom()))
+			.addInlineField("CHA", Integer.toString(activeCharacter.getCharisma()))
 		    .setColor(Color.GREEN)
 		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
 		    .setThumbnail(activeCharacter.getAvatarUrl());
@@ -242,10 +243,10 @@ public class SheetCommand implements CommandExecutor {
 					activeCharacter = user.getActiveCharacter();
 				} else {
 					CharacterSheet sheet = wsManager.getCharacter(getCharacterId(characters, result.getString()));
-					user.setActiveCharacter(sheet);
+					user.setActiveCharacter(sheet.getDisplaySheet());
 					wsManager.updateUser(user);
 					characterName = sheet.getCharacterName();
-					activeCharacter = sheet;
+					activeCharacter = sheet.getDisplaySheet();
 				}
 				
 				buildSheetEmbed(msg);
@@ -288,13 +289,13 @@ public class SheetCommand implements CommandExecutor {
 	 */
 	private String buildDescription() {
 		StringBuilder buff = new StringBuilder();
-		List<CharacterClass> classes = activeCharacter.getCharacterClasses();
+		List<String> classes = activeCharacter.getCharacterClasses();
 		int separators = classes.size() - 1;
 
 		buff.append(activeCharacter.getRace()).append(SPACE);
 		
-		for(CharacterClass myClass : classes) {
-			buff.append(myClass.getName()).append(SPACE).append(myClass.getLevel());
+		for(String myClass : classes) {
+			buff.append(myClass);
 			if(separators > 0) {
 				buff.append(SEPARATOR);
 				separators--;

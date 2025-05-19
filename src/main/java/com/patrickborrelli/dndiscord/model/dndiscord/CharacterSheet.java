@@ -1,5 +1,6 @@
 package com.patrickborrelli.dndiscord.model.dndiscord;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -53,7 +54,7 @@ public class CharacterSheet {
 	private int copperPieces;
 	@JsonProperty("silver_pieces")
 	private int silverPieces;
-	@JsonProperty("electrumr_pieces")
+	@JsonProperty("electrum_pieces")
 	private int electrumPieces;
 	@JsonProperty("gold_pieces")
 	private int goldPieces;
@@ -423,6 +424,44 @@ public class CharacterSheet {
 			;
 		}
 		return modifier;
+	}
+	
+	public CharacterDisplay getDisplaySheet() {
+		CharacterDisplay display = new CharacterDisplay();
+		
+		display.setId(id);
+		display.setCharacterName(characterName);
+		display.setAvatarUrl(avatarUrl);
+		display.setAlignment(alignment);
+		display.setCopper(copperPieces);
+		display.setSilver(silverPieces);
+		display.setElectrum(electrumPieces);
+		display.setGold(goldPieces);
+		display.setPlatinum(platinumPieces);
+		display.setProficiencyBonus(proficiencyBonus);
+		display.setAc(effectiveArmorClass);
+		display.setStrength(totalStrength);
+		display.setDexterity(totalDexterity);
+		display.setConstitution(totalConstitution);
+		display.setIntelligence(totalIntelligence);
+		display.setWisdom(totalWisdom);
+		display.setCharisma(totalCharisma);
+		display.setBackground(background);
+		display.setRace(race);
+		display.setBaseRace(baseRace);
+		display.setSize(size);	
+		
+		List<String> classes = new ArrayList<>();
+		for(CharacterClass myClass : characterClasses) {
+			classes.add(myClass.getName() + " " + myClass.getLevel());
+		}		
+		display.setTotalLevel(totalLevel);
+		display.setCharacterClasses(classes);
+		display.setMaxHp(maxHitPoints);
+		display.setHp(currentHitPoints);
+		display.setTempHp(temporaryHitPoints);
+		
+		return display;
 	}
 
 	@Override

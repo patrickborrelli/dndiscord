@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -70,7 +68,6 @@ public class WebserviceManager {
 	private static final String UPDATE_USER_URL;
 	private static final String ITEM_URL;
 	private static final String LOGIN_URL;
-	private static final String EMPTY_BODY = "";
 
 	private static String TOKEN = "";
 	
@@ -228,7 +225,7 @@ public class WebserviceManager {
 			LOGGER.error("Failed to marshall character sheet {}", e);
 		}
 		
-		user.setActiveCharacter(addedCharacter);
+		user.setActiveCharacter(addedCharacter.getDisplaySheet());
 		return addedCharacter;
 	}
 	
@@ -893,10 +890,10 @@ public class WebserviceManager {
 	 * @param character
 	 * @return a DiscordUser with the character removed.
 	 */
-	public DiscordUser removeUserCharacter(DiscordUser user, CharacterSheet character) {
+	public DiscordUser removeUserCharacter(DiscordUser user, String characterId) {
 		DiscordUser updatedUser = null;
 		
-		delete(CHARACTER_URL + "/" + character.getId(), "");	
+		delete(CHARACTER_URL + "/" + characterId, "");	
 		//TODO: possibly need to reread the user from the DB at this point as we have a stale instance:\
 		DiscordUser editedUser = getUser(user.getDiscord_id());
 			
@@ -1091,29 +1088,6 @@ public class WebserviceManager {
 		character.setActions(new HashSet<Action>(actions));
 	}
 	
-	private void removeActionsFromCharacter(CharacterSheet character) {
-		Set<Action> deletedActions = new HashSet<>();
-		Set<Action> initialActions = character.getActions();
-		
-		for(Action action : character.getActions()) {			
-			if(LOGGER.isDebugEnabled()) 
-				LOGGER.debug("Attempting to remove action {}", action);
-				
-			String response = delete(ACTION_URL + "/" + action.getId(), EMPTY_BODY);			
-			
-			if(LOGGER.isDebugEnabled()) 
-				LOGGER.debug("Received response {}", response);
-			
-			if(response.contains("Successfully removed")) {
-				deletedActions.add(action);
-			}			
-		}		
-		
-		if(initialActions.removeAll(deletedActions)) {
-			character.setActions(initialActions);
-		}
-	}
-	
 	private void addAttacksToCharacter(CharacterSheet character) {
 		List<Attack> attacks = new ArrayList<>();
 		Attack result = null;
@@ -1137,29 +1111,6 @@ public class WebserviceManager {
 		}
 		
 		character.setAttacks(new HashSet<Attack>(attacks));
-	}
-	
-	private void removeAttacksFromCharacter(CharacterSheet character) {
-		Set<Attack> deletedAttacks = new HashSet<>();
-		Set<Attack> initialAttacks = character.getAttacks();
-		
-		for(Attack attack : character.getAttacks()) {
-			if(LOGGER.isDebugEnabled()) 
-				LOGGER.debug("Attempting to remove attack {}", attack);
-				
-			String response = delete(ATTACK_URL + "/" + attack.getId(), EMPTY_BODY);			
-			
-			if(LOGGER.isDebugEnabled()) 
-				LOGGER.debug("Received response {}", response);
-			
-			if(response.contains("Successfully removed")) {
-				deletedAttacks.add(attack);
-			}			
-		}		
-		
-		if(initialAttacks.removeAll(deletedAttacks)) {
-			character.setAttacks(initialAttacks);
-		}
 	}
 	
 	private void addItemsToCharacter(CharacterSheet character) {
@@ -1190,29 +1141,6 @@ public class WebserviceManager {
 		character.setInventory(inventory);
 	}
 	
-	private void removeItemsFromCharacter(CharacterSheet character) {
-		List<Item> deletedItems = new ArrayList<>();
-		List<Item> initialItems = character.getInventory();
-		
-		for(Item item : character.getInventory()) {			
-			if(LOGGER.isDebugEnabled()) 
-				LOGGER.debug("Attempting to remove item {}", item);
-				
-			String response = delete(ITEM_URL + "/" + item.getId(), EMPTY_BODY);			
-			
-			if(LOGGER.isDebugEnabled()) 
-				LOGGER.debug("Received response {}", response);
-			
-			if(response.contains("Successfully removed")) {
-				deletedItems.add(item);
-			}			
-		}		
-		
-		if(initialItems.removeAll(deletedItems)) {
-			character.setInventory(initialItems);
-		}
-	}
-	
 	private void addClassesToCharacter(CharacterSheet character) {
 		List<CharacterClass> classes = new ArrayList<>();
 		CharacterClass result = null;
@@ -1238,29 +1166,6 @@ public class WebserviceManager {
 		character.setCharacterClasses(classes);
 	}	
 	
-	private void removeClassesFromCharacter(CharacterSheet character) {
-		List<CharacterClass> deletedClasses = new ArrayList<>();
-		List<CharacterClass> initialClasses = character.getCharacterClasses();
-		
-		for(CharacterClass charClass : character.getCharacterClasses()) {			
-			if(LOGGER.isDebugEnabled()) 
-				LOGGER.debug("Attempting to remove character class {}", charClass);
-				
-			String response = delete(CHARACTER_CLASS_URL + "/" + charClass.getId(), EMPTY_BODY);			
-			
-			if(LOGGER.isDebugEnabled()) 
-				LOGGER.debug("Received response {}", response);
-			
-			if(response.contains("Successfully removed")) {
-				deletedClasses.add(charClass);
-			}			
-		}		
-		
-		if(initialClasses.removeAll(deletedClasses)) {
-			character.setCharacterClasses(initialClasses);
-		}
-	}
-	
 	private void addFeaturesToCharacter(CharacterSheet character) {
 		List<Feature> features = new ArrayList<>();
 		Feature result = null;
@@ -1284,29 +1189,6 @@ public class WebserviceManager {
 		}
 		
 		character.setFeatures(new HashSet<Feature>(features));
-	}
-	
-	private void removeFeaturesFromCharacter(CharacterSheet character) {
-		List<Feature> deletedFeatures = new ArrayList<>();
-		Set<Feature> initialFeatures = character.getFeatures();
-		
-		for(Feature feature : character.getFeatures()) {			
-			if(LOGGER.isDebugEnabled()) 
-				LOGGER.debug("Attempting to remove feature {}", feature);
-				
-			String response = delete(FEATURE_URL + "/" + feature.getId(), EMPTY_BODY);			
-			
-			if(LOGGER.isDebugEnabled()) 
-				LOGGER.debug("Received response {}", response);
-			
-			if(response.contains("Successfully removed")) {
-				deletedFeatures.add(feature);
-			}			
-		}		
-		
-		if(initialFeatures.removeAll(deletedFeatures)) {
-			character.setFeatures(initialFeatures);
-		}
 	}
 	
 	private void addFeaturesToItem(Item item) {
