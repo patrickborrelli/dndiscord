@@ -439,7 +439,7 @@ public class CharacterSheet {
 		display.setGold(goldPieces);
 		display.setPlatinum(platinumPieces);
 		display.setProficiencyBonus(proficiencyBonus);
-		display.setAc(effectiveArmorClass);
+		display.setArmorClass(effectiveArmorClass);
 		display.setStrength(totalStrength);
 		display.setDexterity(totalDexterity);
 		display.setConstitution(totalConstitution);

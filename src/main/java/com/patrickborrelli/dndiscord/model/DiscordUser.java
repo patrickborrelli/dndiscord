@@ -30,5 +30,6 @@ public class DiscordUser {
 	@JsonProperty("avatar_hash")
 	private String avatar;
 	private boolean bot;
+	@JsonProperty("active_character")
 	private CharacterDisplay activeCharacter;
 }
