@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.Formula;
 import com.patrickborrelli.dndiscord.model.TokenResponse;
@@ -377,8 +378,9 @@ public class WebserviceManager {
 	 * @param formula a String containing the roll formula to be saved
 	 * @param name    a String representing the name of the saved roll
 	 * @return a String representing the status of the save attempt.
+	 * @throws CommandProcessingException 
 	 */
-	public String addUserFormula(DiscordUser user, String formula, String name) {
+	public String addUserFormula(DiscordUser user, String formula, String name) throws CommandProcessingException {
 		StringBuilder buff = new StringBuilder();
 
 		if (LOGGER.isDebugEnabled())
@@ -419,7 +421,7 @@ public class WebserviceManager {
 				LOGGER.error("Error while adding formula: " + errorResponse.toString());
 				in.close();
 				con.disconnect();
-				throw new IOException(errorResponse.toString());
+				throw new CommandProcessingException(errorResponse.toString());
 			} else {
 				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 				String inputLine;

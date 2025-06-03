@@ -277,9 +277,13 @@ public class RollCommand implements CommandExecutor {
 			return new String(mee.getMessage() + " Roll will not be saved.");
 		}
 
-		// at this point our roll formula is valid, so save it and report success or
-		// failure to user:
-		result.append(wsManager.addUserFormula(user, roll, name));
+		// at this point our roll formula is valid, 
+		// so save it and report success or failure to user:
+		try {
+			result.append(wsManager.addUserFormula(user, roll, name));
+		} catch(CommandProcessingException cpEx) {
+			result.append("Could not save roll. There is an existing roll for user: " + user.getUsername() + " with name: " + name);
+		}		
 
 		return result.toString();
 	}
