@@ -235,6 +235,7 @@ public class WebserviceManager {
 		}
 
 		user.setActiveCharacter(addedCharacter.getDisplaySheet());
+		put(UPDATE_USER_URL + "/" + user.getId(), unmarshalObject(user));
 		return addedCharacter;
 	}
 
