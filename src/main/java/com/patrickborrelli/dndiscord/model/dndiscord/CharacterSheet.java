@@ -1,17 +1,19 @@
 package com.patrickborrelli.dndiscord.model.dndiscord;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.type.StatType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Model of dDnDiscord Character Sheet entry.
+ * Model of DnDiscord Character Sheet entry.
  * 
  * @author Patrick Borrelli
  */
@@ -20,11 +22,12 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CharacterSheet {
 	
+	private DiscordUser user;
+	private boolean active;
 	@JsonProperty("_id")
 	private String id;
 	@JsonProperty("sheet_source")
 	private String sheetSource;
-	//private DiscordUser user;
 	@JsonProperty("character_name")
 	private String characterName;
 	@JsonProperty("avatar_url")
@@ -51,7 +54,7 @@ public class CharacterSheet {
 	private int copperPieces;
 	@JsonProperty("silver_pieces")
 	private int silverPieces;
-	@JsonProperty("electrumr_pieces")
+	@JsonProperty("electrum_pieces")
 	private int electrumPieces;
 	@JsonProperty("gold_pieces")
 	private int goldPieces;
@@ -421,5 +424,68 @@ public class CharacterSheet {
 			;
 		}
 		return modifier;
+	}
+	
+	public CharacterDisplay getDisplaySheet() {
+		CharacterDisplay display = new CharacterDisplay();
+		
+		display.setId(id);
+		display.setCharacterName(characterName);
+		display.setAvatarUrl(avatarUrl);
+		display.setAlignment(alignment);
+		display.setCopper(copperPieces);
+		display.setSilver(silverPieces);
+		display.setElectrum(electrumPieces);
+		display.setGold(goldPieces);
+		display.setPlatinum(platinumPieces);
+		display.setProficiencyBonus(proficiencyBonus);
+		display.setArmorClass(effectiveArmorClass);
+		display.setStrength(totalStrength);
+		display.setDexterity(totalDexterity);
+		display.setConstitution(totalConstitution);
+		display.setIntelligence(totalIntelligence);
+		display.setWisdom(totalWisdom);
+		display.setCharisma(totalCharisma);
+		display.setBackground(background);
+		display.setRace(race);
+		display.setBaseRace(baseRace);
+		display.setSize(size);	
+		
+		List<String> classes = new ArrayList<>();
+		for(CharacterClass myClass : characterClasses) {
+			classes.add(myClass.getName() + " " + myClass.getLevel());
+		}		
+		display.setTotalLevel(totalLevel);
+		display.setCharacterClasses(classes);
+		display.setMaxHp(maxHitPoints);
+		display.setHp(currentHitPoints);
+		display.setTempHp(temporaryHitPoints);
+		
+		return display;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CharacterSheet other = (CharacterSheet) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
 	}
 }

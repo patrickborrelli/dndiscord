@@ -22,7 +22,7 @@ import com.patrickborrelli.dndiscord.exceptions.CommandProcessingException;
 import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterBrief;
-import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterDisplay;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
@@ -44,9 +44,10 @@ public class SheetCommand implements CommandExecutor {
 	private static final String COMMA = ",";
 	private static final String LIST = "list";
 	private static final String SWITCH = "switch";
+	private static final String REMOVE = "remove";
 	
 	private String characterName = null;
-	private CharacterSheet activeCharacter = null;
+	private CharacterDisplay activeCharacter = null;
 	
 	WebserviceManager wsManager = WebserviceManager.getInstance();
 	DiscordApi api = AppUtil.getInstance().getApi();
@@ -55,40 +56,71 @@ public class SheetCommand implements CommandExecutor {
 	public void onCommand(Message msg, DiscordUser user, long messageReceiptTime) throws CommandProcessingException {
 		String[] args = msg.getContent().split(" ");
 		TextChannel channel = msg.getChannel();
+		boolean activeCharExists = user.getActiveCharacter() != null;
 		
 		if (args.length == 1) {
 			if(LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Received request for current character: " + msg.getContent());
 			}
-			if(user.getActiveCharacter() != null) {
+			if(activeCharExists) {
 				activeCharacter = user.getActiveCharacter();
 				characterName = activeCharacter.getCharacterName();	
 				buildSheetEmbed(msg);
 			} else {
 				characterName = "No current character selected";
+				MessageResponse.sendReply(channel, characterName);
 			}
 		} else if(args.length == 2 && args[1].equalsIgnoreCase(LIST)) {
-			if(user.getActiveCharacter() != null) {
+			if(activeCharExists) {
 				activeCharacter = user.getActiveCharacter();
 			}
-			buildListEmbed(msg, buildCharacterList(user));
+			buildListEmbed(msg, buildCharacterList(user), activeCharExists);
 		} else if(args.length > 2 && args[1].equalsIgnoreCase(SWITCH)) {
 			String requestedChar = getCharacterNameArgs(args);
-			handleCleanSwitch(msg, requestedChar, user);
-		}		
+			handleCleanSwitch(msg, requestedChar, user, activeCharExists);
+		} else if(args.length >= 2 && args[1].equalsIgnoreCase(REMOVE)) {
+			//determine if there is a provided character name, if not, remove the active character:
+			if(args.length == 2) {
+				CharacterDisplay toBeRemoved = activeCharacter;
+				user = wsManager.removeUserCharacter(user, activeCharacter.getId());
+				//set active character to null
+				user.setActiveCharacter(null);
+				buildRemoveEmbed(msg, toBeRemoved);
+			} else {
+				//character name provided, so remove that character:
+				String requestedChar = getCharacterNameArgs(args);
+				//TODO: finish this case
+			}
+		}
 		else {
 			LOGGER.error("Inappropriate arguments provided: ");
 			MessageResponse.sendReply(channel, "Inappropriate arguments provided:");
 		}
 	}
 	
-	private void buildListEmbed(Message msg, String characterList) {
+	private void buildListEmbed(Message msg, String characterList, boolean activeCharExists) {
+		String thumbnailUrl = null;
+		if(activeCharExists) {
+			thumbnailUrl = activeCharacter.getAvatarUrl();
+		} else {
+			thumbnailUrl = "https://cdn.discordapp.com/embed/avatars/1.png";
+		}
 		EmbedBuilder embed = new EmbedBuilder()
 				.setTitle(msg.getAuthor().getDisplayName() + "'s Imported Characters")
-				.setDescription(buildList(characterList))
+				.setDescription(buildList(characterList, activeCharExists))
 				.setColor(Color.GREEN)
 			    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
-			    .setThumbnail(activeCharacter.getAvatarUrl());
+			    .setThumbnail(thumbnailUrl);
+			MessageResponse.sendEmbedMessage(msg.getChannel(), embed);
+	}
+	
+	private void buildRemoveEmbed(Message msg, CharacterDisplay removedChar) {
+		EmbedBuilder embed = new EmbedBuilder()
+				.setTitle("Removed Character")
+				.setDescription("Successfully removed " + removedChar.getCharacterName())
+				.setColor(Color.GREEN)
+			    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
+			    .setThumbnail("https://cdn.discordapp.com/embed/avatars/1.png");
 			MessageResponse.sendEmbedMessage(msg.getChannel(), embed);
 	}
 	
@@ -96,12 +128,12 @@ public class SheetCommand implements CommandExecutor {
 		EmbedBuilder embed = new EmbedBuilder()
 			.setTitle(characterName)
 			.setDescription(buildDescription())
-			.addInlineField("STR", Integer.toString(activeCharacter.getTotalStrength()))
-			.addInlineField("DEX", Integer.toString(activeCharacter.getTotalDexterity()))
-			.addInlineField("CON", Integer.toString(activeCharacter.getTotalConstitution()))
-			.addInlineField("INT", Integer.toString(activeCharacter.getTotalIntelligence()))
-			.addInlineField("WIS", Integer.toString(activeCharacter.getTotalWisdom()))
-			.addInlineField("CHA", Integer.toString(activeCharacter.getTotalCharisma()))
+			.addInlineField("STR", Integer.toString(activeCharacter.getStrength()))
+			.addInlineField("DEX", Integer.toString(activeCharacter.getDexterity()))
+			.addInlineField("CON", Integer.toString(activeCharacter.getConstitution()))
+			.addInlineField("INT", Integer.toString(activeCharacter.getIntelligence()))
+			.addInlineField("WIS", Integer.toString(activeCharacter.getWisdom()))
+			.addInlineField("CHA", Integer.toString(activeCharacter.getCharisma()))
 		    .setColor(Color.GREEN)
 		    .setFooter("©2020 AwareSoft, LLC", "https://cdn.discordapp.com/embed/avatars/1.png")
 		    .setThumbnail(activeCharacter.getAvatarUrl());
@@ -123,7 +155,38 @@ public class SheetCommand implements CommandExecutor {
 					originalInteraction.setContent("Loading character: " + chosen).update();
 					
 					try {
-						handleCleanSwitch(msg, chosen, user);
+						handleCleanSwitch(msg, chosen, user, user.getActiveCharacter() != null);
+					} catch (Exception e) {
+						
+					}
+								
+				}
+			});			
+		});
+		
+		new MessageBuilder()
+	    .setContent("Which character did you mean?")
+	    .addComponents(
+	        ActionRow.of(SelectMenu.createStringMenu("chosen",  "Click to show the list", 1, 1, options)))
+	    .send(msg.getChannel());		
+	}
+	
+	private void sendCharacterRemoveQuery(Message msg, List<String> characters, DiscordUser user) {
+		List<SelectMenuOption> options = new ArrayList<>();
+		for(String character : characters) {
+			options.add(SelectMenuOption.create(character, "You selected " + character + "!", ""));
+		}
+		api.addMessageComponentCreateListener(event -> {			
+			event.getInteraction().respondLater().thenAccept(originalInteraction -> {
+				Optional<SelectMenuInteraction> opt = event.getMessageComponentInteraction().asSelectMenuInteraction();
+							
+				if(opt.isPresent()) {
+					SelectMenuInteraction interaction = opt.get();
+					String chosen = interaction.getChosenOptions().get(0).getLabel();				
+					originalInteraction.setContent("Loading character: " + chosen).update();
+					
+					try {
+						getCharacterIdByNameFuzzy(msg, chosen, user);
 					} catch (Exception e) {
 						
 					}
@@ -167,23 +230,23 @@ public class SheetCommand implements CommandExecutor {
 		return result;
 	}
 	
-	private void handleCleanSwitch(Message msg, String chosen, DiscordUser user) throws CommandProcessingException {
+	private void handleCleanSwitch(Message msg, String chosen, DiscordUser user, boolean activeCharExists) throws CommandProcessingException {
 		List<CharacterBrief> characters = wsManager.getUserCharactersLazy(user);
 		List<ExtractedResult> choice = (List<ExtractedResult>)FuzzySearch.extractTop(chosen, getCharacterNames(characters), 1);
 		if(choice != null) {
 			ExtractedResult result = choice.get(0);
 			
 			if(result.getScore() > 65) {				
-				if(result.getString().equalsIgnoreCase(user.getActiveCharacter().getCharacterName())) {
+				if(activeCharExists && result.getString().equalsIgnoreCase(user.getActiveCharacter().getCharacterName())) {
 					//nothing to do here:
 					characterName = user.getActiveCharacter().getCharacterName();
 					activeCharacter = user.getActiveCharacter();
 				} else {
 					CharacterSheet sheet = wsManager.getCharacter(getCharacterId(characters, result.getString()));
-					user.setActiveCharacter(sheet);
+					user.setActiveCharacter(sheet.getDisplaySheet());
 					wsManager.updateUser(user);
 					characterName = sheet.getCharacterName();
-					activeCharacter = sheet;
+					activeCharacter = sheet.getDisplaySheet();
 				}
 				
 				buildSheetEmbed(msg);
@@ -197,19 +260,42 @@ public class SheetCommand implements CommandExecutor {
 		}
 	}
 	
+	private String getCharacterIdByNameFuzzy(Message msg, String chosen, DiscordUser user) throws CommandProcessingException {
+		
+		StringBuilder buffer = new StringBuilder();
+		List<CharacterBrief> characters = wsManager.getUserCharactersLazy(user);
+		List<ExtractedResult> choice = (List<ExtractedResult>)FuzzySearch.extractTop(chosen, getCharacterNames(characters), 1);
+		
+		if(choice != null) {
+			ExtractedResult result = choice.get(0);
+			
+			if(result.getScore() > 65) {				
+				buffer.append(getCharacterId(characters, result.getString()));
+			} else {
+				buffer.append("");
+				sendCharacterRemoveQuery(msg, getCharacterNames(characters), user);
+			}
+			
+		} else {
+			buffer.append("");
+			sendCharacterRemoveQuery(msg, getCharacterNames(characters), user);
+		}
+		return buffer.toString();
+	}
+	
 	/**
 	 * The description of a character is a single string containing its species, class(es), and level(s).
 	 * @return a String representation of the character
 	 */
 	private String buildDescription() {
 		StringBuilder buff = new StringBuilder();
-		List<CharacterClass> classes = activeCharacter.getCharacterClasses();
+		List<String> classes = activeCharacter.getCharacterClasses();
 		int separators = classes.size() - 1;
 
 		buff.append(activeCharacter.getRace()).append(SPACE);
 		
-		for(CharacterClass myClass : classes) {
-			buff.append(myClass.getName()).append(SPACE).append(myClass.getLevel());
+		for(String myClass : classes) {
+			buff.append(myClass);
 			if(separators > 0) {
 				buff.append(SEPARATOR);
 				separators--;
@@ -219,16 +305,19 @@ public class SheetCommand implements CommandExecutor {
 		return buff.toString();
 	}
 	
-	private String buildList(String charList) {
+	private String buildList(String charList, boolean activeCharExists) {
 		StringBuilder buff = new StringBuilder();
 		String result = "";
+		
 		charList = charList.replaceAll("\"", "");
 		if(charList != null) {
 			String [] characters = charList.split(COMMA);
 			Arrays.sort(characters);
 			
 			for(String character : characters) {
-				if(activeCharacter.getCharacterName() != null && character.equalsIgnoreCase(activeCharacter.getCharacterName())) {
+				if(activeCharExists &&
+						activeCharacter.getCharacterName() != null && 
+						character.equalsIgnoreCase(activeCharacter.getCharacterName())) {
 					//make the active character bold:
 					buff.append("**" + character + "**");
 				} else {
@@ -238,6 +327,10 @@ public class SheetCommand implements CommandExecutor {
 			}
 			//remove final COMMA/SPACE combination:
 			result = buff.substring(0,  buff.length() - 2);
+			
+			if(!activeCharExists) {
+				result += " ** No active character selected **";
+			}
 		}	
 		return result;
 	}
