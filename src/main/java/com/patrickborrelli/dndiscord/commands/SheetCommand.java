@@ -23,7 +23,6 @@ import com.patrickborrelli.dndiscord.messaging.MessageResponse;
 import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterBrief;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterDisplay;
-import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
 
@@ -39,6 +38,7 @@ import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 public class SheetCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(SheetCommand.class);
 	
+	private static final WebserviceManager WSMANAGER = WebserviceManager.getInstance();	
 	private static final String SPACE = " ";
 	private static final String SEPARATOR = "/";
 	private static final String COMMA = ",";
@@ -48,8 +48,7 @@ public class SheetCommand implements CommandExecutor {
 	
 	private String characterName = null;
 	private CharacterDisplay activeCharacter = null;
-	
-	WebserviceManager wsManager = WebserviceManager.getInstance();
+
 	DiscordApi api = AppUtil.getInstance().getApi();
 
 	@Override
@@ -79,17 +78,26 @@ public class SheetCommand implements CommandExecutor {
 			String requestedChar = getCharacterNameArgs(args);
 			handleCleanSwitch(msg, requestedChar, user, activeCharExists);
 		} else if(args.length >= 2 && args[1].equalsIgnoreCase(REMOVE)) {
+			
+			if(activeCharExists) {
+				activeCharacter = user.getActiveCharacter();
+			}
 			//determine if there is a provided character name, if not, remove the active character:
 			if(args.length == 2) {
 				CharacterDisplay toBeRemoved = activeCharacter;
-				user = wsManager.removeUserCharacter(user, activeCharacter.getId());
-				//set active character to null
-				user.setActiveCharacter(null);
+				user = WSMANAGER.removeUserCharacter(user, activeCharacter.getCharacterId(), activeCharacter.getId(), true);
 				buildRemoveEmbed(msg, toBeRemoved);
 			} else {
 				//character name provided, so remove that character:
-				String requestedChar = getCharacterNameArgs(args);
-				//TODO: finish this case
+				String characterId = getCharacterIdByNameFuzzy(msg, getCharacterNameArgs(args), user);	
+				CharacterDisplay display = WSMANAGER.getCharacterDisplaySheet(characterId);
+				if(activeCharExists && user.getActiveCharacter().getCharacterId().equalsIgnoreCase(characterId)) {
+					user = WSMANAGER.removeUserCharacter(user, characterId, display.getId(), true);
+				} else {				
+					user = WSMANAGER.removeUserCharacter(user, characterId, display.getId(), false);
+				}
+				
+				buildRemoveEmbed(msg, display);
 			}
 		}
 		else {
@@ -231,7 +239,7 @@ public class SheetCommand implements CommandExecutor {
 	}
 	
 	private void handleCleanSwitch(Message msg, String chosen, DiscordUser user, boolean activeCharExists) throws CommandProcessingException {
-		List<CharacterBrief> characters = wsManager.getUserCharactersLazy(user);
+		List<CharacterBrief> characters = WSMANAGER.getUserCharactersLazy(user);
 		List<ExtractedResult> choice = (List<ExtractedResult>)FuzzySearch.extractTop(chosen, getCharacterNames(characters), 1);
 		if(choice != null) {
 			ExtractedResult result = choice.get(0);
@@ -242,11 +250,12 @@ public class SheetCommand implements CommandExecutor {
 					characterName = user.getActiveCharacter().getCharacterName();
 					activeCharacter = user.getActiveCharacter();
 				} else {
-					CharacterSheet sheet = wsManager.getCharacter(getCharacterId(characters, result.getString()));
-					user.setActiveCharacter(sheet.getDisplaySheet());
-					wsManager.updateUser(user);
-					characterName = sheet.getCharacterName();
-					activeCharacter = sheet.getDisplaySheet();
+					CharacterDisplay display = WSMANAGER.getCharacterDisplaySheet(getCharacterId(characters, result.getString()));
+					user.setActiveCharacter(display);
+					WSMANAGER.setActiveCharacter(user.getId(), display.getCharacterId());
+					WSMANAGER.updateUser(user);
+					characterName = display.getCharacterName();
+					activeCharacter = display;
 				}
 				
 				buildSheetEmbed(msg);
@@ -260,10 +269,12 @@ public class SheetCommand implements CommandExecutor {
 		}
 	}
 	
+	
+
 	private String getCharacterIdByNameFuzzy(Message msg, String chosen, DiscordUser user) throws CommandProcessingException {
 		
 		StringBuilder buffer = new StringBuilder();
-		List<CharacterBrief> characters = wsManager.getUserCharactersLazy(user);
+		List<CharacterBrief> characters = WSMANAGER.getUserCharactersLazy(user);
 		List<ExtractedResult> choice = (List<ExtractedResult>)FuzzySearch.extractTop(chosen, getCharacterNames(characters), 1);
 		
 		if(choice != null) {
@@ -342,6 +353,6 @@ public class SheetCommand implements CommandExecutor {
 	 */
 	private String buildCharacterList(DiscordUser user) {
 		
-		return wsManager.getUserCharacterNames(user);
+		return WSMANAGER.getUserCharacterNames(user);
 	}
 }

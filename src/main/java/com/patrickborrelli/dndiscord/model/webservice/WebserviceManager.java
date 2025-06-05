@@ -28,6 +28,7 @@ import com.patrickborrelli.dndiscord.model.dndiscord.Action;
 import com.patrickborrelli.dndiscord.model.dndiscord.Attack;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterBrief;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
+import com.patrickborrelli.dndiscord.model.dndiscord.CharacterDisplay;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.dndiscord.Feature;
 import com.patrickborrelli.dndiscord.model.dndiscord.Item;
@@ -49,6 +50,8 @@ public class WebserviceManager {
 	private static final String ADMIN_CREDENTIALS = System.getenv("DNDISCORD_ADMIN_CREDENTIALS");
 	private static final ObjectMapper MAPPER = ApplicationObjectMapper.getInstance();
 	private static final ObjectReader CHARACTER_READER = MAPPER.reader().forType(CharacterSheet.class);
+	private static final ObjectReader DISPLAY_READER = MAPPER.reader().forType(CharacterDisplay.class);
+	private static final ObjectReader DISPLAY_ARRAY_READER = MAPPER.reader().forType(CharacterDisplay[].class);
 	private static final ObjectReader FORMULA_READER = MAPPER.reader().forType(Formula.class);
 	private static final ObjectReader FORMULA_ARRAY_READER = MAPPER.reader().forType(Formula[].class);
 	private static final ObjectReader DISCORD_USER_READER = MAPPER.reader().forType(DiscordUser.class);
@@ -62,6 +65,7 @@ public class WebserviceManager {
 	private static final String BASE_URL;
 	private static final String CHARACTER_URL;
 	private static final String CHARACTER_CLASS_URL;
+	private static final String CHARACTER_DISPLAY_URL;
 	private static final String CREATE_USER_URL;
 	private static final String FEATURE_URL;
 	private static final String FORMULA_URL;
@@ -86,16 +90,17 @@ public class WebserviceManager {
 		ATTACK_URL = BASE_URL + "attacks";
 		CHARACTER_URL = BASE_URL + "characters";
 		CHARACTER_CLASS_URL = BASE_URL + "characterClasses";
+		CHARACTER_DISPLAY_URL = BASE_URL + "characterDisplays";
 		CREATE_USER_URL = BASE_URL + "users/register";
 		FEATURE_URL = BASE_URL + "features";
 		FORMULA_URL = BASE_URL + "formulae";
 		FORMULA_BY_NAME_URL = FORMULA_URL + "/userByName";
 		USER_URL = BASE_URL + "users/discordUser";
-		USER_CHAR_URL = BASE_URL + "users/characters";
+		USER_CHAR_URL = CHARACTER_URL + "/namesByUserID";
 		UPDATE_USER_URL = BASE_URL + "users";
 		ITEM_URL = BASE_URL + "items";
 		LOGIN_URL = BASE_URL + "users/login";
-		LAZY_URL = USER_CHAR_URL + "/lazy";
+		LAZY_URL = CHARACTER_URL + "/lazyListByUserId";
 		ACTIVE_URL = CHARACTER_URL + "/setActive";
 
 		LOGGER.debug("USING BaseUrl of: {} for {}", BASE_URL, AppUtil.getInstance().getScope());
@@ -200,7 +205,8 @@ public class WebserviceManager {
 	public CharacterSheet addUserCharacter(DiscordUser user, CharacterSheet character) {
 
 		CharacterSheet addedCharacter = null;
-
+		CharacterDisplay savedDisplay = null;
+		
 		// first ensure any children are persisted:
 		if (character.getInventory() != null)
 			addItemsToCharacter(character);
@@ -212,11 +218,10 @@ public class WebserviceManager {
 			addClassesToCharacter(character);
 		if (character.getFeatures() != null)
 			addFeaturesToCharacter(character);
-		character.setUser(user);
+		character.setUserId(user.getId());
 
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Making call to API: " + CHARACTER_URL);
-			LOGGER.debug("Attempting to unmarshall object: " + character);
+			LOGGER.debug("Making call to API: POST " + CHARACTER_URL);
 		}
 		String POST_BODY = unmarshalObject(character);
 
@@ -234,9 +239,22 @@ public class WebserviceManager {
 		} catch (JsonProcessingException e) {
 			LOGGER.error("Failed to marshall character sheet {}", e);
 		}
-
-		user.setActiveCharacter(addedCharacter.getDisplaySheet());
+		
+		//persist display to get ID, then add to user:
+		CharacterDisplay display = addedCharacter.buildDisplaySheet();
+		String displayResult = post(CHARACTER_DISPLAY_URL + "/", unmarshalObject(display));		
+		
+		try {
+			savedDisplay = DISPLAY_READER.readValue(displayResult);
+			if (LOGGER.isDebugEnabled())
+				LOGGER.debug("Deserialized response to object {}", savedDisplay);
+		} catch (JsonProcessingException e) {
+			LOGGER.error("Failed to marshall character display {}", e);
+		}		
+		
+		user.setActiveCharacter(savedDisplay);
 		put(UPDATE_USER_URL + "/" + user.getId(), unmarshalObject(user));
+		
 		return addedCharacter;
 	}
 
@@ -255,7 +273,7 @@ public class WebserviceManager {
 		buf.append(CHARACTER_URL + "/").append(characterId);
 
 		if (LOGGER.isDebugEnabled())
-			LOGGER.debug("Making call to API: " + buf.toString());
+			LOGGER.debug("Making call to API: GET " + buf.toString());
 
 		BufferedReader in = null;
 		HttpURLConnection con = null;
@@ -298,7 +316,7 @@ public class WebserviceManager {
 				} else {
 					// print response:
 					if (LOGGER.isDebugEnabled())
-						LOGGER.debug("Retrieved User: {}", response);
+						LOGGER.debug("Retrieved Character: {}", response);
 					character = CHARACTER_READER.readValue(response.toString());
 				}
 
@@ -600,10 +618,10 @@ public class WebserviceManager {
 
 	public List<CharacterBrief> getUserCharactersLazy(DiscordUser user) {
 		List<CharacterBrief> result = new ArrayList<>();
-		StringBuilder url = new StringBuilder().append(LAZY_URL).append("/").append(user.getDiscord_id());
+		StringBuilder url = new StringBuilder().append(LAZY_URL).append("/").append(user.getId());
 
 		if (LOGGER.isDebugEnabled())
-			LOGGER.debug("Making call to API: " + url.toString());
+			LOGGER.debug("Making call to API: GET " + url.toString());
 
 		BufferedReader in = null;
 		HttpURLConnection con = null;
@@ -675,7 +693,7 @@ public class WebserviceManager {
 	 */
 	public String getUserCharacterNames(DiscordUser user) {
 		String result = "";
-		StringBuilder url = new StringBuilder().append(USER_CHAR_URL).append("/").append(user.getDiscord_id());
+		StringBuilder url = new StringBuilder().append(USER_CHAR_URL).append("/").append(user.getId());
 
 		if (LOGGER.isDebugEnabled())
 			LOGGER.debug("Making call to API: " + url.toString());
@@ -895,33 +913,108 @@ public class WebserviceManager {
 	 * @param character
 	 * @return a DiscordUser with the character removed.
 	 */
-	public DiscordUser removeUserCharacter(DiscordUser user, String characterId) {
+	public DiscordUser removeUserCharacter(DiscordUser user, String characterId, String displayId, boolean isActive) {
 		DiscordUser updatedUser = null;
 
-		delete(CHARACTER_URL + "/" + characterId, "");
-		// TODO: possibly need to reread the user from the DB at this point as we have a
-		// stale instance:\
-		DiscordUser editedUser = getUser(user.getDiscord_id());
-
-		editedUser.setActiveCharacter(null);
-		String unmarshalled = unmarshalObject(editedUser);
-
-		String result = put(UPDATE_USER_URL + "/" + editedUser.getId(), unmarshalled);
-
-		// print response:
-		if (LOGGER.isDebugEnabled())
-			LOGGER.debug("Modified User: {}", result);
-
-		try {
-			updatedUser = DISCORD_USER_READER.readValue(result.toString());
-		} catch (JsonMappingException e) {
-			LOGGER.error(e);
-			e.printStackTrace();
-		} catch (JsonProcessingException e) {
-			LOGGER.error(e);
-			e.printStackTrace();
+		delete(CHARACTER_DISPLAY_URL + "/" + displayId, "");
+		delete(CHARACTER_URL + "/" + characterId, "");		
+		
+		if(isActive) {
+			user.setActiveCharacter(null);
+			String unmarshalled = unmarshalObject(user);
+	
+			String result = put(UPDATE_USER_URL + "/" + user.getId(), unmarshalled);
+	
+			// print response:
+			if (LOGGER.isDebugEnabled())
+				LOGGER.debug("Modified User: {}", result);
+	
+			try {
+				updatedUser = DISCORD_USER_READER.readValue(result.toString());
+			} catch (JsonMappingException e) {
+				LOGGER.error(e);
+				e.printStackTrace();
+			} catch (JsonProcessingException e) {
+				LOGGER.error(e);
+				e.printStackTrace();
+			}
+		} else {
+			updatedUser = user;
 		}
 		return updatedUser;
+	}
+	
+	/**
+	 * Retrieves a character display for the given character ID.
+	 * @param characterId
+	 * @return
+	 */
+	public CharacterDisplay getCharacterDisplaySheet(String characterId) {
+		
+		StringBuilder url = new StringBuilder().append(CHARACTER_DISPLAY_URL).append(QUERY).append("character_id=" + characterId);
+
+		BufferedReader in = null;
+		HttpURLConnection con = null;
+		CharacterDisplay[] display = null;
+		
+		if (LOGGER.isDebugEnabled())
+			LOGGER.debug("Making call to API: GET " + url.toString());
+
+		try {
+			URL obj = new URL(url.toString());
+			con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("x-access-token", TOKEN);
+			
+			int responseCode = con.getResponseCode();
+
+			if (responseCode != HttpURLConnection.HTTP_OK) {
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer errorResponse = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					errorResponse.append(inputLine);
+				}
+
+				// print in String
+				if (LOGGER.isDebugEnabled())
+					LOGGER.debug("GOT AN ERROR: " + errorResponse.toString());
+				in.close();
+				con.disconnect();
+				throw new IOException(errorResponse.toString());
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+
+				// handle case where user does not currently exist:
+				if (response.toString().equalsIgnoreCase("null")) {
+					if (LOGGER.isDebugEnabled())
+						LOGGER.debug("Received a null response");
+				} else {
+					// print response:
+					if (LOGGER.isDebugEnabled())
+						LOGGER.debug("Retrieved Display: {}", response);
+					display = DISPLAY_ARRAY_READER.readValue(response.toString());
+				}
+
+				in.close();
+				con.disconnect();
+			}
+		} catch (MalformedURLException murl) {
+			LOGGER.warn(murl.getMessage());
+			murl.printStackTrace();
+		} catch (IOException ioex) {
+			LOGGER.warn(ioex.getMessage());
+			ioex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return display[0];
 	}
 
 	/**
@@ -1310,7 +1403,7 @@ public class WebserviceManager {
 			os.close();
 
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Sending connection request: " + con);
+				LOGGER.debug("Sending PUT connection request: " + con);
 				LOGGER.debug("With body: " + body);
 			}
 

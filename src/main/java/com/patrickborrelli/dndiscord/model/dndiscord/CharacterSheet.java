@@ -6,7 +6,6 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.patrickborrelli.dndiscord.model.DiscordUser;
 import com.patrickborrelli.dndiscord.model.type.StatType;
 
 import lombok.Data;
@@ -22,7 +21,8 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CharacterSheet {
 	
-	private DiscordUser user;
+	@JsonProperty("user_id")
+	private String userId;
 	private boolean active;
 	@JsonProperty("_id")
 	private String id;
@@ -426,10 +426,11 @@ public class CharacterSheet {
 		return modifier;
 	}
 	
-	public CharacterDisplay getDisplaySheet() {
-		CharacterDisplay display = new CharacterDisplay();
+	public CharacterDisplay buildDisplaySheet() {
 		
-		display.setId(id);
+		CharacterDisplay display = new CharacterDisplay();
+
+		display.setCharacterId(id);
 		display.setCharacterName(characterName);
 		display.setAvatarUrl(avatarUrl);
 		display.setAlignment(alignment);
