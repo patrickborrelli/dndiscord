@@ -23,8 +23,8 @@ import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 import com.patrickborrelli.dndiscord.utilities.ConfigurationUtil;
 
 /**
- * DNDiscordMessageCreateListener is a custom listener class for 
- * the DNDiscord bot that will handle all message create events.
+ * DNDiscordMessageCreateListener is a custom listener class for the DNDiscord
+ * bot that will handle all message create events.
  * 
  * @author Patrick Borrelli
  */
@@ -34,9 +34,9 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 	private CommandExecutorRouter router = CommandExecutorRouter.getInstance();
 	private CommandExecutor executor = null;
 	WebserviceManager wsManager;
-	
+
 	ConfigurationUtil instance;
-	
+
 	public DNDiscordMessageCreateListener() {
 		try {
 			instance = ConfigurationUtil.getInstance();
@@ -46,139 +46,153 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 			LOGGER.error(e.getStackTrace());
 		}
 	}
-	
+
 	@Override
 	public void onMessageCreate(MessageCreateEvent event) {
 		long timeReceived = System.currentTimeMillis();
 		DiscordUser user = null;
 		Message message = event.getMessage();
-		if(LOGGER.isDebugEnabled()) 
+		if (LOGGER.isDebugEnabled())
 			LOGGER.debug("Received message: " + message.toString());
 		List<MessageAttachment> attachments = message.getAttachments();
-		
-		if(LOGGER.isDebugEnabled()) {
-			if(attachments != null && attachments.size() > 0) {
-				for(MessageAttachment file : attachments) {
+
+		if (LOGGER.isDebugEnabled()) {
+			if (attachments != null && attachments.size() > 0) {
+				for (MessageAttachment file : attachments) {
 					LOGGER.debug("Recieved file attachment: " + file.getFileName());
 				}
 			}
 		}
-		
+
 		String[] messageArgs = message.getContent().split(" ");
 		boolean isRealUser = !message.getAuthor().isBotUser();
 		String command = stripPrefix(messageArgs[0]);
-		
-		//check to get user who authored message:
+
+		// check to get user who authored message:
 		MessageAuthor author = message.getAuthor();
 		Optional<User> optUser = author.asUser();
 		User currentUser = null;
-		if(optUser.isPresent()) currentUser = optUser.get();
-		
-		if(currentUser != null) {
-			if(LOGGER.isDebugEnabled()) 
+		if (optUser.isPresent())
+			currentUser = optUser.get();
+
+		if (currentUser != null) {
+			if (LOGGER.isDebugEnabled())
 				LOGGER.debug("Message sent by user: " + currentUser.toString());
-			if(isRealUser) {
+			if (isRealUser) {
 				user = wsManager.getUser(String.valueOf(currentUser.getId()));
-				if(user == null) {
-					//no user found so create one:
+				if (user == null) {
+					// no user found so create one:
 					LOGGER.error("Could not find user.  Must create one.");
-					user = wsManager.createUser(
-							String.valueOf(currentUser.getId()), 
-							currentUser.getName(), 
-							currentUser.getDiscriminator(), 
-							String.valueOf(currentUser.getAvatar().hashCode()), 
+					user = wsManager.createUser(String.valueOf(currentUser.getId()), currentUser.getName(),
+							currentUser.getDiscriminator(), String.valueOf(currentUser.getAvatar().hashCode()),
 							currentUser.isBot());
-					if(LOGGER.isDebugEnabled()) 
+					if (LOGGER.isDebugEnabled())
 						LOGGER.debug("Created user: " + user.toString());
 				} else {
-					if(LOGGER.isDebugEnabled()) 
+					if (LOGGER.isDebugEnabled())
 						LOGGER.debug("Retrieved existing user: " + user.toString());
 				}
 			}
-		}	
-		
-		if(isRealUser && isMyMessage(message)) {		
-			try {	
-				switch(command) {
-					case CommandUtil.PING:
-						if(LOGGER.isDebugEnabled()) 
-							LOGGER.debug("Handling ping message.");
-						executor = router.getCommandExecutor(CommandUtil.PING);
-						if(null != executor) executor.onCommand(message, user, timeReceived);
-						break;
-						
-					case CommandUtil.PREFIX:
-						if(LOGGER.isDebugEnabled()) 
-							LOGGER.debug("Handling prefix message.");
-						executor = router.getCommandExecutor(CommandUtil.PREFIX);
-						if(null != executor) executor.onCommand(message, user, timeReceived);
-						break;
-						
-					case CommandUtil.HELP:
-						if(LOGGER.isDebugEnabled()) 
-							LOGGER.debug("Handling help message.");
-						executor = router.getCommandExecutor(CommandUtil.HELP);
-						if(null != executor) executor.onCommand(message, user, timeReceived);
-						break;
-						
-					case CommandUtil.ROLL:
-					case CommandUtil.R:
-						if(LOGGER.isDebugEnabled()) 
-							LOGGER.debug("Handling Roll message.");
-						executor = router.getCommandExecutor(CommandUtil.ROLL);
-						if(null != executor) executor.onCommand(message, user, timeReceived);
-						break;
-						
-					case CommandUtil.SHEET:
-						LOGGER.debug("Handling sheet command message.");
-						executor = router.getCommandExecutor(CommandUtil.SHEET);
-						if(null != executor) executor.onCommand(message, user, timeReceived);
-						break;
-						
-					case CommandUtil.IMPORT:
-						if(LOGGER.isDebugEnabled()) 
-							LOGGER.debug("Handling import command message.");
-						executor = router.getCommandExecutor(CommandUtil.IMPORT);
-						if(null != executor) executor.onCommand(message, user, timeReceived);
-						break;
-						
-					default:						
-						if(message.getMentionedUsers().contains(AppUtil.getInstance().getApi().getYourself())) {
-							LOGGER.info("DNDiscord bot is mentioned in the message.");
-							executor = router.getCommandExecutor(CommandUtil.ADMIN);
-							if(null != executor) executor.onCommand(message, user, timeReceived);
-						} else {
-							//TODO: more rigorous error handling here:
-							LOGGER.info("Received unparsable message: " + message.getContent());
-						}
-				}			
+		}
+
+		if (isRealUser && isMyMessage(message)) {
+			try {
+				switch (command) {
+				case CommandUtil.A:
+				case CommandUtil.ATTACK:
+					if (LOGGER.isDebugEnabled())
+						LOGGER.debug("Handling attack message.");
+					executor = router.getCommandExecutor(CommandUtil.ATTACK);
+					if (null != executor)
+						executor.onCommand(message, user, timeReceived);
+					break;
+
+				case CommandUtil.HELP:
+					if (LOGGER.isDebugEnabled())
+						LOGGER.debug("Handling help message.");
+					executor = router.getCommandExecutor(CommandUtil.HELP);
+					if (null != executor)
+						executor.onCommand(message, user, timeReceived);
+					break;
+
+				case CommandUtil.IMPORT:
+					if (LOGGER.isDebugEnabled())
+						LOGGER.debug("Handling import command message.");
+					executor = router.getCommandExecutor(CommandUtil.IMPORT);
+					if (null != executor)
+						executor.onCommand(message, user, timeReceived);
+					break;
+
+				case CommandUtil.PING:
+					if (LOGGER.isDebugEnabled())
+						LOGGER.debug("Handling ping message.");
+					executor = router.getCommandExecutor(CommandUtil.PING);
+					if (null != executor)
+						executor.onCommand(message, user, timeReceived);
+					break;
+
+				case CommandUtil.PREFIX:
+					if (LOGGER.isDebugEnabled())
+						LOGGER.debug("Handling prefix message.");
+					executor = router.getCommandExecutor(CommandUtil.PREFIX);
+					if (null != executor)
+						executor.onCommand(message, user, timeReceived);
+					break;
+
+				case CommandUtil.ROLL:
+				case CommandUtil.R:
+					if (LOGGER.isDebugEnabled())
+						LOGGER.debug("Handling Roll message.");
+					executor = router.getCommandExecutor(CommandUtil.ROLL);
+					if (null != executor)
+						executor.onCommand(message, user, timeReceived);
+					break;
+
+				case CommandUtil.SHEET:
+					LOGGER.debug("Handling sheet command message.");
+					executor = router.getCommandExecutor(CommandUtil.SHEET);
+					if (null != executor)
+						executor.onCommand(message, user, timeReceived);
+					break;
+
+				default:
+					if (message.getMentionedUsers().contains(AppUtil.getInstance().getApi().getYourself())) {
+						LOGGER.info("DNDiscord bot is mentioned in the message.");
+						executor = router.getCommandExecutor(CommandUtil.ADMIN);
+						if (null != executor)
+							executor.onCommand(message, user, timeReceived);
+					} else {
+						// TODO: more rigorous error handling here:
+						LOGGER.info("Received unparsable message: " + message.getContent());
+					}
+				}
 				executor = null;
-				
-			} catch(CommandProcessingException cpe) {
+
+			} catch (CommandProcessingException cpe) {
 				LOGGER.error("Error during command processing: " + cpe.getLocalizedMessage());
 				cpe.printStackTrace();
 			}
 		}
 	}
-	
+
 	private String stripPrefix(String prefixed) {
 		String result = "";
 		String prefix = instance == null ? "-" : instance.getBotPrefix();
-		
+
 		String[] finalargs = prefixed.split(prefix);
-		if(finalargs.length > 1) {
+		if (finalargs.length > 1) {
 			result = finalargs[1].toUpperCase();
 		}
-		return result;		
+		return result;
 	}
-	
+
 	private boolean isMyMessage(Message message) {
 		boolean isForProcessing = false;
 		String prefix = instance == null ? "-" : instance.getBotPrefix();
-		if(message.getContent().startsWith(prefix) ||
-			message.getMentionedUsers().contains(AppUtil.getInstance().getApi().getYourself())) {
+		if (message.getContent().startsWith(prefix)
+				|| message.getMentionedUsers().contains(AppUtil.getInstance().getApi().getYourself())) {
 			isForProcessing = true;
-		}		
+		}
 		return isForProcessing;
 	}
 

@@ -25,6 +25,7 @@ import com.patrickborrelli.dndiscord.model.dndiscord.CharacterBrief;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterDisplay;
 import com.patrickborrelli.dndiscord.model.webservice.WebserviceManager;
 import com.patrickborrelli.dndiscord.utilities.AppUtil;
+import com.patrickborrelli.dndiscord.utilities.CommandUtil;
 
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
@@ -39,13 +40,6 @@ public class SheetCommand implements CommandExecutor {
 	private static final Logger LOGGER = LogManager.getLogger(SheetCommand.class);
 	
 	private static final WebserviceManager WSMANAGER = WebserviceManager.getInstance();	
-	private static final String SPACE = " ";
-	private static final String SEPARATOR = "/";
-	private static final String COMMA = ",";
-	private static final String LIST = "list";
-	private static final String SWITCH = "switch";
-	private static final String REMOVE = "remove";
-	
 	private String characterName = null;
 	private CharacterDisplay activeCharacter = null;
 
@@ -69,15 +63,15 @@ public class SheetCommand implements CommandExecutor {
 				characterName = "No current character selected";
 				MessageResponse.sendReply(channel, characterName);
 			}
-		} else if(args.length == 2 && args[1].equalsIgnoreCase(LIST)) {
+		} else if(args.length == 2 && args[1].equalsIgnoreCase(CommandUtil.LIST)) {
 			if(activeCharExists) {
 				activeCharacter = user.getActiveCharacter();
 			}
 			buildListEmbed(msg, buildCharacterList(user), activeCharExists);
-		} else if(args.length > 2 && args[1].equalsIgnoreCase(SWITCH)) {
+		} else if(args.length > 2 && args[1].equalsIgnoreCase(CommandUtil.SWITCH)) {
 			String requestedChar = getCharacterNameArgs(args);
 			handleCleanSwitch(msg, requestedChar, user, activeCharExists);
-		} else if(args.length >= 2 && args[1].equalsIgnoreCase(REMOVE)) {
+		} else if(args.length >= 2 && args[1].equalsIgnoreCase(CommandUtil.REMOVE)) {
 			
 			if(activeCharExists) {
 				activeCharacter = user.getActiveCharacter();
@@ -224,7 +218,7 @@ public class SheetCommand implements CommandExecutor {
 		StringBuilder buff = new StringBuilder();
 		for(int i = 2; i < args.length; i++) {
 			buff.append(args[i]);
-			if(i < args.length - 1) buff.append(SPACE);
+			if(i < args.length - 1) buff.append(CommandUtil.SPACE);
 		}		
 		return buff.toString();
 	}
@@ -303,12 +297,12 @@ public class SheetCommand implements CommandExecutor {
 		List<String> classes = activeCharacter.getCharacterClasses();
 		int separators = classes.size() - 1;
 
-		buff.append(activeCharacter.getRace()).append(SPACE);
+		buff.append(activeCharacter.getRace()).append(CommandUtil.SPACE);
 		
 		for(String myClass : classes) {
 			buff.append(myClass);
 			if(separators > 0) {
-				buff.append(SEPARATOR);
+				buff.append(CommandUtil.SEPARATOR);
 				separators--;
 			}
 		}
@@ -322,7 +316,7 @@ public class SheetCommand implements CommandExecutor {
 		
 		charList = charList.replaceAll("\"", "");
 		if(charList != null) {
-			String [] characters = charList.split(COMMA);
+			String [] characters = charList.split(CommandUtil.COMMA);
 			Arrays.sort(characters);
 			
 			for(String character : characters) {
@@ -334,7 +328,7 @@ public class SheetCommand implements CommandExecutor {
 				} else {
 					buff.append(character);
 				}
-				buff.append(COMMA).append(SPACE);
+				buff.append(CommandUtil.COMMA).append(CommandUtil.SPACE);
 			}
 			//remove final COMMA/SPACE combination:
 			result = buff.substring(0,  buff.length() - 2);
