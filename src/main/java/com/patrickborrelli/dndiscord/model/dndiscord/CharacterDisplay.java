@@ -20,6 +20,8 @@ public class CharacterDisplay {
 	
 	@JsonProperty("_id")
 	private String id;
+	@JsonProperty("character_id")
+	private String characterId;
 	@JsonProperty("character_name")
 	private String characterName;
 	@JsonProperty("armor_class")
