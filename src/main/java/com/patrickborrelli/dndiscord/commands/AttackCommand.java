@@ -52,6 +52,11 @@ public class AttackCommand implements CommandExecutor {
 		}
 	}
 
+	private void sendNoActiveCharacterSelectedMessage(Message msg, DiscordUser user) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private void buildAttackListResponse(Message msg, DiscordUser user, CharacterDisplay activeCharacter) {
 		StringBuilder build = new StringBuilder();
 
