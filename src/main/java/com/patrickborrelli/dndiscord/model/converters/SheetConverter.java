@@ -26,6 +26,7 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.Options;
 import com.patrickborrelli.dndiscord.model.dndbeyond.RacialTrait;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Stat;
 import com.patrickborrelli.dndiscord.model.dndiscord.Action;
+import com.patrickborrelli.dndiscord.model.dndiscord.Attack;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.dndiscord.Feature;
@@ -48,41 +49,40 @@ import com.patrickborrelli.dndiscord.utilities.RulesetUtil;
 public class SheetConverter {
 	private static volatile SheetConverter instance;
 	private static final Logger LOGGER = LogManager.getLogger(SheetConverter.class);
-	
+
 	private RulesetUtil ruleset = RulesetUtil.getInstance();
 	private Set<Feature> features = null;
 	private Set<String> languages = null;
 	private Set<String> proficiencies = null;
 	private List<Modifier> delayedModifiers = null;
-	
+
 	/**
-	 * Returns an instance of the SheetConverter to the 
-	 * calling client.
+	 * Returns an instance of the SheetConverter to the calling client.
 	 * 
 	 * @return the SheetConverter
 	 */
 	public static SheetConverter getInstance() {
-		if(instance == null) {
-			synchronized(SheetConverter.class) {
-				if(instance == null) {
+		if (instance == null) {
+			synchronized (SheetConverter.class) {
+				if (instance == null) {
 					instance = new SheetConverter();
 				}
 			}
 		}
 		return instance;
 	}
-	
+
 	public CharacterSheet convertFormat(SheetSourceType type, DndBeyondSheet character) {
 		CharacterSheet sheet = new CharacterSheet();
-		
+
 		features = new HashSet<>();
-        languages = new HashSet<>();
-        proficiencies = new HashSet<>();
-        delayedModifiers = new ArrayList<>();
+		languages = new HashSet<>();
+		proficiencies = new HashSet<>();
+		delayedModifiers = new ArrayList<>();
 
 		if (type == SheetSourceType.BEYOND) {
 			sheet.setSheetSource(type.getValue());
-			//sheet.setUser(user);
+			// sheet.setUser(user);
 			sheet.setCharacterName(character.getName());
 			sheet.setAvatarUrl(character.getAvatarUrl());
 			sheet.setAge(character.getAge());
@@ -128,6 +128,7 @@ public class SheetConverter {
 			sheet.setTemporaryHitPoints(character.getTemporaryHitPoints());
 			sheet.setFeatures(features);
 			sheet.setActions(generateActions(sheet, character));
+			sheet.setAttacks(generateAttacks(sheet, character));
 			sheet.setLanguages(languages);
 			sheet.setProficiencies(proficiencies);
 			applyAbilityScoreMods(sheet);
@@ -135,9 +136,25 @@ public class SheetConverter {
 			applySkillMods(sheet);
 			processDelayedModifiers(delayedModifiers, sheet);
 		}
-		if(LOGGER.isDebugEnabled()) 
+		if (LOGGER.isDebugEnabled())
 			LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
+	}
+
+	private Set<Attack> generateAttacks(CharacterSheet sheet, DndBeyondSheet character) {
+		Set<Attack> attacks = new HashSet<>();
+
+		// create attacks from inventory items that are displayed as attacks:
+		for (Item item : sheet.getInventory()) {
+			if (item.isAttack()) {
+				attacks.add(convertItemToAttack(RulesetUtil.NOT_VERSATILE, item));
+			}
+
+			if (item.getProperties() != null && item.getProperties().contains(WeaponPropertyType.VERSATILE)) {
+				attacks.add(convertItemToAttack(RulesetUtil.VERSATILE, item));
+			}
+		}
+		return attacks;
 	}
 
 	private Set<Action> generateActions(CharacterSheet sheet, DndBeyondSheet character) {
@@ -242,9 +259,9 @@ public class SheetConverter {
 		}
 		sheet.setInventory(charInventory);
 	}
-	
+
 	private void convertItem(com.patrickborrelli.dndiscord.model.dndbeyond.Item sourceItem, Item convertedItem) {
-		if(LOGGER.isDebugEnabled()) 
+		if (LOGGER.isDebugEnabled())
 			LOGGER.debug("Original Item: " + sourceItem.toString());
 
 		ItemDefinition sourceDetail = sourceItem.getDefinition();
@@ -314,7 +331,7 @@ public class SheetConverter {
 			convertedItem.setLongRange(sourceDetail.getWeaponBehaviors()[0].getLongRange());
 			convertedItem.setMonkWeapon(sourceDetail.getWeaponBehaviors()[0].isMonkWeapon());
 		}
-		if(LOGGER.isDebugEnabled()) 
+		if (LOGGER.isDebugEnabled())
 			LOGGER.debug("Converted Item: " + convertedItem.toString());
 	}
 
@@ -390,7 +407,7 @@ public class SheetConverter {
 			thisClass.setLevel(beyondClass.getLevel());
 			thisClass.setName(beyondClass.getDefinition().getName());
 			thisClass.setStartingClass(beyondClass.isStartingClass());
-			if(beyondClass.getSubclassDefinition() != null) {
+			if (beyondClass.getSubclassDefinition() != null) {
 				thisClass.setSubclassName(beyondClass.getSubclassDefinition().getName());
 			}
 			thisClass.setHitDieType(beyondClass.getDefinition().getHitDice());
@@ -426,7 +443,7 @@ public class SheetConverter {
 		processBeyondModifierSet(featModifiers, sheet, DndBeyondConstants.FEAT, character);
 		processBeyondModifierSet(conditionModifiers, sheet, "Condition", character);
 	}
-	
+
 	private FeatureType getFeatureType(String mod) {
 		FeatureType type = null;
 		if (mod.contains(DndBeyondConstants.CLASS_OPTION)) {
@@ -515,7 +532,8 @@ public class SheetConverter {
 					feat.setSubClassFeature(myFeature.getDefinition().isSubClassFeature());
 					LimitedUse[] limUses = myFeature.getDefinition().getLimitedUse();
 					if (limUses != null && limUses.length > 0) {
-						if (limUses[0].getResetType() != null) feat.setLimitedUseResetType(ResetType.getEnum(Integer.parseInt(limUses[0].getResetType())));
+						if (limUses[0].getResetType() != null)
+							feat.setLimitedUseResetType(ResetType.getEnum(Integer.parseInt(limUses[0].getResetType())));
 						feat.setLimitedUseNumberUsed(limUses[0].getNumberUsed());
 						feat.setLimitedUseMinNumberConsumed(limUses[0].getMinNumberConsumed());
 						feat.setLimitedUseMaxNumberConsumed(limUses[0].getMaxNumberConsumed());
@@ -622,116 +640,117 @@ public class SheetConverter {
 		}
 		return feat;
 	}
-	
+
 	private void processDelayedModifiers(List<Modifier> mods, CharacterSheet sheet) {
-		if(LOGGER.isDebugEnabled()) 
+		if (LOGGER.isDebugEnabled())
 			LOGGER.debug("Processing delayed modifiers.");
 		StatType statType = null;
 		int modValue = 0;
-		
+
 		for (Modifier mod : mods) {
-			if(LOGGER.isDebugEnabled()) 
+			if (LOGGER.isDebugEnabled())
 				LOGGER.debug("Modifier: " + mod.toString());
-			
+
 			/**
 			 * DNDIS-35 Bugfix: need to introduce conditional processing here:
 			 * 
-			 * In some cases, a delayed modifier will simply provide a stat id that is to be affected,
-			 * in other cases, it could be a bonus provided by a piece of gear.
+			 * In some cases, a delayed modifier will simply provide a stat id that is to be
+			 * affected, in other cases, it could be a bonus provided by a piece of gear.
 			 */
-			if(mod.getStatId() != null) {
+			if (mod.getStatId() != null) {
 				statType = StatType.getEnum(Integer.valueOf(mod.getStatId()));
 				modValue = sheet.getModifierByStatType(statType) > 1 ? sheet.getModifierByStatType(statType) : 1;
-			} else if(mod.getType().equalsIgnoreCase(DndBeyondConstants.BONUS)) {
+			} else if (mod.getType().equalsIgnoreCase(DndBeyondConstants.BONUS)) {
 				modValue = mod.getValue();
 			}
-				
+
 			switch (mod.getSubType()) {
-				case DndBeyondConstants.ACROBATICS:
-					//TODO: correct logic, bonus applies the associated attribute modifier, min 1 (based on statId)
-					sheet.setAcrobaticsMod(sheet.getAcrobaticsMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.ANIMAL_HANDLING:
-					sheet.setAnimalHandlingMod(sheet.getAnimalHandlingMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.ARCANA:
-					sheet.setArcanaMod(sheet.getArcanaMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.ATHLETICS:
-					sheet.setAthleticsMod(sheet.getAthleticsMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.DECEPTION:
-					sheet.setDeceptionMod(sheet.getDeceptionMod() + modValue);					
-					break;
-					
-				case DndBeyondConstants.HISTORY:
-					sheet.setHistoryMod(sheet.getHistoryMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.INSIGHT:
-					sheet.setInsightMod(sheet.getInsightMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.INTIMIDATION:
-					sheet.setIntimidationMod(sheet.getIntimidationMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.INVESTIGATION:
-					sheet.setInvestigationMod(sheet.getInvestigationMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.MEDICINE:
-					sheet.setMedicineMod(sheet.getMedicineMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.NATURE:
-					sheet.setNatureMod(sheet.getNatureMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.PERCEPTION:
-					sheet.setPerceptionMod(sheet.getPerceptionMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.PERFORMANCE:
-					sheet.setPerformanceMod(sheet.getPerformanceMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.PERSUASION:
-					sheet.setPersuasionMod(sheet.getPersuasionMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.RELIGION:
-					sheet.setReligionMod(sheet.getReligionMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.SLEIGHT_OF_HAND:
-					sheet.setSleightOfHandMod(sheet.getSleightOfHandMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.STEALTH:
-					sheet.setStealthMod(sheet.getStealthMod() + modValue);
-					break;
-					
-				case DndBeyondConstants.SURVIVAL:
-					sheet.setSurvivalMod(sheet.getSurvivalMod() + modValue);
-					break;
-					
-				default:
-					LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());
+			case DndBeyondConstants.ACROBATICS:
+				// TODO: correct logic, bonus applies the associated attribute modifier, min 1
+				// (based on statId)
+				sheet.setAcrobaticsMod(sheet.getAcrobaticsMod() + modValue);
+				break;
+
+			case DndBeyondConstants.ANIMAL_HANDLING:
+				sheet.setAnimalHandlingMod(sheet.getAnimalHandlingMod() + modValue);
+				break;
+
+			case DndBeyondConstants.ARCANA:
+				sheet.setArcanaMod(sheet.getArcanaMod() + modValue);
+				break;
+
+			case DndBeyondConstants.ATHLETICS:
+				sheet.setAthleticsMod(sheet.getAthleticsMod() + modValue);
+				break;
+
+			case DndBeyondConstants.DECEPTION:
+				sheet.setDeceptionMod(sheet.getDeceptionMod() + modValue);
+				break;
+
+			case DndBeyondConstants.HISTORY:
+				sheet.setHistoryMod(sheet.getHistoryMod() + modValue);
+				break;
+
+			case DndBeyondConstants.INSIGHT:
+				sheet.setInsightMod(sheet.getInsightMod() + modValue);
+				break;
+
+			case DndBeyondConstants.INTIMIDATION:
+				sheet.setIntimidationMod(sheet.getIntimidationMod() + modValue);
+				break;
+
+			case DndBeyondConstants.INVESTIGATION:
+				sheet.setInvestigationMod(sheet.getInvestigationMod() + modValue);
+				break;
+
+			case DndBeyondConstants.MEDICINE:
+				sheet.setMedicineMod(sheet.getMedicineMod() + modValue);
+				break;
+
+			case DndBeyondConstants.NATURE:
+				sheet.setNatureMod(sheet.getNatureMod() + modValue);
+				break;
+
+			case DndBeyondConstants.PERCEPTION:
+				sheet.setPerceptionMod(sheet.getPerceptionMod() + modValue);
+				break;
+
+			case DndBeyondConstants.PERFORMANCE:
+				sheet.setPerformanceMod(sheet.getPerformanceMod() + modValue);
+				break;
+
+			case DndBeyondConstants.PERSUASION:
+				sheet.setPersuasionMod(sheet.getPersuasionMod() + modValue);
+				break;
+
+			case DndBeyondConstants.RELIGION:
+				sheet.setReligionMod(sheet.getReligionMod() + modValue);
+				break;
+
+			case DndBeyondConstants.SLEIGHT_OF_HAND:
+				sheet.setSleightOfHandMod(sheet.getSleightOfHandMod() + modValue);
+				break;
+
+			case DndBeyondConstants.STEALTH:
+				sheet.setStealthMod(sheet.getStealthMod() + modValue);
+				break;
+
+			case DndBeyondConstants.SURVIVAL:
+				sheet.setSurvivalMod(sheet.getSurvivalMod() + modValue);
+				break;
+
+			default:
+				LOGGER.info("Received sub type I am not currently handling: " + mod.getSubType());
 			}
-		}		
+		}
 	}
 
 	private void processBeyondModifierSet(List<Modifier> mods, CharacterSheet sheet, String type,
 			DndBeyondSheet character) {
-		if(LOGGER.isDebugEnabled()) 
+		if (LOGGER.isDebugEnabled())
 			LOGGER.debug("Processing " + type + " modifiers.");
 		for (Modifier mod : mods) {
-			if(LOGGER.isDebugEnabled()) 
+			if (LOGGER.isDebugEnabled())
 				LOGGER.debug("Modifier: " + mod.toString());
 
 			Feature feat = getFeatureFromModifier(mod, character, type);
@@ -764,7 +783,7 @@ public class SheetConverter {
 				case DndBeyondConstants.CHARISMA_SCORE:
 					sheet.setCharismaBonus(sheet.getCharismaBonus() + mod.getValue());
 					break;
-					
+
 				case DndBeyondConstants.ACROBATICS:
 				case DndBeyondConstants.ANIMAL_HANDLING:
 				case DndBeyondConstants.ARCANA:
@@ -918,7 +937,7 @@ public class SheetConverter {
 
 				default:
 					proficiencies.add(mod.getFriendlySubtypeName());
-					LOGGER.info("Manually added {} Proficiency.",mod.getFriendlySubtypeName());
+					LOGGER.info("Manually added {} Proficiency.", mod.getFriendlySubtypeName());
 				}
 			} else if (mod.getType().equalsIgnoreCase(DndBeyondConstants.EXPERTISE)) {
 				switch (mod.getSubType()) {
@@ -1014,7 +1033,7 @@ public class SheetConverter {
 			} else if (mod.getType().equalsIgnoreCase(DndBeyondConstants.LANGUAGE)) {
 				languages.add(mod.getFriendlySubtypeName());
 			} else {
-				//add as catch all for sake of debugging.
+				// add as catch all for sake of debugging.
 				LOGGER.warn("Received modifier of type {} that I am not handling: {}", mod.getType(), mod.toString());
 			}
 		}
@@ -1074,7 +1093,13 @@ public class SheetConverter {
 		}
 		return input;
 	}
-	
+
+	private Attack convertItemToAttack(String attackType, Item item) {
+		Attack attack = new Attack();
+
+		return attack;
+	}
+
 	private Action convertItemToAction(String attackType, Item item) {
 		Action action = new Action();
 		if (attackType == RulesetUtil.NOT_VERSATILE) {
@@ -1097,6 +1122,7 @@ public class SheetConverter {
 		action.setType(FeatureType.ITEM);
 		action.setDamageType(item.getDamageType());
 		action.setMartialArt(item.isMonkWeapon());
+		action.setDisplayAsAttack(item.isAttack());
 
 		return action;
 	}

@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import lombok.NoArgsConstructor; 
+import lombok.NoArgsConstructor;
 
 /**
- * Model of dDnDiscord attack.
+ * Model of DnDiscord attack.
  * 
  * @author Patrick Borrelli
  */
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Attack {
-	
+
 	@JsonProperty("_id")
 	private String id;
 	private String name;

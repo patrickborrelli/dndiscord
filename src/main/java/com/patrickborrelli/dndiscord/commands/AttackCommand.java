@@ -48,7 +48,7 @@ public class AttackCommand implements CommandExecutor {
 				new HelpCommand().onCommand(msg, CommandUtil.ATTACK, user, messageReceiptTime);
 			}
 		} else {
-			sendNoActiveCharacterSelectedMessage(msg, user);
+			// sendNoActiveCharacterSelectedMessage(msg, user);
 		}
 	}
 
@@ -61,13 +61,12 @@ public class AttackCommand implements CommandExecutor {
 
 		// iterate through the actions, building the display text:
 		for (Action action : actions) {
-			if(action.isDisplayAsAttack()) {
-				build.append(action.getName()).append(CommandUtil.SPACE)
-					.append("- ").append(action.get)
+			if (action.isDisplayAsAttack()) {
+				build.append(action.getName()).append(CommandUtil.SPACE).append("- ");
 			}
 		}
 
-		buildAttackListEmbed(msg, new String(), new CharacterDisplay());
+		buildAttackListEmbed(msg, build.toString(), sheet.buildDisplaySheet());
 	}
 
 	private void buildAttackListEmbed(Message msg, String attackList, CharacterDisplay activeCharacter) {
