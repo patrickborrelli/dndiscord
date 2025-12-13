@@ -26,7 +26,6 @@ import com.patrickborrelli.dndiscord.model.dndbeyond.Options;
 import com.patrickborrelli.dndiscord.model.dndbeyond.RacialTrait;
 import com.patrickborrelli.dndiscord.model.dndbeyond.Stat;
 import com.patrickborrelli.dndiscord.model.dndiscord.Action;
-import com.patrickborrelli.dndiscord.model.dndiscord.Attack;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterClass;
 import com.patrickborrelli.dndiscord.model.dndiscord.CharacterSheet;
 import com.patrickborrelli.dndiscord.model.dndiscord.Feature;
@@ -128,7 +127,6 @@ public class SheetConverter {
 			sheet.setTemporaryHitPoints(character.getTemporaryHitPoints());
 			sheet.setFeatures(features);
 			sheet.setActions(generateActions(sheet, character));
-			sheet.setAttacks(generateAttacks(sheet, character));
 			sheet.setLanguages(languages);
 			sheet.setProficiencies(proficiencies);
 			applyAbilityScoreMods(sheet);
@@ -139,22 +137,6 @@ public class SheetConverter {
 		if (LOGGER.isDebugEnabled())
 			LOGGER.debug("Converted character to: " + sheet.toString());
 		return sheet;
-	}
-
-	private Set<Attack> generateAttacks(CharacterSheet sheet, DndBeyondSheet character) {
-		Set<Attack> attacks = new HashSet<>();
-
-		// create attacks from inventory items that are displayed as attacks:
-		for (Item item : sheet.getInventory()) {
-			if (item.isAttack()) {
-				attacks.add(convertItemToAttack(RulesetUtil.NOT_VERSATILE, item));
-			}
-
-			if (item.getProperties() != null && item.getProperties().contains(WeaponPropertyType.VERSATILE)) {
-				attacks.add(convertItemToAttack(RulesetUtil.VERSATILE, item));
-			}
-		}
-		return attacks;
 	}
 
 	private Set<Action> generateActions(CharacterSheet sheet, DndBeyondSheet character) {
@@ -1092,12 +1074,6 @@ public class SheetConverter {
 			input = input.replaceAll("\\s{2,}", " ").trim();
 		}
 		return input;
-	}
-
-	private Attack convertItemToAttack(String attackType, Item item) {
-		Attack attack = new Attack();
-
-		return attack;
 	}
 
 	private Action convertItemToAction(String attackType, Item item) {

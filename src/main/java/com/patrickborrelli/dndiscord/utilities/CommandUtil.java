@@ -12,6 +12,7 @@ public class CommandUtil {
 	 */
 	public static final String A = "A";
 	public static final String ADMIN = "ADMIN";
+	public static final String ARCHIVE = "ARCHIVE";
 	public static final String ATTACK = "ATTACK";
 	public static final String HELP = "HELP";
 	public static final String IMPORT = "IMPORT";

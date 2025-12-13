@@ -32,6 +32,7 @@ public class CommandExecutorRouter {
 
 	private void initMap() {
 		map.put(CommandUtil.ADMIN, new AdminCommand());
+		map.put(CommandUtil.ARCHIVE, new ArchiveCommand());
 		map.put(CommandUtil.ATTACK, new AttackCommand());
 		map.put(CommandUtil.HELP, new HelpCommand());
 		map.put(CommandUtil.IMPORT, new ImportCommand());

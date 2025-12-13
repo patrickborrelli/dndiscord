@@ -98,7 +98,15 @@ public class DNDiscordMessageCreateListener implements MessageCreateListener {
 		if (isRealUser && isMyMessage(message)) {
 			try {
 				switch (command) {
+				case CommandUtil.ARCHIVE:
+					
 				case CommandUtil.A:
+					if (LOGGER.isDebugEnabled())
+						LOGGER.debug("Handling archive request message.");
+					executor = router.getCommandExecutor(CommandUtil.ARCHIVE);
+					if (null != executor)
+						executor.onCommand(message, user, timeReceived);
+					break;
 				case CommandUtil.ATTACK:
 					if (LOGGER.isDebugEnabled())
 						LOGGER.debug("Handling attack message.");
